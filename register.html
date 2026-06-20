@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register</title>
+    <title>Register – CC Toolkit</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -13,29 +13,29 @@
     <div class="auth-bg"></div>
     <div class="auth-container">
         <div class="auth-logo">
-            <svg viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="16" fill="#007aff"/><path d="M32 20.5C34.5 17.5 38 15.5 41.5 16C42 19.5 40 23 37.5 25.5C35 28 31.5 29 29 26.5C26.5 24 25.5 20.5 28 17.5C28.5 17 29 16.5 29.5 16.5C29.5 16.5 29 18 29 19.5C29 21.5 30.5 22.5 32 20.5Z" fill="white"/><path d="M39.5 42.5C37.5 45.5 34.5 47 32 47C29.5 47 27 45.5 25 43C23 40.5 21.5 37.5 21.5 34.5C21.5 28.5 25.5 24 30 24C32.5 24 34.5 25.5 36 27.5C37.5 25.5 39.5 24 42 24C45.5 24 48.5 26.5 48.5 31.5C48.5 35 46.5 38.5 43.5 41.5C42 43 41 44.5 39.5 42.5Z" fill="white"/></svg>
+            <i class="fab fa-discord" style="font-size:48px;color:#5865F2;"></i>
         </div>
-        <h1 class="auth-title">Register</h1>
-        <p class="auth-subtitle">Enter registration key to create account.</p>
-        <div id="registerError" class="auth-error"><i class="fas fa-exclamation-circle"></i><span id="registerErrorText">Error</span></div>
-        <div id="registerSuccess" class="auth-success"><i class="fas fa-check-circle"></i><span id="registerSuccessText">Success!</span></div>
+        <h1 class="auth-title">Hesap Oluştur</h1>
+        <p class="auth-subtitle">Kayıt olmaya hazır mısın?</p>
+        <div id="registerError" class="auth-error"><i class="fas fa-exclamation-circle"></i><span id="registerErrorText">Hata</span></div>
+        <div id="registerSuccess" class="auth-success"><i class="fas fa-check-circle"></i><span id="registerSuccessText">Başarılı!</span></div>
         <form id="registerForm">
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="registerEmail" placeholder="example@email.com" required />
+                <label>E-posta</label>
+                <input type="email" id="registerEmail" placeholder="ornek@email.com" required />
             </div>
             <div class="form-group">
-                <label>Password</label>
+                <label>Şifre</label>
                 <input type="password" id="registerPassword" placeholder="••••••••" required />
             </div>
             <div class="form-group">
-                <label>Registration Key</label>
-                <input type="text" id="registerKey" placeholder="Enter key from admin" required />
-                <div class="hint"><i class="fas fa-key"></i> Get from admin panel.</div>
+                <label>Kayıt Anahtarı</label>
+                <input type="text" id="registerKey" placeholder="Admin'den aldığın anahtar" required />
+                <div class="hint"><i class="fas fa-key"></i> Admin panelinden alınan anahtar.</div>
             </div>
-            <button type="submit" class="auth-btn">Register</button>
+            <button type="submit" class="auth-btn">Kayıt Ol</button>
         </form>
-        <div class="auth-toggle">Already have an account? <a href="index.html">Login</a></div>
+        <div class="auth-toggle">Zaten hesabın var mı? <a href="index.html">Giriş Yap</a></div>
     </div>
     <audio id="bgMusic" loop></audio>
     <script>
