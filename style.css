@@ -116,15 +116,9 @@ body.auth-page {
 }
 
 @keyframes gradientMove {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 body.auth-page .auth-container {
@@ -1081,15 +1075,9 @@ body.dashboard-page .stat-btn:hover {
     animation: coinFlip 0.6s ease-in-out;
 }
 @keyframes coinFlip {
-    0% {
-        transform: rotateY(0deg);
-    }
-    50% {
-        transform: rotateY(180deg);
-    }
-    100% {
-        transform: rotateY(360deg);
-    }
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(180deg); }
+    100% { transform: rotateY(360deg); }
 }
 #diceResult {
     font-size: 72px;
@@ -1099,21 +1087,11 @@ body.dashboard-page .stat-btn:hover {
     animation: diceRoll 0.5s ease-in-out;
 }
 @keyframes diceRoll {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-    25% {
-        transform: rotate(90deg) scale(1.2);
-    }
-    50% {
-        transform: rotate(180deg) scale(0.8);
-    }
-    75% {
-        transform: rotate(270deg) scale(1.2);
-    }
-    100% {
-        transform: rotate(360deg) scale(1);
-    }
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(90deg) scale(1.2); }
+    50% { transform: rotate(180deg) scale(0.8); }
+    75% { transform: rotate(270deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
 }
 #rpsResult {
     font-size: 48px;
@@ -1215,74 +1193,28 @@ body.dashboard-page .stat-btn:hover {
     }
 }
 @media (max-width: 768px) {
-    body.dashboard-page .main-content {
-        padding: 16px;
-    }
-    body.dashboard-page .card-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    body.dashboard-page .card {
-        padding: 18px 16px;
-    }
-    body.dashboard-page .gen-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    body.auth-page .auth-container {
-        margin: 12px;
-        padding: 24px 18px;
-    }
-    .settings-grid {
-        grid-template-columns: 1fr;
-    }
-    body.dashboard-page .top-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    body.dashboard-page .header-actions {
-        justify-content: flex-end;
-    }
-    .admin-panel-btn {
-        font-size: 10px;
-        padding: 4px 10px;
-        margin-left: 6px;
-    }
+    body.dashboard-page .main-content { padding: 16px; }
+    body.dashboard-page .card-grid { grid-template-columns: 1fr 1fr; }
+    body.dashboard-page .card { padding: 18px 16px; }
+    body.dashboard-page .gen-grid { grid-template-columns: 1fr 1fr; }
+    body.auth-page .auth-container { margin: 12px; padding: 24px 18px; }
+    .settings-grid { grid-template-columns: 1fr; }
+    body.dashboard-page .top-header { flex-direction: column; align-items: stretch; }
+    body.dashboard-page .header-actions { justify-content: flex-end; }
+    .admin-panel-btn { font-size: 10px; padding: 4px 10px; margin-left: 6px; }
 }
 @media (max-width: 480px) {
-    body.dashboard-page .top-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    body.dashboard-page .header-actions {
-        justify-content: flex-end;
-    }
-    body.dashboard-page .card-grid {
-        grid-template-columns: 1fr;
-    }
-    body.dashboard-page .page-title h1 {
-        font-size: 20px;
-    }
-    .sidebar-brand .brand-text span {
-        font-size: 18px;
-    }
-    #wheelCanvas {
-        width: 200px !important;
-        height: 200px !important;
-    }
-    .admin-panel-btn {
-        font-size: 9px;
-        padding: 3px 8px;
-        margin-left: 4px;
-    }
+    body.dashboard-page .top-header { flex-direction: column; align-items: stretch; }
+    body.dashboard-page .header-actions { justify-content: flex-end; }
+    body.dashboard-page .card-grid { grid-template-columns: 1fr; }
+    body.dashboard-page .page-title h1 { font-size: 20px; }
+    .sidebar-brand .brand-text span { font-size: 18px; }
+    #wheelCanvas { width: 200px !important; height: 200px !important; }
+    .admin-panel-btn { font-size: 9px; padding: 3px 8px; margin-left: 4px; }
 }
 @keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 body.auth-page .auth-container,
 body.dashboard-page .card {
