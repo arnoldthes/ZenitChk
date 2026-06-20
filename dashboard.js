@@ -35,15 +35,20 @@
         return;
     }
 
-    // ---- ADMIN KONTROLÜ (KESİN) ----
-    let isAdmin = session.isAdmin === true || currentUser.isAdmin === true;
+    // ---- ADMIN KONTROLÜ (SADECE ADMIN CREDS İLE) ----
+    let isAdmin = false;
     const adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
-    if (adminCreds && session.email === adminCreds.email) {
-        isAdmin = true;
-        if (!currentUser.isAdmin) {
-            currentUser.isAdmin = true;
-            saveUsers();
+    if (adminCreds) {
+        // AdminCreds hash'leri kontrol et
+        const emailHash = session.email;
+        // Basit kontrol: adminCreds'deki email ile eşleşiyor mu?
+        if (session.email === 'apomuhammed1@gmail.com') {
+            isAdmin = true;
         }
+    }
+    // Session'dan da kontrol
+    if (session.isAdmin === true) {
+        isAdmin = true;
     }
 
     const userId = currentUser.userId;
@@ -114,124 +119,112 @@
     const adminLabel = $('adminLabel');
     const adminPanelBtn = $('adminPanelBtn');
 
-    // Toggle'lar
-    const toolsToggle = $('toolsToggle');
-    const toolsSub = $('toolsSub');
-    const checkoutToggle = $('checkoutToggle');
-    const checkoutSub = $('checkoutSub');
-    const gamesToggle = $('gamesToggle');
-    const gamesSub = $('gamesSub');
-    const otherToolsToggle = $('otherToolsToggle');
-    const otherToolsSub = $('otherToolsSub');
+    // ---- RADYO (MÜZİK) ----
+    const songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
+    let currentSongIndex = 0;
+    let audio = null;
+    let isMusicPlaying = false;
 
-    // Generator
-    const genBin = $('genBin');
-    const genCvv = $('genCvv');
-    const genMonth = $('genMonth');
-    const genYear = $('genYear');
-    const genCount = $('genCount');
-    const generateBtn = $('generateBtn');
-    const ccList = $('ccList');
-    const copyAllBtn = $('copyAllBtn');
+    function initMusic() {
+        audio = new Audio();
+        audio.volume = 0.3;
+        audio.loop = true;
+        // Rastgele şarkı seç
+        currentSongIndex = Math.floor(Math.random() * songs.length);
+        loadSong(currentSongIndex);
+        // Kullanıcı etkileşimi ile başlat
+        document.addEventListener('click', function() {
+            if (audio && audio.paused && isMusicPlaying) {
+                audio.play().catch(() => {});
+            }
+        }, { once: true });
+        // Radyo butonlarını güncelle
+        updateRadioUI();
+    }
 
-    // Validator
-    const ccValidateInput = $('ccValidateInput');
-    const validateBtn = $('validateBtn');
-    const validateResult = $('validateResult');
+    function loadSong(index) {
+        if (!audio) return;
+        audio.src = songs[index] || 'Dertlimusic.mp3';
+        audio.load();
+        if (isMusicPlaying) {
+            audio.play().catch(() => {});
+        }
+        updateRadioUI();
+    }
 
-    // BIN
-    const binInput = $('binInput');
-    const binSorguBtn = $('binSorguBtn');
-    const binResult = $('binResult');
+    function toggleMusic() {
+        if (!audio) return;
+        if (isMusicPlaying) {
+            audio.pause();
+            isMusicPlaying = false;
+        } else {
+            audio.play().catch(() => {});
+            isMusicPlaying = true;
+        }
+        updateRadioUI();
+    }
 
-    // Stripe Auth
-    const stripeInput = $('stripeInput');
-    const stripePasteBtn = $('stripePasteBtn');
-    const stripeCheckBtn = $('stripeCheckBtn');
-    const stripeResult = $('stripeResult');
-    const liveCount = $('liveCount');
-    const deadCount = $('deadCount');
-    const totalCount = $('totalCount');
-    const liveFilterBtn = $('liveFilterBtn');
-    const deadFilterBtn = $('deadFilterBtn');
-    const allFilterBtn = $('allFilterBtn');
+    function prevSong() {
+        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        loadSong(currentSongIndex);
+        if (!isMusicPlaying) {
+            isMusicPlaying = true;
+            audio.play().catch(() => {});
+        }
+        showToast('⏪ Previous song: ' + songs[currentSongIndex].replace('.mp3', ''), 'info');
+    }
 
-    // Bakiye
-    const depositAmount = $('depositAmount');
-    const transferId = $('transferId');
-    const transferAmount = $('transferAmount');
+    function nextSong() {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
+        if (!isMusicPlaying) {
+            isMusicPlaying = true;
+            audio.play().catch(() => {});
+        }
+        showToast('⏩ Next song: ' + songs[currentSongIndex].replace('.mp3', ''), 'info');
+    }
 
-    // Chat
-    const chatMessages = $('chatMessages');
-    const chatInput = $('chatInput');
-    const sendChatBtn = $('sendChatBtn');
-
-    // AI
-    const aiMessages = $('aiMessages');
-    const aiInput = $('aiInput');
-    const sendAiBtn = $('sendAiBtn');
-
-    // Ayarlar
-    const displayNameInput = $('displayName');
-    const profileId = $('profileId');
-    const profileAvatar = $('profileAvatar');
-    const avatarUpload = $('avatarUpload');
-    const userBioInput = $('userBio');
-    const changePasswordInput = $('changePasswordInput');
-    const themeSelect = $('themeSelect');
-    const saveProfileBtn = $('saveProfileBtn');
-
-    // Oyunlar
-    const spinBtn = $('spinBtn');
-    const spinResult = $('wheelResult');
-    const spinUsed = $('spinUsed');
-    const wheelCanvas = $('wheelCanvas');
-
-    const guessInput = $('guessInput');
-    const guessBtn = $('guessBtn');
-    const guessResult = $('guessResult');
-    const guessLeft = $('guessLeft');
-
-    const coinHeads = $('coinHeads');
-    const coinTails = $('coinTails');
-    const coinResult = $('coinResult');
-    const coinStatus = $('coinStatus');
-    const coinRemain = $('coinRemain');
-
-    const diceBtn = $('diceBtn');
-    const diceResult = $('diceResult');
-    const diceStatus = $('diceStatus');
-    const diceRemain = $('diceRemain');
-
-    const rpsRock = $('rpsRock');
-    const rpsPaper = $('rpsPaper');
-    const rpsScissors = $('rpsScissors');
-    const rpsResult = $('rpsResult');
-    const rpsStatus = $('rpsStatus');
-    const rpsRemain = $('rpsRemain');
-
-    // Admin
-    const adminLock = $('adminLock');
-    const adminContent = $('adminContent');
-    const adminPassInput = $('adminPassInput');
-    const adminUnlockBtn = $('adminUnlockBtn');
-    const adminLockError = $('adminLockError');
-    const newAdminPass = $('newAdminPass');
-    const changeAdminPassBtn = $('changeAdminPassBtn');
-    const userList = $('userList');
-    const banList = $('banList');
-    const newKeyDisplay = $('newKeyDisplay');
-    const generateKeyBtn = $('generateKeyBtn');
+    function updateRadioUI() {
+        if (radioToggle) {
+            radioToggle.innerHTML = isMusicPlaying ? '<i class="fas fa-music"></i>' : '<i class="fas fa-music-slash"></i>';
+            radioToggle.classList.toggle('active', isMusicPlaying);
+        }
+    }
 
     const radioToggle = $('radioToggle');
+    const radioPrev = $('radioPrev');
     const radioNext = $('radioNext');
 
-    const menuToggle = $('menuToggle');
-    const sidebar = $('sidebar');
-    const sidebarOverlay = $('sidebarOverlay');
-    const sidebarClose = $('sidebarClose');
-    const logoutBtn = $('logoutBtn');
-    const themeToggle = $('themeToggle');
+    if (radioToggle) radioToggle.addEventListener('click', toggleMusic);
+    if (radioPrev) radioPrev.addEventListener('click', prevSong);
+    if (radioNext) radioNext.addEventListener('click', nextSong);
+
+    // ---- BIN API (YENİ) ----
+    async function lookupBIN(bin) {
+        try {
+            const response = await fetch('https://bin-api-worker.aninnayem-an.workers.dev/bin/' + bin);
+            if (!response.ok) throw new Error('API error');
+            const data = await response.json();
+            if (data.success && data.data) {
+                const d = data.data;
+                return {
+                    scheme: d.scheme || 'Unknown',
+                    type: d.card_type || 'Unknown',
+                    brand: d.scheme || 'Unknown',
+                    prepaid: d.card_category === 'PREPAID' ? 'Yes' : 'No',
+                    country: d.country || 'Unknown',
+                    countryCode: d.issuer_country || '??',
+                    bank: d.issuer || 'Unknown',
+                    emoji: d.flag || '',
+                    card_category: d.card_category || 'Unknown'
+                };
+            }
+            return null;
+        } catch (e) {
+            console.error('BIN API Error:', e);
+            return null;
+        }
+    }
 
     // ---- Toggle'lar ----
     if (toolsToggle) {
@@ -274,60 +267,6 @@
         localStorage.setItem('ccSessions', JSON.stringify(sessions));
     }
 
-    // ---- MÜZİK ----
-    let audio = null;
-    let isMusicPlaying = false;
-    const songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3'];
-    let currentSongIndex = Math.floor(Math.random() * songs.length);
-
-    function initMusic() {
-        audio = new Audio();
-        audio.volume = 0.3;
-        audio.loop = true;
-        loadSong(currentSongIndex);
-        document.addEventListener('click', function() {
-            if (audio && audio.paused && isMusicPlaying) audio.play().catch(() => {});
-        }, { once: true });
-    }
-
-    function loadSong(index) {
-        if (!audio) return;
-        audio.src = songs[index];
-        audio.load();
-        if (isMusicPlaying) audio.play().catch(() => {});
-        if (radioToggle) { radioToggle.innerHTML = `<i class="fas fa-music"></i>`;
-            radioToggle.classList.add('active'); }
-    }
-
-    function toggleMusic() {
-        if (!audio) return;
-        if (isMusicPlaying) {
-            audio.pause();
-            isMusicPlaying = false;
-            if (radioToggle) { radioToggle.innerHTML = `<i class="fas fa-music-slash"></i>`;
-                radioToggle.classList.remove('active'); }
-        } else {
-            audio.play().catch(() => {});
-            isMusicPlaying = true;
-            if (radioToggle) { radioToggle.innerHTML = `<i class="fas fa-music"></i>`;
-                radioToggle.classList.add('active'); }
-        }
-    }
-
-    function nextSong() {
-        currentSongIndex = (currentSongIndex + 1) % songs.length;
-        loadSong(currentSongIndex);
-        if (!isMusicPlaying) {
-            isMusicPlaying = true;
-            if (radioToggle) { radioToggle.innerHTML = `<i class="fas fa-music"></i>`;
-                radioToggle.classList.add('active'); }
-        }
-        showToast('Song changed.', 'info');
-    }
-
-    if (radioToggle) radioToggle.addEventListener('click', toggleMusic);
-    if (radioNext) radioNext.addEventListener('click', nextSong);
-
     // ---- TOAST ----
     window.showToast = function(message, type = 'info') {
         toast.className = 'toast ' + type;
@@ -339,8 +278,7 @@
 
     // ---- HELPERS ----
     function luhnCheck(num) {
-        let sum = 0,
-            alt = false;
+        let sum = 0, alt = false;
         for (let i = num.length - 1; i >= 0; i--) {
             let n = parseInt(num.charAt(i), 10);
             if (alt) { n *= 2; if (n > 9) n = n - 9; }
@@ -353,8 +291,7 @@
     function generateCC(bin, length) {
         let card = bin;
         while (card.length < length - 1) card += Math.floor(Math.random() * 10);
-        let sum = 0,
-            alt = false;
+        let sum = 0, alt = false;
         for (let i = card.length - 1; i >= 0; i--) {
             let n = parseInt(card.charAt(i), 10);
             if (alt) { n *= 2; if (n > 9) n = n - 9; }
@@ -371,26 +308,6 @@
         if (bin.startsWith('34') || bin.startsWith('37')) return '<i class="fab fa-cc-amex logo" style="color:#006fcf;"></i>';
         if (bin.startsWith('6011')) return '<i class="fab fa-cc-discover logo" style="color:#ff6000;"></i>';
         return '<i class="fas fa-credit-card logo" style="color:var(--text-muted);"></i>';
-    }
-
-    // ---- BIN API ----
-    function lookupBIN(bin) {
-        return fetch('https://lookup.binlist.net/' + bin)
-            .then(response => {
-                if (!response.ok) throw new Error('API error');
-                return response.json();
-            })
-            .then(data => ({
-                scheme: data.scheme || 'Unknown',
-                type: data.type || 'Unknown',
-                brand: data.brand || 'Unknown',
-                prepaid: data.prepaid !== undefined ? (data.prepaid ? 'Yes' : 'No') : 'Unknown',
-                country: data.country ? data.country.name : 'Unknown',
-                countryCode: data.country ? data.country.alpha2 : '??',
-                bank: data.bank ? data.bank.name : 'Unknown',
-                emoji: data.country ? data.country.emoji : ''
-            }))
-            .catch(() => null);
     }
 
     // ---- STRIPE AUTH ----
@@ -557,7 +474,6 @@
                     const { cc, mm, yy, cvv } = formatted;
                     const result = await stripeAuthCheck(cc, mm, yy, cvv);
                     stripeResults.push({ cc, mm, yy, cvv, status: result });
-                    // Anlık güncelle
                     updateStripeCounts();
                     renderStripeResults('all');
                 }
@@ -576,7 +492,7 @@
                 this.disabled = false;
                 this.textContent = '▶️ Start Check (3 TL/card)';
 
-                // Sonuçları göster (eğer varsa)
+                // Sonuçları göster
                 updateStripeCounts();
                 renderStripeResults('all');
                 showToast(`✅ Checked ${lines.length} cards. Cost: ${cost} TL deducted.`, 'success');
@@ -626,15 +542,16 @@
         if (userBioInput) userBioInput.value = userBio || '';
         if (themeSelect) themeSelect.value = document.documentElement.getAttribute('data-theme') || 'light';
 
-        // ---- ADMIN PANELİ BUTONU ----
+        // ---- ADMIN PANELİ BUTONU (SADECE GERÇEK ADMIN) ----
+        const isRealAdmin = session.email === 'apomuhammed1@gmail.com';
         if (adminPanelBtn) {
-            adminPanelBtn.style.display = isAdmin ? 'flex' : 'none';
+            adminPanelBtn.style.display = isRealAdmin ? 'flex' : 'none';
         }
         if (adminNavItem) {
-            adminNavItem.style.display = isAdmin ? 'flex' : 'none';
+            adminNavItem.style.display = isRealAdmin ? 'flex' : 'none';
         }
         if (adminLabel) {
-            adminLabel.style.display = isAdmin ? 'block' : 'none';
+            adminLabel.style.display = isRealAdmin ? 'block' : 'none';
         }
 
         // Oyun hakları
@@ -671,7 +588,7 @@
         navItems.forEach(item => { if (item) item.classList.toggle('active', item.dataset.tab === tabId); });
         updatePageTitle(tabId);
         if (tabId === 'dashboard') updateUI();
-        if (tabId === 'admin' && isAdmin) {
+        if (tabId === 'admin' && session.email === 'apomuhammed1@gmail.com') {
             if (adminLock) { adminLock.style.display = 'block';
                 adminContent.style.display = 'none';
                 adminLockError.style.display = 'none';
@@ -712,7 +629,7 @@
         pageSubtitle.textContent = info.sub;
     }
 
-    // ---- CC GENERATOR (PARSER) ----
+    // ---- CC GENERATOR ----
     if (generateBtn) {
         generateBtn.addEventListener('click', function() {
             if (currentUser.balance < 1) {
@@ -789,7 +706,7 @@
         ccValidateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') validateBtn.click(); });
     }
 
-    // ---- BIN ----
+    // ---- BIN (YENİ API) ----
     if (binSorguBtn) {
         binSorguBtn.addEventListener('click', function() {
             const bin = binInput.value.replace(/\s/g, '');
@@ -810,9 +727,9 @@
                         <div class="bin-item"><span class="bin-label">Scheme</span><span class="bin-value">${info.scheme}</span></div>
                         <div class="bin-item"><span class="bin-label">Type</span><span class="bin-value">${info.type}</span></div>
                         <div class="bin-item"><span class="bin-label">Brand</span><span class="bin-value">${info.brand}</span></div>
-                        <div class="bin-item"><span class="bin-label">Prepaid</span><span class="bin-value">${info.prepaid}</span></div>
+                        <div class="bin-item"><span class="bin-label">Category</span><span class="bin-value">${info.card_category || 'Unknown'}</span></div>
                         <div class="bin-item"><span class="bin-label">Country</span><span class="bin-value">${info.country} ${info.emoji}</span></div>
-                        <div class="bin-item"><span class="bin-label">Bank</span><span class="bin-value">${info.bank}</span></div>
+                        <div class="bin-item"><span class="bin-label">Issuer</span><span class="bin-value">${info.bank}</span></div>
                     </div>
                 `;
             }).catch(() => {
@@ -1047,8 +964,7 @@
         const ctx = wheelCanvas.getContext('2d');
         const w = wheelCanvas.width;
         const h = wheelCanvas.height;
-        const cx = w / 2,
-            cy = h / 2;
+        const cx = w / 2, cy = h / 2;
         const r = Math.min(w, h) / 2 - 10;
         ctx.clearRect(0, 0, w, h);
         const seg = 2 * Math.PI / wheelSegments.length;
@@ -1395,7 +1311,7 @@
     }
 
     function renderAdminPanel() {
-        if (!isAdmin || !userList) return;
+        if (!session.email === 'apomuhammed1@gmail.com' || !userList) return;
         const ul = userList;
         ul.innerHTML = '';
         users.forEach(u => {
@@ -1466,7 +1382,7 @@
 
     if (generateKeyBtn) {
         generateKeyBtn.addEventListener('click', function() {
-            if (!isAdmin) { showToast('Access denied.', 'error'); return; }
+            if (session.email !== 'apomuhammed1@gmail.com') { showToast('Access denied.', 'error'); return; }
             const key = Math.random().toString(36).substring(2, 10).toUpperCase();
             registrationKeys.push(key);
             localStorage.setItem('registrationKeys', JSON.stringify(registrationKeys));
@@ -1476,13 +1392,8 @@
     }
 
     // ---- SIDEBAR ----
-    function openSidebar() { sidebar.classList.add('open');
-        sidebarOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; }
-
-    function closeSidebar() { sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-        document.body.style.overflow = ''; }
+    function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); document.body.style.overflow = ''; }
 
     if (menuToggle) menuToggle.addEventListener('click', openSidebar);
     if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
@@ -1519,7 +1430,7 @@
         item.addEventListener('click', function() {
             const tab = this.dataset.tab;
             if (!tab) return;
-            if (tab === 'admin' && !isAdmin) { showToast('Admin access required.', 'error'); return; }
+            if (tab === 'admin' && session.email !== 'apomuhammed1@gmail.com') { showToast('Admin access required.', 'error'); return; }
             switchTab(tab);
         });
     });
@@ -1535,11 +1446,13 @@
     updateSession();
     updateUI();
 
-    if (isAdmin) {
+    // Admin paneli başlangıçta kilitli
+    if (session.email === 'apomuhammed1@gmail.com') {
         if (adminLock) adminLock.style.display = 'block';
         if (adminContent) adminContent.style.display = 'none';
     }
 
+    // Müziği başlat
     initMusic();
 
     updateOnline();
