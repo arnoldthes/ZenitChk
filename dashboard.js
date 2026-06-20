@@ -35,19 +35,9 @@
         return;
     }
 
-    // ---- ADMIN KONTROLÜ (SADECE ADMIN CREDS İLE) ----
+    // ---- ADMIN KONTROLÜ (SADECE REAL ADMIN) ----
     let isAdmin = false;
-    const adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
-    if (adminCreds) {
-        // AdminCreds hash'leri kontrol et
-        const emailHash = session.email;
-        // Basit kontrol: adminCreds'deki email ile eşleşiyor mu?
-        if (session.email === 'apomuhammed1@gmail.com') {
-            isAdmin = true;
-        }
-    }
-    // Session'dan da kontrol
-    if (session.isAdmin === true) {
+    if (session.email === 'apomuhammed1@gmail.com') {
         isAdmin = true;
     }
 
@@ -129,16 +119,13 @@
         audio = new Audio();
         audio.volume = 0.3;
         audio.loop = true;
-        // Rastgele şarkı seç
         currentSongIndex = Math.floor(Math.random() * songs.length);
         loadSong(currentSongIndex);
-        // Kullanıcı etkileşimi ile başlat
         document.addEventListener('click', function() {
             if (audio && audio.paused && isMusicPlaying) {
                 audio.play().catch(() => {});
             }
         }, { once: true });
-        // Radyo butonlarını güncelle
         updateRadioUI();
     }
 
@@ -171,7 +158,7 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('⏪ Previous song: ' + songs[currentSongIndex].replace('.mp3', ''), 'info');
+        showToast('⏪ Music changed', 'info');
     }
 
     function nextSong() {
@@ -181,7 +168,7 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('⏩ Next song: ' + songs[currentSongIndex].replace('.mp3', ''), 'info');
+        showToast('⏩ Music changed', 'info');
     }
 
     function updateRadioUI() {
@@ -227,6 +214,15 @@
     }
 
     // ---- Toggle'lar ----
+    const toolsToggle = $('toolsToggle');
+    const toolsSub = $('toolsSub');
+    const checkoutToggle = $('checkoutToggle');
+    const checkoutSub = $('checkoutSub');
+    const gamesToggle = $('gamesToggle');
+    const gamesSub = $('gamesSub');
+    const otherToolsToggle = $('otherToolsToggle');
+    const otherToolsSub = $('otherToolsSub');
+
     if (toolsToggle) {
         toolsToggle.addEventListener('click', function() {
             this.classList.toggle('open');
@@ -422,6 +418,17 @@
         totalCount.textContent = stripeResults.length;
     }
 
+    const stripeInput = $('stripeInput');
+    const stripePasteBtn = $('stripePasteBtn');
+    const stripeCheckBtn = $('stripeCheckBtn');
+    const stripeResult = $('stripeResult');
+    const liveCount = $('liveCount');
+    const deadCount = $('deadCount');
+    const totalCount = $('totalCount');
+    const liveFilterBtn = $('liveFilterBtn');
+    const deadFilterBtn = $('deadFilterBtn');
+    const allFilterBtn = $('allFilterBtn');
+
     if (stripePasteBtn) {
         stripePasteBtn.addEventListener('click', async function() {
             try {
@@ -517,7 +524,7 @@
         renderStripeResults('all');
     });
 
-    // ---- UI (ADMIN BUTONUNU GÖSTER/GİZLE) ----
+    // ---- UI (ADMIN BUTONU) ----
     function updateUI() {
         if (userAvatar) {
             userAvatarEl.innerHTML = `<img src="${userAvatar}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">`;
@@ -630,6 +637,15 @@
     }
 
     // ---- CC GENERATOR ----
+    const genBin = $('genBin');
+    const genCvv = $('genCvv');
+    const genMonth = $('genMonth');
+    const genYear = $('genYear');
+    const genCount = $('genCount');
+    const generateBtn = $('generateBtn');
+    const ccList = $('ccList');
+    const copyAllBtn = $('copyAllBtn');
+
     if (generateBtn) {
         generateBtn.addEventListener('click', function() {
             if (currentUser.balance < 1) {
@@ -684,6 +700,10 @@
     }
 
     // ---- VALIDATOR ----
+    const ccValidateInput = $('ccValidateInput');
+    const validateBtn = $('validateBtn');
+    const validateResult = $('validateResult');
+
     if (validateBtn) {
         validateBtn.addEventListener('click', function() {
             const raw = ccValidateInput.value.replace(/\s/g, '');
@@ -707,6 +727,10 @@
     }
 
     // ---- BIN (YENİ API) ----
+    const binInput = $('binInput');
+    const binSorguBtn = $('binSorguBtn');
+    const binResult = $('binResult');
+
     if (binSorguBtn) {
         binSorguBtn.addEventListener('click', function() {
             const bin = binInput.value.replace(/\s/g, '');
@@ -740,6 +764,10 @@
     }
 
     // ---- BALANCE ----
+    const depositAmount = $('depositAmount');
+    const transferId = $('transferId');
+    const transferAmount = $('transferAmount');
+
     window.deposit = function() {
         const amount = parseFloat(depositAmount.value);
         if (!amount || amount <= 0) { showToast('Enter a valid amount.', 'error'); return; }
@@ -768,6 +796,9 @@
     };
 
     // ---- CHAT ----
+    const chatMessages = $('chatMessages');
+    const chatInput = $('chatInput');
+    const sendChatBtn = $('sendChatBtn');
     let chatMessagesData = JSON.parse(localStorage.getItem('chatMessages')) || [];
 
     function saveChatMessages() { localStorage.setItem('chatMessages', JSON.stringify(chatMessagesData)); }
@@ -801,6 +832,9 @@
     if (chatInput) chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChatMessage(); });
 
     // ---- ZENIT AI ----
+    const aiMessages = $('aiMessages');
+    const aiInput = $('aiInput');
+    const sendAiBtn = $('sendAiBtn');
     let aiMessagesData = JSON.parse(localStorage.getItem('aiMessages_' + userId)) || [];
 
     function saveAIMessages() { localStorage.setItem('aiMessages_' + userId, JSON.stringify(aiMessagesData)); }
@@ -947,6 +981,10 @@
     if (aiInput) aiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendAIMessage(); });
 
     // ---- SPIN WHEEL ----
+    const spinBtn = $('spinBtn');
+    const spinResult = $('wheelResult');
+    const spinUsed = $('spinUsed');
+    const wheelCanvas = $('wheelCanvas');
     let wheelSegments = [
         { label: '5 TL', value: 5, color: '#ff6b6b' },
         { label: '15 TL', value: 15, color: '#ffd93d' },
@@ -1047,6 +1085,10 @@
     if (spinBtn) spinBtn.addEventListener('click', spinWheel);
 
     // ---- GUESS NUMBER ----
+    const guessInput = $('guessInput');
+    const guessBtn = $('guessBtn');
+    const guessResult = $('guessResult');
+    const guessLeft = $('guessLeft');
     let guessNumber = Math.floor(Math.random() * 100) + 1;
     let guessAttempts = 0;
 
@@ -1082,6 +1124,12 @@
     }
 
     // ---- COIN FLIP ----
+    const coinHeads = $('coinHeads');
+    const coinTails = $('coinTails');
+    const coinResult = $('coinResult');
+    const coinStatus = $('coinStatus');
+    const coinRemain = $('coinRemain');
+
     if (coinHeads && coinTails) {
         coinHeads.addEventListener('click', function() { playCoinFlip('heads'); });
         coinTails.addEventListener('click', function() { playCoinFlip('tails'); });
@@ -1111,6 +1159,11 @@
     }
 
     // ---- DICE ----
+    const diceBtn = $('diceBtn');
+    const diceResult = $('diceResult');
+    const diceStatus = $('diceStatus');
+    const diceRemain = $('diceRemain');
+
     if (diceBtn) {
         diceBtn.addEventListener('click', function() {
             if (!useGameLimit('dice', 4)) {
@@ -1136,6 +1189,13 @@
     }
 
     // ---- RPS ----
+    const rpsRock = $('rpsRock');
+    const rpsPaper = $('rpsPaper');
+    const rpsScissors = $('rpsScissors');
+    const rpsResult = $('rpsResult');
+    const rpsStatus = $('rpsStatus');
+    const rpsRemain = $('rpsRemain');
+
     if (rpsRock && rpsPaper && rpsScissors) {
         rpsRock.addEventListener('click', function() { playRPS('rock'); });
         rpsPaper.addEventListener('click', function() { playRPS('paper'); });
@@ -1169,6 +1229,15 @@
     }
 
     // ---- SETTINGS ----
+    const displayNameInput = $('displayName');
+    const profileId = $('profileId');
+    const profileAvatar = $('profileAvatar');
+    const avatarUpload = $('avatarUpload');
+    const userBioInput = $('userBio');
+    const changePasswordInput = $('changePasswordInput');
+    const themeSelect = $('themeSelect');
+    const saveProfileBtn = $('saveProfileBtn');
+
     if (avatarUpload) {
         avatarUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -1216,6 +1285,17 @@
     }
 
     // ---- ADMIN ----
+    const adminLock = $('adminLock');
+    const adminContent = $('adminContent');
+    const adminPassInput = $('adminPassInput');
+    const adminUnlockBtn = $('adminUnlockBtn');
+    const adminLockError = $('adminLockError');
+    const newAdminPass = $('newAdminPass');
+    const changeAdminPassBtn = $('changeAdminPassBtn');
+    const userList = $('userList');
+    const banList = $('banList');
+    const newKeyDisplay = $('newKeyDisplay');
+    const generateKeyBtn = $('generateKeyBtn');
     let adminAttempts = 0;
     let adminLockedUntil = 0;
     const rootPassword = 'root2025';
@@ -1311,7 +1391,7 @@
     }
 
     function renderAdminPanel() {
-        if (!session.email === 'apomuhammed1@gmail.com' || !userList) return;
+        if (session.email !== 'apomuhammed1@gmail.com' || !userList) return;
         const ul = userList;
         ul.innerHTML = '';
         users.forEach(u => {
@@ -1392,6 +1472,13 @@
     }
 
     // ---- SIDEBAR ----
+    const menuToggle = $('menuToggle');
+    const sidebar = $('sidebar');
+    const sidebarOverlay = $('sidebarOverlay');
+    const sidebarClose = $('sidebarClose');
+    const logoutBtn = $('logoutBtn');
+    const themeToggle = $('themeToggle');
+
     function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); document.body.style.overflow = ''; }
 
@@ -1446,13 +1533,11 @@
     updateSession();
     updateUI();
 
-    // Admin paneli başlangıçta kilitli
     if (session.email === 'apomuhammed1@gmail.com') {
         if (adminLock) adminLock.style.display = 'block';
         if (adminContent) adminContent.style.display = 'none';
     }
 
-    // Müziği başlat
     initMusic();
 
     updateOnline();
