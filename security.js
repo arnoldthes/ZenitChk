@@ -35,10 +35,10 @@
                 if (session && session.email) {
                     banUser(session.email);
                     localStorage.removeItem('ccSession');
-                    alert('🚫 Geliştirici araçları kullanımı nedeniyle hesabınız kalıcı olarak yasaklanmıştır!');
+                    alert('🚫 Developer tools usage detected! Your account has been permanently banned.');
                     window.location.href = 'index.html';
                 } else {
-                    alert('🚫 Bu işlem yasaktır!');
+                    alert('🚫 This action is prohibited!');
                 }
                 return false;
             }
@@ -50,10 +50,10 @@
             if (session && session.email) {
                 banUser(session.email);
                 localStorage.removeItem('ccSession');
-                alert('🚫 Sağ tık kullanımı nedeniyle hesabınız kalıcı olarak yasaklanmıştır!');
+                alert('🚫 Right-click detected! Your account has been permanently banned.');
                 window.location.href = 'index.html';
             } else {
-                alert('🚫 Bu işlem yasaktır!');
+                alert('🚫 This action is prohibited!');
             }
             return false;
         });
@@ -70,13 +70,13 @@
                 (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) ||
                 (e.ctrlKey && (e.key === 'U' || e.key === 'u'))) {
                 e.preventDefault();
-                alert('🚫 Bu işlem yasaktır!');
+                alert('🚫 This action is prohibited!');
                 return false;
             }
         });
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-            alert('🚫 Bu işlem yasaktır!');
+            alert('🚫 This action is prohibited!');
             return false;
         });
     }
