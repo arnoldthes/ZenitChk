@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
+    <title>Dashboard – CC Toolkit</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -22,7 +22,8 @@
                     <div class="brand-text">
                         <span style="font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text-primary);">☰ Menu</span>
                     </div>
-                    <button id="adminPanelBtn" class="admin-panel-btn" style="display:flex;align-items:center;gap:4px;background:var(--accent);color:#fff;border:none;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-left:10px;">
+                    <!-- ADMIN BUTONU (SADECE ADMIN GÖRÜR) -->
+                    <button id="adminPanelBtn" class="admin-panel-btn" style="display:none;background:var(--accent);color:#fff;border:none;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-left:10px;align-items:center;gap:4px;">
                         <i class="fas fa-shield-alt"></i> Admin Panel
                     </button>
                 </div>
@@ -103,7 +104,9 @@
                 </div>
                 <div class="header-actions">
                     <button class="theme-toggle" id="themeToggle"><i class="fas fa-sun"></i></button>
-                    <button class="radio-toggle" id="radioToggle" title="Radio"><i class="fas fa-music"></i></button>
+                    <!-- RADYO KONTROLLERİ -->
+                    <button class="radio-toggle" id="radioToggle" title="Play/Pause"><i class="fas fa-music"></i></button>
+                    <button class="radio-toggle" id="radioPrev" title="Previous"><i class="fas fa-backward"></i></button>
                     <button class="radio-toggle" id="radioNext" title="Next"><i class="fas fa-forward"></i></button>
                     <div class="user-avatar" id="userAvatar">K</div>
                 </div>
@@ -156,7 +159,7 @@
                     </div>
                 </div>
 
-                <!-- CC GENERATOR (YENİ) -->
+                <!-- CC GENERATOR -->
                 <div id="tab-generator" class="tab-content hidden">
                     <div class="card">
                         <div class="card-header">
@@ -165,26 +168,11 @@
                         </div>
                         <div class="card-body">
                             <div class="gen-grid">
-                                <div class="gen-field">
-                                    <label>BIN</label>
-                                    <input type="text" id="genBin" placeholder="411111" maxlength="8" value="411111" />
-                                </div>
-                                <div class="gen-field">
-                                    <label>CVV</label>
-                                    <input type="text" id="genCvv" placeholder="123" maxlength="4" value="123" />
-                                </div>
-                                <div class="gen-field">
-                                    <label>Month</label>
-                                    <input type="text" id="genMonth" placeholder="12" maxlength="2" value="12" />
-                                </div>
-                                <div class="gen-field">
-                                    <label>Year</label>
-                                    <input type="text" id="genYear" placeholder="2028" maxlength="4" value="2028" />
-                                </div>
-                                <div class="gen-field">
-                                    <label>Count</label>
-                                    <input type="number" id="genCount" value="5" min="1" max="50" />
-                                </div>
+                                <div class="gen-field"><label>BIN</label><input type="text" id="genBin" placeholder="411111" maxlength="8" value="411111" /></div>
+                                <div class="gen-field"><label>CVV</label><input type="text" id="genCvv" placeholder="123" maxlength="4" value="123" /></div>
+                                <div class="gen-field"><label>Month</label><input type="text" id="genMonth" placeholder="12" maxlength="2" value="12" /></div>
+                                <div class="gen-field"><label>Year</label><input type="text" id="genYear" placeholder="2028" maxlength="4" value="2028" /></div>
+                                <div class="gen-field"><label>Count</label><input type="number" id="genCount" value="5" min="1" max="50" /></div>
                             </div>
                             <button class="btn" id="generateBtn" style="width:100%;"><i class="fas fa-sync-alt"></i> Generate (1 TL)</button>
                             <div class="result-box" id="genResult" style="min-height:60px;max-height:400px;overflow-y:auto;padding:0;font-family:monospace;font-size:13px;">
@@ -207,7 +195,7 @@
                     </div>
                 </div>
 
-                <!-- CC BIN LOOKUP -->
+                <!-- CC BIN LOOKUP (YENİ API) -->
                 <div id="tab-binsorgu" class="tab-content hidden">
                     <div class="card">
                         <div class="card-header"><h3><i class="fas fa-search" style="color:#007aff;margin-right:10px;"></i>BIN Lookup</h3></div>
@@ -218,16 +206,14 @@
                     </div>
                 </div>
 
-                <!-- STRIPE AUTH (YENİ) -->
+                <!-- STRIPE AUTH -->
                 <div id="tab-stripeauth" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 style="text-align:center;width:100%;"><i class="fab fa-stripe" style="color:#6772e5;margin-right:10px;"></i>Stripe Auth</h3>
-                        </div>
+                        <div class="card-header"><h3 style="text-align:center;width:100%;"><i class="fab fa-stripe" style="color:#6772e5;margin-right:10px;"></i>Stripe Auth</h3></div>
                         <div class="card-body">
                             <div style="margin-bottom:12px;">
                                 <label style="font-size:13px;font-weight:600;color:var(--text-muted);">Cards (format: card|mm|yy|cvv)</label>
-                                <textarea id="stripeInput" rows="4" placeholder="4159750016461072|09|29|008&#10;4111111111111111|12|28|123" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1.5px solid var(--border-color);color:var(--text-primary);font-family:monospace;font-size:14px;resize:vertical;"></textarea>
+                                <textarea id="stripeInput" rows="4" placeholder="4159750016461072|09|29|008&#10;4111111111111111|12|28|123" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:2px solid var(--border-color);color:var(--text-primary);font-family:monospace;font-size:14px;resize:vertical;"></textarea>
                             </div>
                             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
                                 <button class="btn" id="stripePasteBtn"><i class="fas fa-paste"></i> Paste Clean</button>
@@ -273,7 +259,7 @@
                         <div class="card-body" style="text-align:center;">
                             <p style="color:var(--text-secondary);">Guess a number between 1-100!</p>
                             <div style="display:flex;gap:10px;justify-content:center;margin:12px 0;flex-wrap:wrap;">
-                                <input type="number" id="guessInput" min="1" max="100" placeholder="Guess" style="width:120px;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1.5px solid var(--border-color);color:var(--text-primary);text-align:center;font-size:18px;" />
+                                <input type="number" id="guessInput" min="1" max="100" placeholder="Guess" style="width:120px;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);text-align:center;font-size:18px;" />
                                 <button class="btn" id="guessBtn">Guess</button>
                             </div>
                             <div id="guessResult" style="font-size:18px;font-weight:600;min-height:40px;color:var(--text-primary);"></div>
@@ -344,12 +330,12 @@
                                 </div>
                                 <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
                                     <div style="flex:1;min-width:150px;">
-                                        <input type="number" id="depositAmount" placeholder="Amount" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                        <input type="number" id="depositAmount" placeholder="Amount" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                         <button class="btn" style="width:100%;margin-top:6px;" onclick="window.deposit()">Deposit</button>
                                     </div>
                                     <div style="flex:1;min-width:150px;">
-                                        <input type="text" id="transferId" placeholder="Recipient ID" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
-                                        <input type="number" id="transferAmount" placeholder="Amount" style="width:100%;padding:10px;margin-top:4px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                        <input type="text" id="transferId" placeholder="Recipient ID" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                        <input type="number" id="transferAmount" placeholder="Amount" style="width:100%;padding:10px;margin-top:4px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                         <button class="btn" style="width:100%;margin-top:6px;" onclick="window.transfer()">Transfer</button>
                                     </div>
                                 </div>
@@ -363,9 +349,9 @@
                     <div class="card" style="display:flex;flex-direction:column;height:500px;">
                         <div class="card-header"><h3><i class="fas fa-comment-dots" style="color:#007aff;margin-right:10px;"></i>Chat Room</h3></div>
                         <div class="card-body" style="flex:1;display:flex;flex-direction:column;">
-                            <div id="chatMessages" style="flex:1;overflow-y:auto;background:var(--bg-input);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border-color);min-height:300px;max-height:400px;"></div>
+                            <div id="chatMessages" style="flex:1;overflow-y:auto;background:var(--bg-input);border-radius:8px;padding:12px;border:2px solid var(--border-color);min-height:300px;max-height:400px;"></div>
                             <div style="display:flex;gap:10px;margin-top:10px;">
-                                <input type="text" id="chatInput" placeholder="Type a message..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                <input type="text" id="chatInput" placeholder="Type a message..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                 <button class="btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i> Send</button>
                             </div>
                         </div>
@@ -377,9 +363,9 @@
                     <div class="card" style="display:flex;flex-direction:column;height:500px;">
                         <div class="card-header"><h3><i class="fas fa-robot" style="color:#007aff;margin-right:10px;"></i>Zenit AI Assistant</h3></div>
                         <div class="card-body" style="flex:1;display:flex;flex-direction:column;">
-                            <div id="aiMessages" style="flex:1;overflow-y:auto;background:var(--bg-input);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border-color);min-height:300px;max-height:400px;"></div>
+                            <div id="aiMessages" style="flex:1;overflow-y:auto;background:var(--bg-input);border-radius:8px;padding:12px;border:2px solid var(--border-color);min-height:300px;max-height:400px;"></div>
                             <div style="display:flex;gap:10px;margin-top:10px;">
-                                <input type="text" id="aiInput" placeholder="Ask AI..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                <input type="text" id="aiInput" placeholder="Ask AI..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                 <button class="btn" id="sendAiBtn"><i class="fas fa-paper-plane"></i> Ask</button>
                             </div>
                         </div>
@@ -396,28 +382,28 @@
                                     <label>Profile Picture</label>
                                     <div style="display:flex;align-items:center;gap:16px;">
                                         <img id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='40' fill='%23007aff'/%3E%3Ctext x='40' y='52' text-anchor='middle' font-size='32' fill='white' font-weight='600' font-family='Arial'%3EK%3C/text%3E%3C/svg%3E" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border-color);" />
-                                        <input type="file" id="avatarUpload" accept="image/*" style="padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                        <input type="file" id="avatarUpload" accept="image/*" style="padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                     </div>
                                 </div>
                                 <div class="settings-group">
                                     <label>Username</label>
-                                    <input type="text" id="displayName" placeholder="Your name" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                    <input type="text" id="displayName" placeholder="Your name" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                 </div>
                                 <div class="settings-group">
                                     <label>Bio</label>
-                                    <textarea id="userBio" placeholder="Tell about yourself..." rows="2" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);font-family:var(--font);resize:vertical;"></textarea>
+                                    <textarea id="userBio" placeholder="Tell about yourself..." rows="2" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);font-family:var(--font);resize:vertical;"></textarea>
                                 </div>
                                 <div class="settings-group">
                                     <label>ID</label>
-                                    <input type="text" id="profileId" readonly style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-muted);" />
+                                    <input type="text" id="profileId" readonly style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-muted);" />
                                 </div>
                                 <div class="settings-group">
                                     <label>Change Password</label>
-                                    <input type="password" id="changePasswordInput" placeholder="New password" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                    <input type="password" id="changePasswordInput" placeholder="New password" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                 </div>
                                 <div class="settings-group">
                                     <label>Theme</label>
-                                    <select id="themeSelect" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);">
+                                    <select id="themeSelect" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);">
                                         <option value="light">Light</option>
                                         <option value="dark">Dark</option>
                                     </select>
@@ -436,31 +422,31 @@
                             <div id="adminLock" style="text-align:center;padding:20px;">
                                 <p style="margin-bottom:12px;">Enter admin password to access.</p>
                                 <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                                    <input type="password" id="adminPassInput" placeholder="Admin password" style="padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                    <input type="password" id="adminPassInput" placeholder="Admin password" style="padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                     <button class="btn" id="adminUnlockBtn">Unlock</button>
                                 </div>
                                 <div id="adminLockError" style="color:#ff3b30;margin-top:8px;display:none;">Wrong password!</div>
                             </div>
                             <div id="adminContent" style="display:none;">
-                                <div style="background:var(--bg-input);border-radius:var(--radius-sm);padding:16px;border:1px solid var(--border-color);margin-bottom:16px;">
+                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
                                     <p><strong>🔑 Generate Registration Key</strong></p>
                                     <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
-                                        <input type="text" id="newKeyDisplay" readonly style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border-color);font-family:monospace;" />
+                                        <input type="text" id="newKeyDisplay" readonly style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:8px;border:2px solid var(--border-color);font-family:monospace;" />
                                         <button class="btn" id="generateKeyBtn">Generate</button>
                                     </div>
                                 </div>
-                                <div style="background:var(--bg-input);border-radius:var(--radius-sm);padding:16px;border:1px solid var(--border-color);margin-bottom:16px;">
+                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
                                     <p><strong>🚫 Ban List</strong></p>
                                     <ul id="banList" style="list-style:none;padding:0;margin-top:8px;"></ul>
                                 </div>
-                                <div style="background:var(--bg-input);border-radius:var(--radius-sm);padding:16px;border:1px solid var(--border-color);">
+                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);">
                                     <p><strong>📊 User Management</strong></p>
                                     <ul id="userList" style="list-style:none;padding:0;margin-top:8px;"></ul>
                                 </div>
-                                <div style="margin-top:12px;background:var(--bg-input);border-radius:var(--radius-sm);padding:16px;border:1px solid var(--border-color);">
+                                <div style="margin-top:12px;background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);">
                                     <p><strong>🔒 Change Admin Password</strong></p>
                                     <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
-                                        <input type="password" id="newAdminPass" placeholder="New password" style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border-color);color:var(--text-primary);" />
+                                        <input type="password" id="newAdminPass" placeholder="New password" style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                         <button class="btn" id="changeAdminPassBtn">Change</button>
                                     </div>
                                 </div>
