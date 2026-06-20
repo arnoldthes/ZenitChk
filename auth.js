@@ -12,7 +12,7 @@
     const registerSuccess = $('registerSuccess');
     const registerSuccessText = $('registerSuccessText');
 
-    // ---- HASH FONKSİYONU ----
+    // ---- HASH ----
     const SALT = 'ZenitSuperSecureSalt2025!@#$%';
 
     async function hashPassword(password) {
@@ -22,7 +22,7 @@
         return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // ---- ADMIN BİLGİLERİ (localStorage'da HASH'Lİ) ----
+    // ---- ADMIN CREDS (HASH'LI) ----
     let adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
     if (!adminCreds) {
         adminCreds = {
@@ -77,12 +77,11 @@
             }
 
             if (isBanned(email)) {
-                loginErrorText.textContent = '🚫 This account has been permanently banned!';
+                loginErrorText.textContent = 'This account has been permanently banned!';
                 loginError.classList.add('show');
                 return;
             }
 
-            // Admin kontrolü (hash ile)
             const inputEmailHash = await hashPassword(email);
             const inputPassHash = await hashPassword(password);
 
@@ -141,7 +140,7 @@
         });
     }
 
-    // ---- REGISTER (KEY İLE) ----
+    // ---- REGISTER (KEY DÜZELTİLDİ) ----
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -170,7 +169,8 @@
                 return;
             }
 
-            const keyIndex = registrationKeys.indexOf(key);
+            // KEY KONTROLÜ (BÜYÜK/KÜÇÜK HARF DUYARSIZ)
+            const keyIndex = registrationKeys.findIndex(k => k.toUpperCase() === key.toUpperCase());
             if (keyIndex === -1) {
                 registerErrorText.textContent = 'Invalid registration key.';
                 registerError.classList.add('show');
