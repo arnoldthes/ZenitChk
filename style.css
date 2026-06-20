@@ -18,9 +18,9 @@
     --border-color: #d2d2d7;
     --shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
     --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --accent: #007aff;
-    --accent-hover: #0066d9;
-    --accent-light: rgba(0, 122, 255, 0.08);
+    --accent: #5865F2;
+    --accent-hover: #4752c4;
+    --accent-light: rgba(88, 101, 242, 0.08);
     --radius: 16px;
     --radius-sm: 10px;
     --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -40,9 +40,9 @@
     --border-color: #3a3a3c;
     --shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
     --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.5);
-    --accent: #0a84ff;
-    --accent-hover: #409cff;
-    --accent-light: rgba(10, 132, 255, 0.12);
+    --accent: #5865F2;
+    --accent-hover: #4752c4;
+    --accent-light: rgba(88, 101, 242, 0.15);
 }
 
 html,
@@ -89,7 +89,7 @@ textarea {
 }
 
 /* ============================================================
-   AUTH
+   AUTH – DISCORD TARZI ANİMASYON
    ============================================================ */
 body.auth-page {
     position: relative;
@@ -97,22 +97,24 @@ body.auth-page {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: var(--bg-primary);
+    background: #0a0a0c;
     overflow: hidden;
     padding: 20px;
 }
+
 .auth-bg {
     position: fixed;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, #007aff, #5856d6, #ff2d55, #007aff);
+    background: radial-gradient(ellipse at 30% 50%, #5865F2 0%, #0a0a0c 70%);
     background-size: 400% 400%;
-    animation: gradientMove 15s ease infinite;
+    animation: gradientMove 20s ease infinite;
     z-index: 0;
-    opacity: 0.15;
+    opacity: 0.6;
 }
+
 @keyframes gradientMove {
     0% {
         background-position: 0% 50%;
@@ -124,38 +126,41 @@ body.auth-page {
         background-position: 0% 50%;
     }
 }
+
 body.auth-page .auth-container {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     padding: 40px 32px;
-    background: var(--bg-secondary);
+    background: rgba(30, 30, 35, 0.85);
+    backdrop-filter: blur(20px);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 48px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
+
 body.auth-page .auth-logo {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 28px;
 }
-body.auth-page .auth-logo svg {
-    width: 56px;
-    height: 56px;
+body.auth-page .auth-logo i {
+    font-size: 48px;
+    color: #5865F2;
 }
 body.auth-page .auth-title {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 700;
     letter-spacing: -0.5px;
     text-align: center;
     margin-bottom: 4px;
+    color: #ffffff;
 }
 body.auth-page .auth-subtitle {
     font-size: 15px;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.6);
     text-align: center;
     margin-bottom: 28px;
 }
@@ -164,28 +169,34 @@ body.auth-page .form-group {
 }
 body.auth-page .form-group label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
     margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 body.auth-page .form-group input {
     width: 100%;
     padding: 14px 16px;
     font-size: 15px;
-    background: var(--bg-input);
+    background: rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-sm);
-    border: 1.5px solid transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
     transition: all var(--transition);
-    color: var(--text-primary);
+    color: #ffffff;
 }
 body.auth-page .form-group input:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px var(--accent-light);
+    box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+body.auth-page .form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
 }
 body.auth-page .hint {
     font-size: 12px;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.4);
     margin-top: 4px;
     display: flex;
     align-items: center;
@@ -204,6 +215,7 @@ body.auth-page .auth-btn {
 }
 body.auth-page .auth-btn:hover {
     background: var(--accent-hover);
+    transform: scale(1.02);
 }
 body.auth-page .auth-btn:active {
     transform: scale(0.97);
@@ -212,10 +224,11 @@ body.auth-page .auth-toggle {
     text-align: center;
     margin-top: 20px;
     font-size: 14px;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.5);
 }
 body.auth-page .auth-toggle a {
     font-weight: 600;
+    color: var(--accent);
 }
 body.auth-page .auth-toggle a:hover {
     text-decoration: underline;
@@ -230,12 +243,12 @@ body.auth-page .auth-success {
     border-left: 4px solid;
 }
 body.auth-page .auth-error {
-    background: rgba(255, 69, 58, 0.08);
+    background: rgba(255, 69, 58, 0.12);
     color: #ff3b30;
     border-color: #ff3b30;
 }
 body.auth-page .auth-success {
-    background: rgba(52, 199, 89, 0.08);
+    background: rgba(52, 199, 89, 0.12);
     color: #34c759;
     border-color: #34c759;
 }
@@ -745,9 +758,6 @@ body.dashboard-page .live-message strong {
     border-bottom: none;
 }
 
-/* ============================================================
-   GEN GRID
-   ============================================================ */
 body.dashboard-page .gen-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -777,9 +787,6 @@ body.dashboard-page .gen-field input:focus {
     box-shadow: 0 0 0 4px var(--accent-light);
 }
 
-/* ============================================================
-   INPUT GROUP
-   ============================================================ */
 body.dashboard-page .input-group {
     display: flex;
     gap: 12px;
@@ -854,7 +861,7 @@ body.dashboard-page .result-box .value.invalid {
 }
 
 /* ============================================================
-   STRIPE AUTH (ŞIK, KESKİN)
+   STRIPE AUTH
    ============================================================ */
 #stripeInput {
     font-family: 'SF Mono', monospace;
@@ -883,12 +890,6 @@ body.dashboard-page .result-box .value.invalid {
     max-height: 400px;
     overflow-y: auto;
     background: var(--bg-input);
-}
-#stripeResult .status-live {
-    color: #34c759;
-}
-#stripeResult .status-dead {
-    color: #ff3b30;
 }
 body.dashboard-page .stat-btn {
     padding: 8px 20px !important;
