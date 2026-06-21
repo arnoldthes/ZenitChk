@@ -22,15 +22,14 @@
         return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // ---- ADMIN BİLGİLERİ (localStorage'da HASH'Lİ) ----
     let adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
-    if (!adminCreds) {
-        adminCreds = {
-            emailHash: '8c6d6e8f4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f',
-            passwordHash: 'e4d7b6c8f2a4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6'
-        };
-        localStorage.setItem('adminCreds', JSON.stringify(adminCreds));
-    }
+if (!adminCreds) {
+    adminCreds = {
+        emailHash: 'f8c9e6b7d5a4f2e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6',
+        passwordHash: 'e4d7b6c8f2a4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6'
+    };
+    localStorage.setItem('adminCreds', JSON.stringify(adminCreds));
+}
 
     let users = JSON.parse(localStorage.getItem('ccUsers')) || [];
     let registrationKeys = JSON.parse(localStorage.getItem('registrationKeys')) || [];
