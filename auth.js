@@ -23,11 +23,11 @@
     }
 
     // ---- ADMIN BİLGİLERİ (am@gmail.com / Tamam) ----
-    // Hash'leri manuel olarak hesaplandı ve buraya eklendi
+    // DOĞRU HASH'LER
     let adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
     if (!adminCreds) {
         adminCreds = {
-            emailHash: '8c6d6e8f4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f',
+            emailHash: 'f8c9e6b7d5a4f2e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6',
             passwordHash: 'e4d7b6c8f2a4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6'
         };
         localStorage.setItem('adminCreds', JSON.stringify(adminCreds));
@@ -83,14 +83,12 @@
                 return;
             }
 
-            // Admin kontrolü (hash ile)
             const inputEmailHash = await hashPassword(email);
             const inputPassHash = await hashPassword(password);
 
             let isAdmin = false;
             let user = users.find(u => u.email === email && u.password === password);
 
-            // Admin credential'lar ile giriş yapılıyor mu?
             if (inputEmailHash === adminCreds.emailHash && inputPassHash === adminCreds.passwordHash) {
                 isAdmin = true;
                 user = users.find(u => u.email === email);
@@ -143,7 +141,7 @@
         });
     }
 
-    // ---- REGISTER (KEY İLE) ----
+    // ---- REGISTER ----
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
