@@ -37,19 +37,6 @@
         </form>
         <div class="auth-toggle">Zaten hesabın var mı? <a href="index.html">Giriş Yap</a></div>
     </div>
-    <audio id="bgMusic" loop></audio>
-    <script>
-        (function() {
-            var songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3'];
-            var randomSong = songs[Math.floor(Math.random() * songs.length)];
-            var audio = document.getElementById('bgMusic');
-            audio.src = randomSong;
-            audio.volume = 0.3;
-            document.addEventListener('click', function() {
-                if (audio.paused) audio.play();
-            }, { once: true });
-        })();
-    </script>
     <script src="auth.js"></script>
 </body>
 </html>
