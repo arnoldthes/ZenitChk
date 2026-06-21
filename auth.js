@@ -23,7 +23,6 @@
     }
 
     // ---- ADMIN BİLGİLERİ (am@gmail.com / Tamam) ----
-    // DOĞRU HASH'LER
     let adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
     if (!adminCreds) {
         adminCreds = {
@@ -83,6 +82,7 @@
                 return;
             }
 
+            // Admin kontrolü
             const inputEmailHash = await hashPassword(email);
             const inputPassHash = await hashPassword(password);
 
