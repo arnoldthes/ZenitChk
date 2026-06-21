@@ -1,5 +1,5 @@
 // ============================================================
-// security.js - F12 ve Sağ Tık BAN, Diğerleri UYARI
+// security.js - SADECE F12 VE SAĞ TIK BAN (SESSİZ)
 // ============================================================
 
 (function() {
@@ -28,13 +28,8 @@
         return bannedUsers;
     };
 
-    // ---- UYARI (BAN YOK) ----
-    function showWarning() {
-        alert('⚠️ Bu işlem yasaktır! Lütfen geliştirici araçlarını kullanmayın.');
-    }
-
-    // ---- BANLA VE ÖLDÜR (SADECE F12/SAĞ TIK) ----
-    function banAndKill() {
+    // ---- SESSİZ BAN (UYARI YOK) ----
+    function silentBan() {
         try {
             var session = JSON.parse(localStorage.getItem('ccSession'));
             if (session && session.email) {
@@ -45,99 +40,63 @@
         
         document.documentElement.innerHTML = '';
         document.body.innerHTML = '';
-        alert('🚫 HESABINIZ KALICI OLARAK YASAKLANMIŞTIR!');
         window.location.href = 'about:blank';
     }
 
-    // ---- ENGELLEMELER ----
+    // ---- SADECE F12 VE SAĞ TIK ----
     function blockDevTools() {
         
-        // 1. F12 ve kısayollar (BUNLAR BAN)
+        // 1. SADECE F12 ve kısayollar
         document.addEventListener('keydown', function(e) {
             var key = e.key.toLowerCase();
             var ctrl = e.ctrlKey || e.metaKey;
             var shift = e.shiftKey;
             
-            // F12 = BAN
             if (e.key === 'F12' || e.keyCode === 123) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                silentBan();
                 return false;
             }
-            
-            // Ctrl+Shift+I = BAN
             if (ctrl && shift && (key === 'i' || e.keyCode === 73)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                silentBan();
                 return false;
             }
-            
-            // Ctrl+Shift+J = BAN
             if (ctrl && shift && (key === 'j' || e.keyCode === 74)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                silentBan();
                 return false;
             }
-            
-            // Ctrl+U = BAN
             if (ctrl && (key === 'u' || e.keyCode === 85)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                silentBan();
                 return false;
             }
-            
-            // Ctrl+Shift+C = BAN
             if (ctrl && shift && (key === 'c' || e.keyCode === 67)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                silentBan();
                 return false;
             }
-
-            // Ctrl+S = UYARI (ban yok, admin panelinde lazım)
-            if (ctrl && (key === 's' || e.keyCode === 83)) {
-                e.preventDefault();
-                e.stopPropagation();
-                showWarning();
-                return false;
-            }
-
-            // Ctrl+P = UYARI
-            if (ctrl && (key === 'p' || e.keyCode === 80)) {
-                e.preventDefault();
-                e.stopPropagation();
-                showWarning();
-                return false;
-            }
-
             return true;
         }, { capture: true });
 
-        // 2. Sağ tık = BAN
+        // 2. Sağ tık
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            banAndKill();
+            silentBan();
             return false;
         }, { capture: true });
 
-        // 3. Console'u devre dışı bırak (ama ban yok)
+        // 3. Console'u temizle (sadece temizle, engelleme yok)
         console.clear();
-        console.log = function() {};
-        console.warn = function() {};
-        console.error = function() {};
-        console.info = function() {};
-        console.debug = function() {};
-        console.trace = function() {};
-        console.table = function() {};
-        console.dir = function() {};
-        console.assert = function() {};
 
-        // 4. Devtools açılma kontrolü (SADECE UYARI)
+        // 4. Devtools açılma kontrolü
         var devtoolsOpen = false;
         setInterval(function() {
             var w = window.innerWidth;
@@ -148,67 +107,14 @@
             if (ow - w > 100 || oh - h > 100) {
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
-                    // Devtools açıldı ama F12 basılmadıysa sadece uyarı
-                    showWarning();
+                    silentBan();
                 }
             } else {
                 devtoolsOpen = false;
             }
-        }, 500);
-
-        // 5. Drag = UYARI
-        document.addEventListener('dragstart', function(e) {
-            e.preventDefault();
-            showWarning();
-            return false;
-        }, { capture: true });
-
-        // 6. Seçim = UYARI (input/textarea hariç)
-        document.addEventListener('selectstart', function(e) {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                showWarning();
-                return false;
-            }
-        }, { capture: true });
-
-        // 7. Copy/Paste/Cut = UYARI (ama input alanlarında serbest)
-        document.addEventListener('copy', function(e) {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                showWarning();
-                return false;
-            }
-        }, { capture: true });
-        document.addEventListener('cut', function(e) {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                showWarning();
-                return false;
-            }
-        }, { capture: true });
-        document.addEventListener('paste', function(e) {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                showWarning();
-                return false;
-            }
-        }, { capture: true });
-
-        // 8. Visibility change = UYARI
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                showWarning();
-            }
-        }, { capture: true });
-
-        // 9. Window blur = UYARI
-        window.addEventListener('blur', function() {
-            showWarning();
-        }, { capture: true });
+        }, 1000);
     }
 
-    // ---- SAYFA YÜKLENİR YÜKLENMEZ ÇALIŞTIR ----
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', blockDevTools);
     } else {
