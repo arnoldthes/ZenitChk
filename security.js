@@ -24,14 +24,10 @@
         return bannedUsers;
     };
 
-    // ---- TÜM GELİŞTİRİCİ ARAÇLARINI ENGELLE ----
+    // ---- F12 VE SAĞ TIK ENGELLE (KAYIT BANLAMAZ) ----
     function blockDevTools() {
-        // 1. Tüm kısayolları engelle
+        // Sadece F12'yi engelle
         document.addEventListener('keydown', function(e) {
-            const key = e.key.toLowerCase();
-            const ctrl = e.ctrlKey || e.metaKey;
-            const shift = e.shiftKey;
-            
             // F12
             if (e.key === 'F12' || e.keyCode === 123) {
                 e.preventDefault();
@@ -41,7 +37,7 @@
             }
             
             // Ctrl+Shift+I (Inspect)
-            if (ctrl && shift && (key === 'i' || e.keyCode === 73)) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
@@ -49,7 +45,7 @@
             }
             
             // Ctrl+Shift+J (Console)
-            if (ctrl && shift && (key === 'j' || e.keyCode === 74)) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
@@ -57,7 +53,7 @@
             }
             
             // Ctrl+U (View Source)
-            if (ctrl && (key === 'u' || e.keyCode === 85)) {
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
@@ -65,39 +61,17 @@
             }
             
             // Ctrl+Shift+C (Element Picker)
-            if (ctrl && shift && (key === 'c' || e.keyCode === 67)) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
-                return false;
-            }
-            
-            // Ctrl+Shift+E (Dev Tools)
-            if (ctrl && shift && (key === 'e' || e.keyCode === 69)) {
-                e.preventDefault();
-                e.stopPropagation();
-                banAndKill();
-                return false;
-            }
-            
-            // Ctrl+S (Save page)
-            if (ctrl && (key === 's' || e.keyCode === 83)) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-
-            // Ctrl+P (Print)
-            if (ctrl && (key === 'p' || e.keyCode === 80)) {
-                e.preventDefault();
-                e.stopPropagation();
                 return false;
             }
 
             return true;
         });
 
-        // 2. Sağ tık
+        // Sağ tık
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -105,7 +79,7 @@
             return false;
         });
 
-        // 3. Console'u tamamen temizle ve devre dışı bırak
+        // Console'u temizle
         console.clear();
         console.log = function() {};
         console.warn = function() {};
@@ -113,11 +87,8 @@
         console.info = function() {};
         console.debug = function() {};
         console.trace = function() {};
-        console.table = function() {};
-        console.dir = function() {};
-        console.assert = function() {};
 
-        // 4. Devtools açılma kontrolü (resize)
+        // Devtools açılma kontrolü (resize)
         let devtoolsOpen = false;
         setInterval(function() {
             const w = window.innerWidth;
@@ -125,7 +96,6 @@
             const ow = window.outerWidth;
             const oh = window.outerHeight;
             
-            // Devtools açıksa boyut farkı olur
             if (ow - w > 100 || oh - h > 100) {
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
@@ -134,56 +104,18 @@
             } else {
                 devtoolsOpen = false;
             }
-        }, 500);
+        }, 1000);
 
-        // 5. Drag engelle
+        // Drag engelle
         document.addEventListener('dragstart', function(e) {
             e.preventDefault();
             return false;
         });
 
-        // 6. Seçim engelle
+        // Seçim engelle
         document.addEventListener('selectstart', function(e) {
             e.preventDefault();
             return false;
-        });
-
-        // 7. Copy/Paste/Cut engelle
-        document.addEventListener('copy', function(e) {
-            e.preventDefault();
-            return false;
-        });
-        document.addEventListener('cut', function(e) {
-            e.preventDefault();
-            return false;
-        });
-        document.addEventListener('paste', function(e) {
-            e.preventDefault();
-            return false;
-        });
-
-        // 8. Visibility change (sekme değişince)
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                banAndKill();
-            }
-        });
-
-        // 9. Window blur (focus kaybı)
-        window.addEventListener('blur', function() {
-            setTimeout(function() {
-                banAndKill();
-            }, 100);
-        });
-
-        // 10. DOM değişikliklerini izle
-        const observer = new MutationObserver(function() {
-            banAndKill();
-        });
-        observer.observe(document.documentElement, { 
-            attributes: true, 
-            childList: true, 
-            subtree: true 
         });
     }
 
@@ -197,14 +129,9 @@
             }
         } catch(e) {}
         
-        // Sayfayı tamamen temizle
         document.documentElement.innerHTML = '';
         document.body.innerHTML = '';
-        
-        // Kullanıcıyı uyar
         alert('🚫 Erişim Engellendi!\nHesabınız kalıcı olarak yasaklanmıştır.');
-        
-        // Boş sayfaya yönlendir
         window.location.href = 'about:blank';
     }
 
@@ -218,8 +145,8 @@
     // ---- RATE LIMITING (DDoS KORUMASI) ----
     const rateLimit = {
         requests: {},
-        maxRequests: 20,
-        timeWindow: 30000,
+        maxRequests: 30,
+        timeWindow: 60000,
         check: function(ip) {
             const now = Date.now();
             if (!this.requests[ip]) {
