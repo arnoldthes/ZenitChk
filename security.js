@@ -1,5 +1,5 @@
 // ============================================================
-// security.js - GELİŞMİŞ GÜVENLİK
+// security.js - GELİŞMİŞ GÜVENLİK (Login/Register UYARI, Dashboard BAN)
 // ============================================================
 
 (function() {
@@ -28,22 +28,21 @@
         return bannedUsers;
     };
 
-    // ---- SAYFA KONTROLÜ ----
-    const currentPage = window.location.pathname.split('/').pop();
-    const isDashboard = currentPage === 'dashboard.html' || currentPage === '';
-    const isAuthPage = currentPage === 'index.html' || currentPage === 'register.html' || currentPage === '';
+    // ---- SAYFA KONTROLÜ (DOĞRU) ----
+    var path = window.location.pathname;
+    var isDashboard = path.indexOf('dashboard.html') !== -1;
+    var isAuth = path.indexOf('index.html') !== -1 || path.indexOf('register.html') !== -1 || path === '/' || path === '';
 
     // ---- UYARI GÖSTER (BAN YOK) ----
     function showWarning() {
         alert('⚠️ Bu işlem yasaktır!\nLütfen geliştirici araçlarını kullanmayın.');
-        // Sayfayı yenile (ama banlama)
         window.location.reload();
     }
 
     // ---- BANLA VE ÖLDÜR (SADECE DASHBOARD) ----
     function banAndKill() {
         try {
-            const session = JSON.parse(localStorage.getItem('ccSession'));
+            var session = JSON.parse(localStorage.getItem('ccSession'));
             if (session && session.email) {
                 window.banUser(session.email);
                 localStorage.removeItem('ccSession');
@@ -61,80 +60,55 @@
         
         // 1. F12 ve kısayollar
         document.addEventListener('keydown', function(e) {
-            const key = e.key.toLowerCase();
-            const ctrl = e.ctrlKey || e.metaKey;
-            const shift = e.shiftKey;
+            var key = e.key.toLowerCase();
+            var ctrl = e.ctrlKey || e.metaKey;
+            var shift = e.shiftKey;
             
             // F12
             if (e.key === 'F12' || e.keyCode === 123) {
                 e.preventDefault();
                 e.stopPropagation();
-                
-                if (isDashboard) {
-                    banAndKill();
-                } else {
-                    showWarning();
-                }
+                if (isDashboard) { banAndKill(); } else { showWarning(); }
                 return false;
             }
             
-            // Ctrl+Shift+I (Inspect)
+            // Ctrl+Shift+I
             if (ctrl && shift && (key === 'i' || e.keyCode === 73)) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (isDashboard) {
-                    banAndKill();
-                } else {
-                    showWarning();
-                }
+                if (isDashboard) { banAndKill(); } else { showWarning(); }
                 return false;
             }
             
-            // Ctrl+Shift+J (Console)
+            // Ctrl+Shift+J
             if (ctrl && shift && (key === 'j' || e.keyCode === 74)) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (isDashboard) {
-                    banAndKill();
-                } else {
-                    showWarning();
-                }
+                if (isDashboard) { banAndKill(); } else { showWarning(); }
                 return false;
             }
             
-            // Ctrl+U (View Source)
+            // Ctrl+U
             if (ctrl && (key === 'u' || e.keyCode === 85)) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (isDashboard) {
-                    banAndKill();
-                } else {
-                    showWarning();
-                }
+                if (isDashboard) { banAndKill(); } else { showWarning(); }
                 return false;
             }
             
-            // Ctrl+Shift+C (Element Picker)
+            // Ctrl+Shift+C
             if (ctrl && shift && (key === 'c' || e.keyCode === 67)) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (isDashboard) {
-                    banAndKill();
-                } else {
-                    showWarning();
-                }
+                if (isDashboard) { banAndKill(); } else { showWarning(); }
                 return false;
             }
 
-            // Ctrl+S (Save) - her yerde yasak
+            // Ctrl+S (her yerde yasak)
             if (ctrl && (key === 's' || e.keyCode === 83)) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (isDashboard) {
-                    banAndKill();
-                } else {
-                    showWarning();
-                }
+                if (isDashboard) { banAndKill(); } else { showWarning(); }
                 return false;
             }
 
@@ -145,15 +119,11 @@
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            if (isDashboard) {
-                banAndKill();
-            } else {
-                showWarning();
-            }
+            if (isDashboard) { banAndKill(); } else { showWarning(); }
             return false;
         }, { capture: true });
 
-        // 3. Console'u temizle
+        // 3. Console'u temizle ve devre dışı bırak
         console.clear();
         console.log = function() {};
         console.warn = function() {};
@@ -164,13 +134,13 @@
         console.table = function() {};
         console.dir = function() {};
 
-        // 4. Devtools açılma kontrolü (SADECE DASHBOARD'DA BANLA)
-        let devtoolsOpen = false;
+        // 4. Devtools açılma kontrolü (SADECE DASHBOARD'DA BAN)
+        var devtoolsOpen = false;
         setInterval(function() {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const ow = window.outerWidth;
-            const oh = window.outerHeight;
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            var ow = window.outerWidth;
+            var oh = window.outerHeight;
             
             if (ow - w > 100 || oh - h > 100) {
                 if (!devtoolsOpen) {
@@ -178,7 +148,6 @@
                     if (isDashboard) {
                         banAndKill();
                     } else {
-                        // Auth sayfalarında sadece uyarı
                         showWarning();
                     }
                 }
@@ -193,7 +162,7 @@
             return false;
         }, { capture: true });
 
-        // 6. Seçim engelle (input/textarea hariç)
+        // 6. Seçim engelle
         document.addEventListener('selectstart', function(e) {
             if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
                 e.preventDefault();
@@ -201,34 +170,15 @@
             }
         }, { capture: true });
 
-        // 7. Visibility change (sekme değişince - SADECE DASHBOARD)
+        // 7. Visibility change (sadece dashboard)
         document.addEventListener('visibilitychange', function() {
             if (document.hidden && isDashboard) {
                 banAndKill();
             }
         }, { capture: true });
-
-        // 8. Window blur (SADECE DASHBOARD)
-        window.addEventListener('blur', function() {
-            if (isDashboard) {
-                setTimeout(banAndKill, 100);
-            }
-        }, { capture: true });
-
-        // 9. DOM değişikliklerini izle (SADECE DASHBOARD)
-        if (isDashboard) {
-            const observer = new MutationObserver(function() {
-                banAndKill();
-            });
-            observer.observe(document.documentElement, { 
-                attributes: true, 
-                childList: true, 
-                subtree: true 
-            });
-        }
     }
 
-    // ---- SAYFA YÜKLENİR YÜKLENMEZ ÇALIŞTIR ----
+    // ---- SAYFA YÜKLENDİĞİNDE ÇALIŞTIR ----
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', blockDevTools);
     } else {
@@ -236,25 +186,20 @@
     }
 
     // ---- RATE LIMITING ----
-    const rateLimit = {
+    window.__rateLimit = {
         requests: {},
         maxRequests: 30,
         timeWindow: 60000,
         check: function(ip) {
-            const now = Date.now();
-            if (!this.requests[ip]) {
-                this.requests[ip] = [];
-            }
-            this.requests[ip] = this.requests[ip].filter(t => now - t < this.timeWindow);
-            if (this.requests[ip].length >= this.maxRequests) {
-                return false;
-            }
+            var now = Date.now();
+            if (!this.requests[ip]) { this.requests[ip] = []; }
+            this.requests[ip] = this.requests[ip].filter(function(t) { return now - t < this.timeWindow; }.bind(this));
+            if (this.requests[ip].length >= this.maxRequests) { return false; }
             this.requests[ip].push(now);
             return true;
         }
     };
 
-    window.__rateLimit = rateLimit;
     window.__adminPassword = localStorage.getItem('adminPassword') || 'Zenit2025!';
 
 })();
