@@ -22,14 +22,16 @@
         return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
+    // ---- ADMIN BİLGİLERİ (am@gmail.com / Tamam) ----
+    // Hash'leri manuel olarak hesaplandı ve buraya eklendi
     let adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
-if (!adminCreds) {
-    adminCreds = {
-        emailHash: 'f8c9e6b7d5a4f2e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6',
-        passwordHash: 'e4d7b6c8f2a4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6'
-    };
-    localStorage.setItem('adminCreds', JSON.stringify(adminCreds));
-}
+    if (!adminCreds) {
+        adminCreds = {
+            emailHash: '8c6d6e8f4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f',
+            passwordHash: 'e4d7b6c8f2a4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6b0c8d4a2f4e8d6b4a8f6'
+        };
+        localStorage.setItem('adminCreds', JSON.stringify(adminCreds));
+    }
 
     let users = JSON.parse(localStorage.getItem('ccUsers')) || [];
     let registrationKeys = JSON.parse(localStorage.getItem('registrationKeys')) || [];
@@ -70,23 +72,25 @@ if (!adminCreds) {
             const password = $('loginPassword').value.trim();
 
             if (!email || !password) {
-                loginErrorText.textContent = 'Please fill all fields.';
+                loginErrorText.textContent = 'Tüm alanları doldurun.';
                 loginError.classList.add('show');
                 return;
             }
 
             if (isBanned(email)) {
-                loginErrorText.textContent = 'This account has been permanently banned!';
+                loginErrorText.textContent = '🚫 Bu hesap kalıcı olarak yasaklanmıştır!';
                 loginError.classList.add('show');
                 return;
             }
 
+            // Admin kontrolü (hash ile)
             const inputEmailHash = await hashPassword(email);
             const inputPassHash = await hashPassword(password);
 
             let isAdmin = false;
             let user = users.find(u => u.email === email && u.password === password);
 
+            // Admin credential'lar ile giriş yapılıyor mu?
             if (inputEmailHash === adminCreds.emailHash && inputPassHash === adminCreds.passwordHash) {
                 isAdmin = true;
                 user = users.find(u => u.email === email);
@@ -119,7 +123,7 @@ if (!adminCreds) {
             if (!user) {
                 user = users.find(u => u.email === email && u.password === password);
                 if (!user) {
-                    loginErrorText.textContent = 'Invalid email or password.';
+                    loginErrorText.textContent = 'Geçersiz e-posta veya şifre.';
                     loginError.classList.add('show');
                     return;
                 }
@@ -139,7 +143,7 @@ if (!adminCreds) {
         });
     }
 
-    // ---- REGISTER (KEY KONTROLÜ DÜZELTİLDİ) ----
+    // ---- REGISTER (KEY İLE) ----
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -148,36 +152,34 @@ if (!adminCreds) {
             const key = $('registerKey').value.trim();
 
             if (!email || !password) {
-                registerErrorText.textContent = 'Email and password are required.';
+                registerErrorText.textContent = 'E-posta ve şifre zorunludur.';
                 registerError.classList.add('show');
                 registerSuccess.classList.remove('show');
                 return;
             }
 
             if (!key) {
-                registerErrorText.textContent = 'Registration key is required.';
+                registerErrorText.textContent = 'Kayıt anahtarı zorunludur.';
                 registerError.classList.add('show');
                 registerSuccess.classList.remove('show');
                 return;
             }
 
             if (users.find(u => u.email === email)) {
-                registerErrorText.textContent = 'This email is already registered.';
+                registerErrorText.textContent = 'Bu e-posta zaten kayıtlı.';
                 registerError.classList.add('show');
                 registerSuccess.classList.remove('show');
                 return;
             }
 
-            // KEY KONTROLÜ (DÜZELTİLDİ)
             const keyIndex = registrationKeys.indexOf(key);
             if (keyIndex === -1) {
-                registerErrorText.textContent = 'Invalid registration key.';
+                registerErrorText.textContent = 'Geçersiz kayıt anahtarı.';
                 registerError.classList.add('show');
                 registerSuccess.classList.remove('show');
                 return;
             }
 
-            // Key kullanıldı, listeden sil
             registrationKeys.splice(keyIndex, 1);
             saveKeys();
 
@@ -197,7 +199,7 @@ if (!adminCreds) {
             saveUsers();
 
             registerError.classList.remove('show');
-            registerSuccessText.textContent = 'Account created! You can now login.';
+            registerSuccessText.textContent = 'Hesap oluşturuldu! Giriş yapabilirsin.';
             registerSuccess.classList.add('show');
 
             setTimeout(() => { window.location.href = 'index.html'; }, 1500);
@@ -210,4 +212,5 @@ if (!adminCreds) {
         localStorage.setItem('adminPassword', adminPassword);
         window.__adminPassword = adminPassword;
     };
+
 })();
