@@ -12,10 +12,7 @@
     const registerSuccess = $('registerSuccess');
     const registerSuccessText = $('registerSuccessText');
 
-    // ---- ADMIN BİLGİLERİ (DOĞRUDAN LOCALSTORAGE'A YAZILIR) ----
-    // Admin: allah@gmail.com / peygamber
-    // Admin Panel Şifresi: root2025
-
+    // ---- ADMIN BİLGİLERİ ----
     function setupAdmin() {
         let users = JSON.parse(localStorage.getItem('ccUsers')) || [];
         
@@ -23,7 +20,6 @@
         const adminExists = users.find(u => u.email === 'allah@gmail.com');
         
         if (!adminExists) {
-            // Admin yoksa oluştur
             users.push({
                 email: 'allah@gmail.com',
                 password: 'peygamber',
@@ -36,29 +32,23 @@
                 bio: 'System Administrator'
             });
             localStorage.setItem('ccUsers', JSON.stringify(users));
-            console.log('✅ Admin oluşturuldu: allah@gmail.com / peygamber');
+            console.log('✅ Admin oluşturuldu');
         } else {
-            // Admin varsa yetkisini kontrol et
             const admin = users.find(u => u.email === 'allah@gmail.com');
             if (!admin.isAdmin) {
                 admin.isAdmin = true;
                 localStorage.setItem('ccUsers', JSON.stringify(users));
-                console.log('✅ Admin yetkisi güncellendi');
             }
-            // Şifreyi kontrol et
             if (admin.password !== 'peygamber') {
                 admin.password = 'peygamber';
                 localStorage.setItem('ccUsers', JSON.stringify(users));
-                console.log('✅ Admin şifresi güncellendi');
             }
         }
 
-        // Admin panel şifresini ayarla
         if (!localStorage.getItem('adminPassword')) {
             localStorage.setItem('adminPassword', 'root2025');
         }
 
-        // Kayıt anahtarlarını oluştur (boş değilse)
         if (!localStorage.getItem('registrationKeys')) {
             localStorage.setItem('registrationKeys', JSON.stringify([]));
         }
@@ -78,22 +68,10 @@
 
     function isBanned(email) {
         const bans = JSON.parse(localStorage.getItem('bannedUsers')) || [];
-        const found = bans.find(b => {
+        return bans.some(b => {
             if (typeof b === 'string') return b === email;
             return b.email === email;
         });
-        if (found) {
-            if (typeof found !== 'string' && found.duration && found.duration !== 'permanent') {
-                const elapsed = (Date.now() - found.timestamp) / 60000;
-                if (elapsed >= found.duration) {
-                    const newBans = bans.filter(b => b.email !== email);
-                    localStorage.setItem('bannedUsers', JSON.stringify(newBans));
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     // ---- SAYFA YÜKLENİRKEN ADMIN'I AYARLA ----
@@ -118,10 +96,6 @@
                 return;
             }
 
-            // Admin'i tekrar kontrol et (güvenlik)
-            setupAdmin();
-            
-            // Kullanıcıyı bul
             const user = users.find(u => u.email === email && u.password === password);
 
             if (!user) {
@@ -130,12 +104,10 @@
                 return;
             }
 
-            // Admin mi kontrol et
             const isAdmin = user.isAdmin || false;
 
             loginError.classList.remove('show');
             
-            // Oturum aç
             localStorage.setItem('ccSession', JSON.stringify({
                 email: user.email,
                 isAdmin: isAdmin,
@@ -149,7 +121,7 @@
         });
     }
 
-    // ---- REGISTER (SADECE ADMIN'İN OLUŞTURDUĞU KEY İLE) ----
+    // ---- REGISTER (SADECE KEY İLE) ----
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -166,6 +138,14 @@
 
             if (!key) {
                 registerErrorText.textContent = 'Kayıt anahtarı zorunludur.';
+                registerError.classList.add('show');
+                registerSuccess.classList.remove('show');
+                return;
+            }
+
+            // Admin email ile kayıt olmaya çalışırsa engelle
+            if (email === 'allah@gmail.com') {
+                registerErrorText.textContent = 'Bu e-posta zaten kayıtlı.';
                 registerError.classList.add('show');
                 registerSuccess.classList.remove('show');
                 return;
@@ -208,14 +188,13 @@
             saveUsers();
 
             registerError.classList.remove('show');
-            registerSuccessText.textContent = 'Hesap oluşturuldu! Giriş yapabilirsin.';
+            registerSuccessText.textContent = '✅ Hesap oluşturuldu! Giriş yapabilirsin.';
             registerSuccess.classList.add('show');
 
             setTimeout(() => { window.location.href = 'index.html'; }, 1500);
         });
     }
 
-    // Admin şifresi değiştirme
     window.__adminPassword = adminPassword;
     window.__saveAdminPass = function(newPass) {
         adminPassword = newPass;
