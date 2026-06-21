@@ -31,19 +31,6 @@
         </form>
         <div class="auth-toggle">Hesabın yok mu? <a href="register.html">Kayıt Ol</a></div>
     </div>
-    <audio id="bgMusic" loop></audio>
-    <script>
-        (function() {
-            var songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
-            var randomSong = songs[Math.floor(Math.random() * songs.length)];
-            var audio = document.getElementById('bgMusic');
-            audio.src = randomSong;
-            audio.volume = 0.3;
-            document.addEventListener('click', function() {
-                if (audio.paused) audio.play();
-            }, { once: true });
-        })();
-    </script>
     <script src="auth.js"></script>
 </body>
 </html>
