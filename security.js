@@ -1,11 +1,10 @@
 // ============================================================
-// security.js - SADECE F12 VE SAĞ TIK BAN
+// security.js - SADECE F12 VE SAĞ TIK BAN (BAŞKA ENGELLER YOK)
 // ============================================================
 
 (function() {
     'use strict';
 
-    // ---- BAN LİSTESİ ----
     var bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
 
     function saveBanned() {
@@ -28,7 +27,6 @@
         return bannedUsers;
     };
 
-    // ---- BANLA VE ÖLDÜR ----
     function banAndKill() {
         try {
             var session = JSON.parse(localStorage.getItem('ccSession'));
@@ -37,73 +35,53 @@
                 localStorage.removeItem('ccSession');
             }
         } catch(e) {}
-        
         document.documentElement.innerHTML = '';
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
     }
 
-    // ---- ENGELLEMELER ----
     function blockDevTools() {
-        
-        // 1. SADECE F12 ve kısayollar
+        // SADECE F12 ve kısayollar
         document.addEventListener('keydown', function(e) {
             var key = e.key.toLowerCase();
             var ctrl = e.ctrlKey || e.metaKey;
             var shift = e.shiftKey;
             
-            // F12
             if (e.key === 'F12' || e.keyCode === 123) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
                 return false;
             }
-            
-            // Ctrl+Shift+I
             if (ctrl && shift && (key === 'i' || e.keyCode === 73)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
                 return false;
             }
-            
-            // Ctrl+Shift+J
             if (ctrl && shift && (key === 'j' || e.keyCode === 74)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
                 return false;
             }
-            
-            // Ctrl+U
             if (ctrl && (key === 'u' || e.keyCode === 85)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
                 return false;
             }
-            
-            // Ctrl+Shift+C
             if (ctrl && shift && (key === 'c' || e.keyCode === 67)) {
                 e.preventDefault();
                 e.stopPropagation();
                 banAndKill();
                 return false;
             }
-
-            // Ctrl+S
-            if (ctrl && (key === 's' || e.keyCode === 83)) {
-                e.preventDefault();
-                e.stopPropagation();
-                banAndKill();
-                return false;
-            }
-
+            // Ctrl+S engeli KALDIRILDI - admin panelinde kaydetme için gerekli
             return true;
         }, { capture: true });
 
-        // 2. SADECE sağ tık
+        // SADECE sağ tık
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -111,7 +89,7 @@
             return false;
         }, { capture: true });
 
-        // 3. Console'u öldür
+        // Console'u temizle (ama engelleme yok)
         console.clear();
         console.log = function() {};
         console.warn = function() {};
@@ -120,14 +98,13 @@
         console.debug = function() {};
         console.trace = function() {};
 
-        // 4. Devtools açılma kontrolü
+        // Devtools açılma kontrolü (sadece boyut farkı)
         var devtoolsOpen = false;
         setInterval(function() {
             var w = window.innerWidth;
             var h = window.innerHeight;
             var ow = window.outerWidth;
             var oh = window.outerHeight;
-            
             if (ow - w > 100 || oh - h > 100) {
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
@@ -139,7 +116,6 @@
         }, 500);
     }
 
-    // ---- SAYFA YÜKLENİR YÜKLENMEZ ÇALIŞTIR ----
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', blockDevTools);
     } else {
