@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard – CC Toolkit</title>
+    <title>Dashboard – ZenitChk</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -88,6 +88,8 @@
                 </div>
 
                 <div class="nav-item" data-tab="bakiye"><i class="fas fa-wallet"></i> Bakiye</div>
+                <!-- Admin paneli butonu sidebar'da da olsun -->
+                <div class="nav-item" data-tab="admin" id="adminNavItem" style="display:none;"><i class="fas fa-shield-alt"></i> Admin Panel</div>
             </nav>
             <div class="sidebar-footer">
                 <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
@@ -440,7 +442,7 @@
                     </div>
                 </div>
 
-                <!-- ADMIN PANEL -->
+                <!-- ADMIN PANEL (YENİ VE ZENGİN) -->
                 <div id="tab-admin" class="tab-content hidden">
                     <div class="card">
                         <div class="card-header"><h3><i class="fas fa-shield-alt" style="color:#ff9500;margin-right:10px;"></i>Admin Paneli</h3></div>
@@ -454,6 +456,7 @@
                                 <div id="adminLockError" style="color:#ff3b30;margin-top:8px;display:none;">Şifre hatalı!</div>
                             </div>
                             <div id="adminContent" style="display:none;">
+                                <!-- Kayıt Anahtarı Oluştur -->
                                 <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
                                     <p><strong>🔑 Kayıt Anahtarı Oluştur</strong></p>
                                     <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
@@ -461,15 +464,37 @@
                                         <button class="btn" id="generateKeyBtn">Oluştur</button>
                                     </div>
                                 </div>
+                                <!-- Ban Listesi -->
                                 <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
                                     <p><strong>🚫 Ban Listesi</strong></p>
                                     <ul id="banList" style="list-style:none;padding:0;margin-top:8px;"></ul>
                                 </div>
-                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);">
+                                <!-- Kullanıcı Yönetimi -->
+                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
                                     <p><strong>📊 Kullanıcı Yönetimi</strong></p>
+                                    <input type="text" id="adminUserSearch" placeholder="Kullanıcı ara..." style="width:100%;padding:8px;margin-bottom:8px;background:var(--bg-card);border-radius:6px;border:1px solid var(--border-color);color:var(--text-primary);" />
                                     <ul id="userList" style="list-style:none;padding:0;margin-top:8px;"></ul>
                                 </div>
-                                <div style="margin-top:12px;background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);">
+                                <!-- Sistem Logları -->
+                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
+                                    <p><strong>📋 Sistem Logları</strong></p>
+                                    <div id="systemLogs" style="max-height:150px;overflow-y:auto;font-family:monospace;font-size:12px;background:var(--bg-card);padding:8px;border-radius:6px;border:1px solid var(--border-color);">
+                                        Loglar burada görünecek.
+                                    </div>
+                                </div>
+                                <!-- Sistem Bilgileri -->
+                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
+                                    <p><strong>⚙️ Sistem Bilgileri</strong></p>
+                                    <div id="systemInfo" style="font-size:13px;">
+                                        <div>Toplam Kullanıcı: <span id="sysTotalUsers">0</span></div>
+                                        <div>Admin Sayısı: <span id="sysAdminCount">0</span></div>
+                                        <div>Premium Kullanıcı: <span id="sysPremiumCount">0</span></div>
+                                        <div>Banlı Kullanıcı: <span id="sysBannedCount">0</span></div>
+                                        <div>Kayıt Anahtarı: <span id="sysKeyCount">0</span></div>
+                                    </div>
+                                </div>
+                                <!-- Admin Şifresi Değiştir -->
+                                <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);">
                                     <p><strong>🔒 Admin Şifresi Değiştir</strong></p>
                                     <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
                                         <input type="password" id="newAdminPass" placeholder="Yeni şifre" style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
@@ -480,6 +505,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>
