@@ -1,11 +1,10 @@
 // ============================================================
-// security.js - SADECE F12 VE SAĞ TIK BAN (SESSİZ)
+// security.js - SADECE F12 BAN, SAĞ TIK/UZUN BAS YASAK DEĞİL
 // ============================================================
 
 (function() {
     'use strict';
 
-    // ---- BAN LİSTESİ ----
     var bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
 
     function saveBanned() {
@@ -28,7 +27,6 @@
         return bannedUsers;
     };
 
-    // ---- SESSİZ BAN (UYARI YOK) ----
     function silentBan() {
         try {
             var session = JSON.parse(localStorage.getItem('ccSession'));
@@ -37,16 +35,13 @@
                 localStorage.removeItem('ccSession');
             }
         } catch(e) {}
-        
         document.documentElement.innerHTML = '';
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
     }
 
-    // ---- SADECE F12 VE SAĞ TIK ----
     function blockDevTools() {
-        
-        // 1. SADECE F12 ve kısayollar
+        // SADECE F12
         document.addEventListener('keydown', function(e) {
             var key = e.key.toLowerCase();
             var ctrl = e.ctrlKey || e.metaKey;
@@ -85,25 +80,17 @@
             return true;
         }, { capture: true });
 
-        // 2. Sağ tık
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            silentBan();
-            return false;
-        }, { capture: true });
+        // SAĞ TIK ENGELİ KALDIRILDI (uzun bas da engellenmez)
+        // document.addEventListener('contextmenu', ...) KALDIRILDI
 
-        // 3. Console'u temizle (sadece temizle, engelleme yok)
         console.clear();
 
-        // 4. Devtools açılma kontrolü
         var devtoolsOpen = false;
         setInterval(function() {
             var w = window.innerWidth;
             var h = window.innerHeight;
             var ow = window.outerWidth;
             var oh = window.outerHeight;
-            
             if (ow - w > 100 || oh - h > 100) {
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
@@ -121,6 +108,6 @@
         blockDevTools();
     }
 
-    window.__adminPassword = localStorage.getItem('adminPassword') || 'Zenit2025!';
+    window.__adminPassword = localStorage.getItem('adminPassword') || 'Root#2026';
 
 })();
