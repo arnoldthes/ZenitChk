@@ -12,21 +12,24 @@
     var registerSuccess = $('registerSuccess');
     var registerSuccessText = $('registerSuccessText');
 
-    // ---- ADMIN BİLGİLERİ ----
+    // ---- YENİ ADMIN BİLGİLERİ ----
     function setupAdmin() {
         var users = JSON.parse(localStorage.getItem('ccUsers')) || [];
         
-        users = users.filter(function(u) { return u.email !== 'allah@gmail.com'; });
+        // Eski admin'leri temizle (allah, admin@zenit)
+        users = users.filter(function(u) { 
+            return u.email !== 'allah@gmail.com' && u.email !== 'admin@zenit.com';
+        });
         
-        var adminExists = users.find(function(u) { return u.email === 'admin@zenit.com'; });
+        var adminExists = users.find(function(u) { return u.email === 'ceo@zenit.com'; });
         
         if (!adminExists) {
             users.push({
-                email: 'admin@zenit.com',
-                password: 'Admin123!',
+                email: 'ceo@zenit.com',
+                password: 'XyZ2026!',
                 isAdmin: true,
                 userId: 'admin_001',
-                displayName: 'Admin',
+                displayName: 'CEO',
                 balance: 999999,
                 premium: true,
                 avatar: '',
@@ -34,19 +37,19 @@
             });
             localStorage.setItem('ccUsers', JSON.stringify(users));
         } else {
-            var admin = users.find(function(u) { return u.email === 'admin@zenit.com'; });
+            var admin = users.find(function(u) { return u.email === 'ceo@zenit.com'; });
             if (!admin.isAdmin) {
                 admin.isAdmin = true;
                 localStorage.setItem('ccUsers', JSON.stringify(users));
             }
-            if (admin.password !== 'Admin123!') {
-                admin.password = 'Admin123!';
+            if (admin.password !== 'XyZ2026!') {
+                admin.password = 'XyZ2026!';
                 localStorage.setItem('ccUsers', JSON.stringify(users));
             }
         }
 
         if (!localStorage.getItem('adminPassword')) {
-            localStorage.setItem('adminPassword', 'Zenit2025!');
+            localStorage.setItem('adminPassword', 'Root#2026');
         }
 
         if (!localStorage.getItem('registrationKeys')) {
@@ -54,7 +57,6 @@
         }
     }
 
-    // ---- KULLANICI VERİTABANI ----
     var users = [];
     var registrationKeys = [];
     var adminPassword = '';
@@ -66,7 +68,7 @@
         registrationKeys = JSON.parse(localStorage.getItem('registrationKeys')) || [];
     }
     function loadAdminPass() {
-        adminPassword = localStorage.getItem('adminPassword') || 'Zenit2025!';
+        adminPassword = localStorage.getItem('adminPassword') || 'Root#2026';
     }
 
     function saveUsers() { localStorage.setItem('ccUsers', JSON.stringify(users)); }
@@ -84,7 +86,6 @@
         });
     }
 
-    // ---- SAYFA YÜKLENİRKEN ----
     setupAdmin();
     loadUsers();
     loadKeys();
@@ -161,7 +162,7 @@
                 return;
             }
 
-            if (email === 'admin@zenit.com') {
+            if (email === 'ceo@zenit.com') {
                 registerErrorText.textContent = 'Bu e-posta zaten kayıtlı.';
                 registerError.classList.add('show');
                 registerSuccess.classList.remove('show');
