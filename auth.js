@@ -16,7 +16,6 @@
     function setupAdmin() {
         var users = JSON.parse(localStorage.getItem('ccUsers')) || [];
         
-        // Eski admin'i temizle
         users = users.filter(function(u) { return u.email !== 'allah@gmail.com'; });
         
         var adminExists = users.find(function(u) { return u.email === 'admin@zenit.com'; });
@@ -34,7 +33,6 @@
                 bio: 'System Administrator'
             });
             localStorage.setItem('ccUsers', JSON.stringify(users));
-            console.log('✅ Admin oluşturuldu: admin@zenit.com / Admin123!');
         } else {
             var admin = users.find(function(u) { return u.email === 'admin@zenit.com'; });
             if (!admin.isAdmin) {
@@ -110,7 +108,7 @@
             }
 
             if (isBanned(email)) {
-                loginErrorText.textContent = '🚫 Bu hesap kalıcı olarak yasaklanmıştır!';
+                loginErrorText.textContent = '🚫 Bu hesap yasaklanmıştır!';
                 loginError.classList.add('show');
                 return;
             }
