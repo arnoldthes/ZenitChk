@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="tr" data-theme="light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +11,7 @@
 </head>
 <body class="dashboard-page">
 
-    <div id="toast" class="toast"><i class="fas fa-check-circle"></i><span id="toastMessage">Success</span></div>
+    <div id="toast" class="toast"><i class="fas fa-check-circle"></i><span id="toastMessage">İşlem başarılı</span></div>
 
     <div id="dashboard">
         <!-- Sidebar -->
@@ -20,7 +20,7 @@
             <div class="sidebar-header">
                 <div class="sidebar-brand">
                     <div class="brand-text">
-                        <span style="font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text-primary);">☰ Menu</span>
+                        <span style="font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text-primary);">☰ Menü</span>
                     </div>
                     <button id="adminPanelBtn" class="admin-panel-btn" style="display:none;background:var(--accent);color:#fff;border:none;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-left:10px;align-items:center;gap:4px;">
                         <i class="fas fa-shield-alt"></i> Admin Panel
@@ -29,8 +29,8 @@
                 <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
             </div>
             <nav class="sidebar-nav">
-                <div class="nav-label">Main</div>
-                <div class="nav-item active" data-tab="dashboard"><i class="fas fa-home"></i> Home</div>
+                <div class="nav-label">Ana</div>
+                <div class="nav-item active" data-tab="dashboard"><i class="fas fa-home"></i> Ana Sayfa</div>
                 
                 <div class="nav-item nav-toggle" id="toolsToggle">
                     <i class="fas fa-tools"></i> Tools
@@ -47,40 +47,50 @@
                     <i class="fas fa-chevron-down" style="margin-left:auto;font-size:12px;"></i>
                 </div>
                 <div class="nav-sub" id="checkoutSub">
+                    <div class="nav-item sub-item checkout-item" style="padding-left:40px !important;font-size:12px !important;">
+                        <span>Puan MX WRLD BNS</span>
+                        <span class="active-badge">active</span>
+                    </div>
                     <div class="nav-item sub-item checkout-item" data-tab="stripeauth" style="padding-left:40px !important;font-size:12px !important;">
                         <i class="fab fa-stripe" style="color:#6772e5;width:16px;"></i> Stripe Auth
                     </div>
                     <div class="nav-item sub-item checkout-item" data-tab="bambora" style="padding-left:40px !important;font-size:12px !important;">
                         <i class="fas fa-credit-card" style="color:#ff6b6b;width:16px;"></i> Bambora Charge
                     </div>
+                    <div class="nav-item sub-item checkout-item" style="padding-left:40px !important;font-size:12px !important;">
+                        <i class="fas fa-money-bill-wave" style="color:#ffd93d;width:16px;"></i> Braintree charge 2$
+                    </div>
+                    <div class="nav-item sub-item checkout-item" style="padding-left:40px !important;font-size:12px !important;">
+                        <i class="fas fa-turkish-lira-sign" style="color:#e84c3d;width:16px;"></i> İyzico charge 42₺
+                    </div>
                 </div>
 
                 <div class="nav-item nav-toggle" id="gamesToggle">
-                    <i class="fas fa-gamepad"></i> Games
+                    <i class="fas fa-gamepad"></i> Oyunlar
                     <i class="fas fa-chevron-down" style="margin-left:auto;font-size:12px;"></i>
                 </div>
                 <div class="nav-sub" id="gamesSub">
-                    <div class="nav-item sub-item" data-tab="wheel"><i class="fas fa-spinner"></i> Spin Wheel</div>
-                    <div class="nav-item sub-item" data-tab="guess"><i class="fas fa-brain"></i> Guess Number</div>
-                    <div class="nav-item sub-item" data-tab="coinflip"><i class="fas fa-coins"></i> Coin Flip</div>
-                    <div class="nav-item sub-item" data-tab="dice"><i class="fas fa-dice"></i> Dice Roll</div>
-                    <div class="nav-item sub-item" data-tab="rps"><i class="fas fa-hand-rock"></i> Rock Paper Scissors</div>
+                    <div class="nav-item sub-item" data-tab="wheel"><i class="fas fa-spinner"></i> Çarkıfelek</div>
+                    <div class="nav-item sub-item" data-tab="guess"><i class="fas fa-brain"></i> Sayı Tahmin</div>
+                    <div class="nav-item sub-item" data-tab="coinflip"><i class="fas fa-coins"></i> Yazı Tura</div>
+                    <div class="nav-item sub-item" data-tab="dice"><i class="fas fa-dice"></i> Zar At</div>
+                    <div class="nav-item sub-item" data-tab="rps"><i class="fas fa-hand-rock"></i> Taş Kağıt Makas</div>
                 </div>
 
                 <div class="nav-item nav-toggle" id="otherToolsToggle">
-                    <i class="fas fa-ellipsis-h"></i> Other Tools
+                    <i class="fas fa-ellipsis-h"></i> Diğer Araçlar
                     <i class="fas fa-chevron-down" style="margin-left:auto;font-size:12px;"></i>
                 </div>
                 <div class="nav-sub" id="otherToolsSub">
-                    <div class="nav-item sub-item" data-tab="chat"><i class="fas fa-comment-dots"></i> Chat</div>
+                    <div class="nav-item sub-item" data-tab="chat"><i class="fas fa-comment-dots"></i> Sohbet</div>
                     <div class="nav-item sub-item" data-tab="ai"><i class="fas fa-robot"></i> Zenit AI</div>
-                    <div class="nav-item sub-item" data-tab="ayarlar"><i class="fas fa-cog"></i> Settings</div>
+                    <div class="nav-item sub-item" data-tab="ayarlar"><i class="fas fa-cog"></i> Ayarlar</div>
                 </div>
 
-                <div class="nav-item" data-tab="bakiye"><i class="fas fa-wallet"></i> Balance</div>
+                <div class="nav-item" data-tab="bakiye"><i class="fas fa-wallet"></i> Bakiye</div>
             </nav>
             <div class="sidebar-footer">
-                <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</div>
+                <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
             </div>
         </aside>
 
@@ -89,13 +99,13 @@
             <header class="top-header">
                 <div class="header-left">
                     <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
-                    <div class="page-title"><h1 id="pageTitle">Home</h1><p id="pageSubtitle">Overview</p></div>
+                    <div class="page-title"><h1 id="pageTitle">Ana Sayfa</h1><p id="pageSubtitle">Genel bakış</p></div>
                 </div>
                 <div class="header-actions">
                     <button class="theme-toggle" id="themeToggle"><i class="fas fa-sun"></i></button>
-                    <button class="radio-toggle" id="radioToggle" title="Play/Pause"><i class="fas fa-music"></i></button>
-                    <button class="radio-toggle" id="radioPrev" title="Previous"><i class="fas fa-backward"></i></button>
-                    <button class="radio-toggle" id="radioNext" title="Next"><i class="fas fa-forward"></i></button>
+                    <button class="radio-toggle" id="radioToggle" title="Radyo"><i class="fas fa-music"></i></button>
+                    <button class="radio-toggle" id="radioPrev" title="Geri"><i class="fas fa-backward"></i></button>
+                    <button class="radio-toggle" id="radioNext" title="İleri"><i class="fas fa-forward"></i></button>
                     <div class="user-avatar" id="userAvatar">K</div>
                 </div>
             </header>
@@ -107,14 +117,14 @@
                         <div class="card stat-card">
                             <div class="stat-icon"><i class="fas fa-wallet"></i></div>
                             <div class="stat-info">
-                                <span class="stat-label">Balance</span>
+                                <span class="stat-label">Bakiyen</span>
                                 <span class="stat-value" id="myBalance">0.00 TL</span>
                             </div>
                         </div>
                         <div class="card stat-card">
                             <div class="stat-icon"><i class="fas fa-users"></i></div>
                             <div class="stat-info">
-                                <span class="stat-label">Total Users</span>
+                                <span class="stat-label">Toplam Kullanıcı</span>
                                 <span class="stat-value" id="totalUsers">0</span>
                             </div>
                         </div>
@@ -135,14 +145,14 @@
                         <div class="card stat-card">
                             <div class="stat-icon"><i class="fas fa-circle" style="color:#34c759;"></i></div>
                             <div class="stat-info">
-                                <span class="stat-label">Online</span>
+                                <span class="stat-label">Çevrim İçi</span>
                                 <span class="stat-value" id="onlineCount">0</span>
                             </div>
                         </div>
                     </div>
                     <div class="card live-card">
                         <div class="live-message">
-                            <i class="fas fa-info-circle"></i> For manual operations contact <strong>@admin</strong>
+                            <i class="fas fa-info-circle"></i> Manuel işlemler için <strong>@admin</strong>
                         </div>
                     </div>
                 </div>
@@ -152,20 +162,20 @@
                     <div class="card">
                         <div class="card-header">
                             <h3><i class="fas fa-plus-circle" style="color:#007aff;margin-right:10px;"></i>CC Generator</h3>
-                            <button class="btn btn-outline" id="copyAllBtn" style="font-size:12px;padding:6px 14px;"><i class="fas fa-copy"></i> Copy All</button>
+                            <button class="btn btn-outline" id="copyAllBtn" style="font-size:12px;padding:6px 14px;"><i class="fas fa-copy"></i> Tümünü Kopyala</button>
                         </div>
                         <div class="card-body">
                             <div class="gen-grid">
                                 <div class="gen-field"><label>BIN</label><input type="text" id="genBin" placeholder="411111" maxlength="8" value="411111" /></div>
                                 <div class="gen-field"><label>CVV</label><input type="text" id="genCvv" placeholder="123" maxlength="4" value="123" /></div>
-                                <div class="gen-field"><label>Month</label><input type="text" id="genMonth" placeholder="12" maxlength="2" value="12" /></div>
-                                <div class="gen-field"><label>Year</label><input type="text" id="genYear" placeholder="2028" maxlength="4" value="2028" /></div>
-                                <div class="gen-field"><label>Count</label><input type="number" id="genCount" value="5" min="1" max="50" /></div>
+                                <div class="gen-field"><label>Ay</label><input type="text" id="genMonth" placeholder="12" maxlength="2" value="12" /></div>
+                                <div class="gen-field"><label>Yıl</label><input type="text" id="genYear" placeholder="2028" maxlength="4" value="2028" /></div>
+                                <div class="gen-field"><label>Adet</label><input type="number" id="genCount" value="5" min="1" max="50" /></div>
                             </div>
-                            <button class="btn" id="generateBtn" style="width:100%;"><i class="fas fa-sync-alt"></i> Generate (1 TL)</button>
+                            <button class="btn" id="generateBtn" style="width:100%;"><i class="fas fa-sync-alt"></i> Üret (1 TL)</button>
                             <div class="result-box" id="genResult" style="min-height:60px;max-height:400px;overflow-y:auto;padding:0;font-family:monospace;font-size:13px;">
                                 <div id="ccList" style="padding:8px 12px;">
-                                    <div style="color:var(--text-muted);text-align:center;padding:16px;">No cards generated.</div>
+                                    <div style="color:var(--text-muted);text-align:center;padding:16px;">Henüz kart üretilmedi.</div>
                                 </div>
                             </div>
                         </div>
@@ -175,10 +185,10 @@
                 <!-- CC VALIDATOR -->
                 <div id="tab-validator" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-check-circle" style="color:#007aff;margin-right:10px;"></i>CC Validator</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-check-circle" style="color:#007aff;margin-right:10px;"></i>Kart Doğrula</h3></div>
                         <div class="card-body">
-                            <div class="input-group"><input type="text" id="ccValidateInput" placeholder="Card number" /><button class="btn" id="validateBtn">Validate</button></div>
-                            <div class="result-box" id="validateResult"><span class="label">Result</span><span class="value" style="color:var(--text-muted);">Enter a card number.</span></div>
+                            <div class="input-group"><input type="text" id="ccValidateInput" placeholder="Kart numarası" /><button class="btn" id="validateBtn">Doğrula</button></div>
+                            <div class="result-box" id="validateResult"><span class="label">Sonuç</span><span class="value" style="color:var(--text-muted);">Kart numarası girin.</span></div>
                         </div>
                     </div>
                 </div>
@@ -186,10 +196,10 @@
                 <!-- CC BIN LOOKUP -->
                 <div id="tab-binsorgu" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-search" style="color:#007aff;margin-right:10px;"></i>BIN Lookup</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-search" style="color:#007aff;margin-right:10px;"></i>BIN Sorgulama</h3></div>
                         <div class="card-body">
-                            <div class="input-group"><input type="text" id="binInput" placeholder="Enter BIN (6 digits)" /><button class="btn" id="binSorguBtn">Lookup</button></div>
-                            <div class="result-box" id="binResult"><span class="label">BIN Info</span><span class="value" style="color:var(--text-muted);">Enter a BIN.</span></div>
+                            <div class="input-group"><input type="text" id="binInput" placeholder="BIN girin (6 hane)" /><button class="btn" id="binSorguBtn">Sorgula</button></div>
+                            <div class="result-box" id="binResult"><span class="label">BIN Bilgileri</span><span class="value" style="color:var(--text-muted);">BIN girin.</span></div>
                         </div>
                     </div>
                 </div>
@@ -200,23 +210,23 @@
                         <div class="card-header"><h3 style="text-align:center;width:100%;"><i class="fab fa-stripe" style="color:#6772e5;margin-right:10px;"></i>Stripe Auth</h3></div>
                         <div class="card-body">
                             <div style="margin-bottom:12px;">
-                                <label style="font-size:13px;font-weight:600;color:var(--text-muted);">Cards (format: card|mm|yy|cvv)</label>
+                                <label style="font-size:13px;font-weight:600;color:var(--text-muted);">Kartlar (kart|ay|yy|cvv)</label>
                                 <textarea id="stripeInput" rows="4" placeholder="4159750016461072|09|29|008&#10;4111111111111111|12|28|123" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:2px solid var(--border-color);color:var(--text-primary);font-family:monospace;font-size:14px;resize:vertical;"></textarea>
                             </div>
                             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-                                <button class="btn" id="stripePasteBtn"><i class="fas fa-paste"></i> Paste Clean</button>
-                                <button class="btn" id="stripeCheckBtn"><i class="fas fa-play"></i> Start Check (3 TL/card)</button>
+                                <button class="btn" id="stripePasteBtn"><i class="fas fa-paste"></i> Yapıştır</button>
+                                <button class="btn" id="stripeCheckBtn"><i class="fas fa-play"></i> Başlat (3 TL/kart)</button>
                             </div>
                             <div style="margin-bottom:12px;">
-                                <span style="font-weight:600;color:var(--text-secondary);">Results</span>
+                                <span style="font-weight:600;color:var(--text-secondary);">Sonuçlar</span>
                                 <div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap;">
                                     <button class="stat-btn valid-btn" id="liveFilterBtn">LIVE [<span id="liveCount">0</span>]</button>
                                     <button class="stat-btn invalid-btn" id="deadFilterBtn">DEAD [<span id="deadCount">0</span>]</button>
-                                    <button class="stat-btn" id="allFilterBtn">All [<span id="totalCount">0</span>]</button>
+                                    <button class="stat-btn" id="allFilterBtn">Tümü [<span id="totalCount">0</span>]</button>
                                 </div>
                             </div>
-                            <div class="result-box" id="stripeResult" style="min-height:60px;max-height:400px;overflow-y:auto;padding:8px 12px;font-family:monospace;font-size:13px;white-space:pre-wrap;word-break:break-all;">
-                                <div style="color:var(--text-muted);text-align:center;padding:16px;">Enter cards and start check.</div>
+                            <div class="result-box" id="stripeResult" style="min-height:60px;max-height:400px;overflow-y:auto;padding:8px 12px;font-family:monospace;font-size:13px;">
+                                <div style="color:var(--text-muted);text-align:center;padding:16px;">Kart girip başlatın.</div>
                             </div>
                         </div>
                     </div>
@@ -228,27 +238,23 @@
                         <div class="card-header"><h3 style="text-align:center;width:100%;"><i class="fas fa-credit-card" style="color:#ff6b6b;margin-right:10px;"></i>Bambora Charge</h3></div>
                         <div class="card-body">
                             <div style="margin-bottom:12px;">
-                                <label style="font-size:13px;font-weight:600;color:var(--text-muted);">Amount (TL)</label>
-                                <input type="number" id="bamboraAmount" value="10" min="1" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:2px solid var(--border-color);color:var(--text-primary);" />
-                            </div>
-                            <div style="margin-bottom:12px;">
-                                <label style="font-size:13px;font-weight:600;color:var(--text-muted);">Cards (format: card|mm|yy|cvv)</label>
+                                <label style="font-size:13px;font-weight:600;color:var(--text-muted);">Kartlar (kart|ay|yy|cvv)</label>
                                 <textarea id="bamboraInput" rows="4" placeholder="5168404439746810|01|29|153&#10;4111111111111111|12|28|123" style="width:100%;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:2px solid var(--border-color);color:var(--text-primary);font-family:monospace;font-size:14px;resize:vertical;"></textarea>
                             </div>
                             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-                                <button class="btn" id="bamboraPasteBtn"><i class="fas fa-paste"></i> Paste Clean</button>
-                                <button class="btn" id="bamboraCheckBtn"><i class="fas fa-play"></i> Start Check (3 TL/card)</button>
+                                <input type="number" id="bamboraAmount" placeholder="Miktar (TL)" style="flex:1;min-width:120px;padding:10px;background:var(--bg-input);border-radius:var(--radius-sm);border:2px solid var(--border-color);color:var(--text-primary);" value="10" />
+                                <button class="btn" id="bamboraCheckBtn"><i class="fas fa-play"></i> Başlat (2 TL/kart)</button>
                             </div>
                             <div style="margin-bottom:12px;">
-                                <span style="font-weight:600;color:var(--text-secondary);">Results</span>
+                                <span style="font-weight:600;color:var(--text-secondary);">Sonuçlar</span>
                                 <div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap;">
-                                    <button class="stat-btn valid-btn" id="bamboraLiveBtn">LIVE [<span id="bamboraLive">0</span>]</button>
-                                    <button class="stat-btn invalid-btn" id="bamboraDeadBtn">DEAD [<span id="bamboraDead">0</span>]</button>
-                                    <button class="stat-btn" id="bamboraAllBtn">All [<span id="bamboraTotal">0</span>]</button>
+                                    <button class="stat-btn valid-btn" id="bamboraLiveFilter">LIVE [<span id="bamboraLiveCount">0</span>]</button>
+                                    <button class="stat-btn invalid-btn" id="bamboraDeadFilter">DEAD [<span id="bamboraDeadCount">0</span>]</button>
+                                    <button class="stat-btn" id="bamboraAllFilter">Tümü [<span id="bamboraTotalCount">0</span>]</button>
                                 </div>
                             </div>
-                            <div class="result-box" id="bamboraResult" style="min-height:60px;max-height:400px;overflow-y:auto;padding:8px 12px;font-family:monospace;font-size:13px;white-space:pre-wrap;word-break:break-all;">
-                                <div style="color:var(--text-muted);text-align:center;padding:16px;">Enter cards and start check.</div>
+                            <div class="result-box" id="bamboraResult" style="min-height:60px;max-height:400px;overflow-y:auto;padding:8px 12px;font-family:monospace;font-size:13px;">
+                                <div style="color:var(--text-muted);text-align:center;padding:16px;">Kart girip başlatın.</div>
                             </div>
                         </div>
                     </div>
@@ -257,16 +263,16 @@
                 <!-- SPIN WHEEL -->
                 <div id="tab-wheel" class="tab-content hidden">
                     <div class="card" style="text-align:center;">
-                        <div class="card-header"><h3><i class="fas fa-spinner" style="color:#007aff;margin-right:10px;"></i>Spin Wheel</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-spinner" style="color:#007aff;margin-right:10px;"></i>Çarkıfelek</h3></div>
                         <div class="card-body">
                             <div style="position:relative;display:inline-block;margin:0 auto;">
                                 <canvas id="wheelCanvas" width="300" height="300" style="border-radius:50%;box-shadow:0 8px 40px rgba(0,0,0,0.2);"></canvas>
-                                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:800;color:var(--text-primary);background:var(--bg-card);padding:4px 14px;border-radius:12px;border:2px solid var(--border-color);">SPIN</div>
+                                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:800;color:var(--text-primary);background:var(--bg-card);padding:4px 14px;border-radius:12px;border:2px solid var(--border-color);">ÇEVİR</div>
                             </div>
                             <div id="wheelResult" style="font-size:20px;font-weight:700;min-height:50px;margin:12px 0;color:var(--text-primary);"></div>
                             <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-                                <button class="btn" id="spinBtn" style="font-size:16px;padding:10px 28px;"><i class="fas fa-sync-alt"></i> Spin</button>
-                                <span id="spinStatus" style="font-size:14px;color:var(--text-muted);display:flex;align-items:center;">Remaining: <span id="spinUsed">1</span></span>
+                                <button class="btn" id="spinBtn" style="font-size:16px;padding:10px 28px;"><i class="fas fa-sync-alt"></i> Çevir</button>
+                                <span id="spinStatus" style="font-size:14px;color:var(--text-muted);display:flex;align-items:center;">Kalan: <span id="spinUsed">1</span></span>
                             </div>
                         </div>
                     </div>
@@ -275,15 +281,15 @@
                 <!-- GUESS NUMBER -->
                 <div id="tab-guess" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-brain" style="color:#007aff;margin-right:10px;"></i>Guess Number (10 TL)</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-brain" style="color:#007aff;margin-right:10px;"></i>Sayı Tahmin (10 TL)</h3></div>
                         <div class="card-body" style="text-align:center;">
-                            <p style="color:var(--text-secondary);">Guess a number between 1-100!</p>
+                            <p style="color:var(--text-secondary);">1-100 arası bir sayı tahmin et!</p>
                             <div style="display:flex;gap:10px;justify-content:center;margin:12px 0;flex-wrap:wrap;">
-                                <input type="number" id="guessInput" min="1" max="100" placeholder="Guess" style="width:120px;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);text-align:center;font-size:18px;" />
-                                <button class="btn" id="guessBtn">Guess</button>
+                                <input type="number" id="guessInput" min="1" max="100" placeholder="Tahmin" style="width:120px;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);text-align:center;font-size:18px;" />
+                                <button class="btn" id="guessBtn">Tahmin Et</button>
                             </div>
                             <div id="guessResult" style="font-size:18px;font-weight:600;min-height:40px;color:var(--text-primary);"></div>
-                            <div id="guessStatus" style="font-size:13px;color:var(--text-muted);margin-top:6px;">Remaining: <span id="guessLeft">4</span></div>
+                            <div id="guessStatus" style="font-size:13px;color:var(--text-muted);margin-top:6px;">Kalan: <span id="guessLeft">4</span></div>
                         </div>
                     </div>
                 </div>
@@ -291,15 +297,15 @@
                 <!-- COIN FLIP -->
                 <div id="tab-coinflip" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-coins" style="color:#007aff;margin-right:10px;"></i>Coin Flip (5 TL)</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-coins" style="color:#007aff;margin-right:10px;"></i>Yazı Tura (5 TL)</h3></div>
                         <div class="card-body" style="text-align:center;">
                             <div style="font-size:64px;margin:12px 0;" id="coinResult">🪙</div>
                             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                                <button class="btn" id="coinHeads">Heads</button>
-                                <button class="btn" id="coinTails">Tails</button>
+                                <button class="btn" id="coinHeads">Yazı</button>
+                                <button class="btn" id="coinTails">Tura</button>
                             </div>
                             <div id="coinStatus" style="margin-top:12px;font-size:14px;color:var(--text-muted);"></div>
-                            <div id="coinLeft" style="font-size:13px;color:var(--text-muted);margin-top:4px;">Remaining: <span id="coinRemain">4</span></div>
+                            <div id="coinLeft" style="font-size:13px;color:var(--text-muted);margin-top:4px;">Kalan: <span id="coinRemain">4</span></div>
                         </div>
                     </div>
                 </div>
@@ -307,12 +313,12 @@
                 <!-- DICE -->
                 <div id="tab-dice" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-dice" style="color:#007aff;margin-right:10px;"></i>Dice Roll (5 TL)</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-dice" style="color:#007aff;margin-right:10px;"></i>Zar At (5 TL)</h3></div>
                         <div class="card-body" style="text-align:center;">
                             <div style="font-size:72px;margin:12px 0;" id="diceResult">🎲</div>
-                            <button class="btn" id="diceBtn"><i class="fas fa-dice"></i> Roll</button>
+                            <button class="btn" id="diceBtn"><i class="fas fa-dice"></i> At</button>
                             <div id="diceStatus" style="margin-top:12px;font-size:14px;color:var(--text-muted);"></div>
-                            <div id="diceLeft" style="font-size:13px;color:var(--text-muted);margin-top:4px;">Remaining: <span id="diceRemain">4</span></div>
+                            <div id="diceLeft" style="font-size:13px;color:var(--text-muted);margin-top:4px;">Kalan: <span id="diceRemain">4</span></div>
                         </div>
                     </div>
                 </div>
@@ -320,16 +326,16 @@
                 <!-- RPS -->
                 <div id="tab-rps" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-hand-rock" style="color:#007aff;margin-right:10px;"></i>Rock Paper Scissors (5 TL)</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-hand-rock" style="color:#007aff;margin-right:10px;"></i>Taş Kağıt Makas (5 TL)</h3></div>
                         <div class="card-body" style="text-align:center;">
                             <div style="font-size:48px;margin:8px 0;" id="rpsResult">🤜</div>
                             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                                <button class="btn" id="rpsRock">🪨 Rock</button>
-                                <button class="btn" id="rpsPaper">📄 Paper</button>
-                                <button class="btn" id="rpsScissors">✂️ Scissors</button>
+                                <button class="btn" id="rpsRock">🪨 Taş</button>
+                                <button class="btn" id="rpsPaper">📄 Kağıt</button>
+                                <button class="btn" id="rpsScissors">✂️ Makas</button>
                             </div>
                             <div id="rpsStatus" style="margin-top:12px;font-size:14px;color:var(--text-muted);"></div>
-                            <div id="rpsLeft" style="font-size:13px;color:var(--text-muted);margin-top:4px;">Remaining: <span id="rpsRemain">4</span></div>
+                            <div id="rpsLeft" style="font-size:13px;color:var(--text-muted);margin-top:4px;">Kalan: <span id="rpsRemain">4</span></div>
                         </div>
                     </div>
                 </div>
@@ -337,11 +343,11 @@
                 <!-- BALANCE -->
                 <div id="tab-bakiye" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-wallet" style="color:#007aff;margin-right:10px;"></i>Balance Management</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-wallet" style="color:#007aff;margin-right:10px;"></i>Bakiye Yönetimi</h3></div>
                         <div class="card-body">
                             <div style="background:var(--bg-input);border-radius:var(--radius-sm);padding:16px;border:1px solid var(--border-color);">
                                 <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-color);">
-                                    <span>Current Balance</span>
+                                    <span>Mevcut Bakiye</span>
                                     <strong id="currentBalance">0.00 TL</strong>
                                 </div>
                                 <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-color);">
@@ -350,12 +356,12 @@
                                 </div>
                                 <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
                                     <div style="flex:1;min-width:150px;">
-                                        <input type="number" id="depositAmount" placeholder="Amount" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
-                                        <button class="btn" style="width:100%;margin-top:6px;" onclick="window.deposit()">Deposit</button>
+                                        <input type="number" id="depositAmount" placeholder="Miktar" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                        <button class="btn" style="width:100%;margin-top:6px;" onclick="window.deposit()">Yükle</button>
                                     </div>
                                     <div style="flex:1;min-width:150px;">
-                                        <input type="text" id="transferId" placeholder="Recipient ID" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
-                                        <input type="number" id="transferAmount" placeholder="Amount" style="width:100%;padding:10px;margin-top:4px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                        <input type="text" id="transferId" placeholder="Alıcı ID" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                        <input type="number" id="transferAmount" placeholder="Miktar" style="width:100%;padding:10px;margin-top:4px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                         <button class="btn" style="width:100%;margin-top:6px;" onclick="window.transfer()">Transfer</button>
                                     </div>
                                 </div>
@@ -367,12 +373,12 @@
                 <!-- CHAT -->
                 <div id="tab-chat" class="tab-content hidden">
                     <div class="card" style="display:flex;flex-direction:column;height:500px;">
-                        <div class="card-header"><h3><i class="fas fa-comment-dots" style="color:#007aff;margin-right:10px;"></i>Chat Room</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-comment-dots" style="color:#007aff;margin-right:10px;"></i>Sohbet Odası</h3></div>
                         <div class="card-body" style="flex:1;display:flex;flex-direction:column;">
                             <div id="chatMessages" style="flex:1;overflow-y:auto;background:var(--bg-input);border-radius:8px;padding:12px;border:2px solid var(--border-color);min-height:300px;max-height:400px;"></div>
                             <div style="display:flex;gap:10px;margin-top:10px;">
-                                <input type="text" id="chatInput" placeholder="Type a message..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
-                                <button class="btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i> Send</button>
+                                <input type="text" id="chatInput" placeholder="Mesaj..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                <button class="btn" id="sendChatBtn"><i class="fas fa-paper-plane"></i> Gönder</button>
                             </div>
                         </div>
                     </div>
@@ -381,12 +387,12 @@
                 <!-- ZENIT AI -->
                 <div id="tab-ai" class="tab-content hidden">
                     <div class="card" style="display:flex;flex-direction:column;height:500px;">
-                        <div class="card-header"><h3><i class="fas fa-robot" style="color:#007aff;margin-right:10px;"></i>Zenit AI Assistant</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-robot" style="color:#007aff;margin-right:10px;"></i>Zenit AI Asistan</h3></div>
                         <div class="card-body" style="flex:1;display:flex;flex-direction:column;">
                             <div id="aiMessages" style="flex:1;overflow-y:auto;background:var(--bg-input);border-radius:8px;padding:12px;border:2px solid var(--border-color);min-height:300px;max-height:400px;"></div>
                             <div style="display:flex;gap:10px;margin-top:10px;">
-                                <input type="text" id="aiInput" placeholder="Ask AI..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
-                                <button class="btn" id="sendAiBtn"><i class="fas fa-paper-plane"></i> Ask</button>
+                                <input type="text" id="aiInput" placeholder="AI'ya sor..." style="flex:1;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                <button class="btn" id="sendAiBtn"><i class="fas fa-paper-plane"></i> Sor</button>
                             </div>
                         </div>
                     </div>
@@ -395,41 +401,41 @@
                 <!-- SETTINGS -->
                 <div id="tab-ayarlar" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-cog" style="color:#007aff;margin-right:10px;"></i>Settings</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-cog" style="color:#007aff;margin-right:10px;"></i>Profil Ayarları</h3></div>
                         <div class="card-body">
                             <div class="settings-grid">
                                 <div class="settings-group">
-                                    <label>Profile Picture</label>
+                                    <label>Profil Fotoğrafı</label>
                                     <div style="display:flex;align-items:center;gap:16px;">
                                         <img id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='40' fill='%23007aff'/%3E%3Ctext x='40' y='52' text-anchor='middle' font-size='32' fill='white' font-weight='600' font-family='Arial'%3EK%3C/text%3E%3C/svg%3E" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border-color);" />
                                         <input type="file" id="avatarUpload" accept="image/*" style="padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                     </div>
                                 </div>
                                 <div class="settings-group">
-                                    <label>Username</label>
-                                    <input type="text" id="displayName" placeholder="Your name" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                    <label>Kullanıcı Adı</label>
+                                    <input type="text" id="displayName" placeholder="Adın" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                 </div>
                                 <div class="settings-group">
                                     <label>Bio</label>
-                                    <textarea id="userBio" placeholder="Tell about yourself..." rows="2" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);font-family:var(--font);resize:vertical;"></textarea>
+                                    <textarea id="userBio" placeholder="Kendini tanıt..." rows="2" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);font-family:var(--font);resize:vertical;"></textarea>
                                 </div>
                                 <div class="settings-group">
                                     <label>ID</label>
                                     <input type="text" id="profileId" readonly style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-muted);" />
                                 </div>
                                 <div class="settings-group">
-                                    <label>Change Password</label>
-                                    <input type="password" id="changePasswordInput" placeholder="New password" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                    <label>Şifre Değiştir</label>
+                                    <input type="password" id="changePasswordInput" placeholder="Yeni şifre" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
                                 </div>
                                 <div class="settings-group">
-                                    <label>Theme</label>
+                                    <label>Tema</label>
                                     <select id="themeSelect" style="width:100%;padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);">
-                                        <option value="light">Light</option>
-                                        <option value="dark">Dark</option>
+                                        <option value="light">Aydınlık</option>
+                                        <option value="dark">Karanlık</option>
                                     </select>
                                 </div>
                             </div>
-                            <button class="btn" id="saveProfileBtn"><i class="fas fa-save"></i> Save</button>
+                            <button class="btn" id="saveProfileBtn"><i class="fas fa-save"></i> Kaydet</button>
                         </div>
                     </div>
                 </div>
@@ -437,37 +443,37 @@
                 <!-- ADMIN PANEL -->
                 <div id="tab-admin" class="tab-content hidden">
                     <div class="card">
-                        <div class="card-header"><h3><i class="fas fa-shield-alt" style="color:#ff9500;margin-right:10px;"></i>Admin Panel</h3></div>
+                        <div class="card-header"><h3><i class="fas fa-shield-alt" style="color:#ff9500;margin-right:10px;"></i>Admin Paneli</h3></div>
                         <div class="card-body">
                             <div id="adminLock" style="text-align:center;padding:20px;">
-                                <p style="margin-bottom:12px;">Enter admin password to access.</p>
+                                <p style="margin-bottom:12px;">Admin paneline erişmek için şifreyi girin.</p>
                                 <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                                    <input type="password" id="adminPassInput" placeholder="Admin password" style="padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
-                                    <button class="btn" id="adminUnlockBtn">Unlock</button>
+                                    <input type="password" id="adminPassInput" placeholder="Admin şifresi" style="padding:10px;background:var(--bg-input);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                    <button class="btn" id="adminUnlockBtn">Giriş</button>
                                 </div>
-                                <div id="adminLockError" style="color:#ff3b30;margin-top:8px;display:none;">Wrong password!</div>
+                                <div id="adminLockError" style="color:#ff3b30;margin-top:8px;display:none;">Şifre hatalı!</div>
                             </div>
                             <div id="adminContent" style="display:none;">
                                 <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
-                                    <p><strong>Generate Registration Key</strong></p>
+                                    <p><strong>🔑 Kayıt Anahtarı Oluştur</strong></p>
                                     <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
                                         <input type="text" id="newKeyDisplay" readonly style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:8px;border:2px solid var(--border-color);font-family:monospace;" />
-                                        <button class="btn" id="generateKeyBtn">Generate</button>
+                                        <button class="btn" id="generateKeyBtn">Oluştur</button>
                                     </div>
                                 </div>
                                 <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);margin-bottom:16px;">
-                                    <p><strong>Ban List</strong></p>
+                                    <p><strong>🚫 Ban Listesi</strong></p>
                                     <ul id="banList" style="list-style:none;padding:0;margin-top:8px;"></ul>
                                 </div>
                                 <div style="background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);">
-                                    <p><strong>User Management</strong></p>
+                                    <p><strong>📊 Kullanıcı Yönetimi</strong></p>
                                     <ul id="userList" style="list-style:none;padding:0;margin-top:8px;"></ul>
                                 </div>
                                 <div style="margin-top:12px;background:var(--bg-input);border-radius:8px;padding:16px;border:2px solid var(--border-color);">
-                                    <p><strong>Change Admin Password</strong></p>
+                                    <p><strong>🔒 Admin Şifresi Değiştir</strong></p>
                                     <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
-                                        <input type="password" id="newAdminPass" placeholder="New password" style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
-                                        <button class="btn" id="changeAdminPassBtn">Change</button>
+                                        <input type="password" id="newAdminPass" placeholder="Yeni şifre" style="flex:1;min-width:150px;padding:10px;background:var(--bg-card);border-radius:8px;border:2px solid var(--border-color);color:var(--text-primary);" />
+                                        <button class="btn" id="changeAdminPassBtn">Değiştir</button>
                                     </div>
                                 </div>
                             </div>
@@ -479,7 +485,5 @@
     </div>
 
     <script src="dashboard.js"></script>
-    <script src="stripe.js"></script>
-    <script src="bambora.js"></script>
 </body>
 </html>
