@@ -34,9 +34,9 @@
     <audio id="bgMusic" loop></audio>
     <script>
         (function() {
-            const songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
-            const randomSong = songs[Math.floor(Math.random() * songs.length)];
-            const audio = document.getElementById('bgMusic');
+            var songs = ['Dertlimusic.mp3', 'Allahyok.mp3', 'Tamam.mp3', 'Ehlan.mp3', 'Anani.mp3', 'Feryat.mp3', 'Vuruldu.mp3'];
+            var randomSong = songs[Math.floor(Math.random() * songs.length)];
+            var audio = document.getElementById('bgMusic');
             audio.src = randomSong;
             audio.volume = 0.3;
             document.addEventListener('click', function() {
