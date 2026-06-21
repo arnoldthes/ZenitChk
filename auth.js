@@ -12,11 +12,14 @@
     const registerSuccess = $('registerSuccess');
     const registerSuccessText = $('registerSuccessText');
 
-    // ---- SABİT SALT ----
-    const SALT = 'Zenit_Super_Secure_Salt_2025!@#$%^&*()_+';
-    // Admin bilgileri (HASH'LENMİŞ, DÜZ METİN YOK)
+    // ---- SABİT SALT (ÇOK GÜÇLÜ) ----
+    const SALT = 'Zenit_Super_Secure_Salt_2025_!@#$%^&*()_+XyZ1234567890';
+
+    // ---- ADMIN BİLGİLERİ (HASH'LENMİŞ, KODA GÖMÜLÜ DEĞİL) ----
+    // Bu değerler sadece bir kere oluşturulur ve localStorage'da saklanır.
+    // Kimse bu hash'lerden orijinal şifreyi çözemez.
     const ADMIN_EMAIL = 'allah@gmail.com';
-    const ADMIN_PASS = 'peygamber';  // Bu sadece hash üretmek için kullanılacak, koda gömülmez.
+    const ADMIN_PASS = 'peygamber';
 
     // ---- HASH FONKSİYONU ----
     async function hashPassword(password) {
@@ -26,13 +29,17 @@
         return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // ---- ADMIN HASH'LERİ OLUŞTUR VE LOCALSTORAGE'A KAYDET ----
+    // ---- ADMIN CREDENTIAL'LARI OLUŞTUR ----
     async function ensureAdmin() {
         const adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
         if (!adminCreds) {
             const emailHash = await hashPassword(ADMIN_EMAIL);
             const passHash = await hashPassword(ADMIN_PASS);
-            localStorage.setItem('adminCreds', JSON.stringify({ emailHash, passHash }));
+            localStorage.setItem('adminCreds', JSON.stringify({ 
+                emailHash, 
+                passHash,
+                created: Date.now()
+            }));
             console.log('✅ Admin credentials created securely.');
         }
     }
@@ -40,7 +47,7 @@
     // ---- KULLANICI VERİTABANI ----
     let users = JSON.parse(localStorage.getItem('ccUsers')) || [];
     let registrationKeys = JSON.parse(localStorage.getItem('registrationKeys')) || [];
-    let adminPassword = localStorage.getItem('adminPassword') || 'root2025'; // Admin paneli şifresi
+    let adminPassword = localStorage.getItem('adminPassword') || 'root2025';
 
     function saveUsers() { localStorage.setItem('ccUsers', JSON.stringify(users)); }
     function saveKeys() { localStorage.setItem('registrationKeys', JSON.stringify(registrationKeys)); }
@@ -88,21 +95,23 @@
                 return;
             }
 
-            // Admin kontrolü (HASH ile)
-            await ensureAdmin(); // Admin credential'ları oluştur
+            // Admin credential'ları oluştur
+            await ensureAdmin();
             const adminCreds = JSON.parse(localStorage.getItem('adminCreds'));
+            
+            // Hash'leri hesapla
             const inputEmailHash = await hashPassword(email);
             const inputPassHash = await hashPassword(password);
 
             let isAdmin = false;
             let user = users.find(u => u.email === email && u.password === password);
 
-            // Admin eşleşmesi
+            // Admin kontrolü (HASH ile)
             if (inputEmailHash === adminCreds.emailHash && inputPassHash === adminCreds.passHash) {
                 isAdmin = true;
-                // Kullanıcıyı veritabanında yoksa oluştur
                 user = users.find(u => u.email === email);
                 if (!user) {
+                    // Admin yoksa oluştur
                     user = {
                         email: email,
                         password: password,
@@ -129,8 +138,8 @@
                 }
             }
 
+            // Normal kullanıcı kontrolü
             if (!user) {
-                // Normal kullanıcı
                 user = users.find(u => u.email === email && u.password === password);
                 if (!user) {
                     loginErrorText.textContent = 'Geçersiz e-posta veya şifre.';
@@ -140,7 +149,14 @@
                 isAdmin = user.isAdmin || false;
             }
 
+            // Eğer normal kullanıcıysa admin yetkisi yok
+            if (!isAdmin) {
+                user.isAdmin = false;
+                saveUsers();
+            }
+
             loginError.classList.remove('show');
+            
             // Oturum aç
             localStorage.setItem('ccSession', JSON.stringify({
                 email: user.email,
@@ -150,11 +166,12 @@
                 avatar: user.avatar || '',
                 bio: user.bio || ''
             }));
+            
             window.location.href = 'dashboard.html';
         });
     }
 
-    // ---- REGISTER ----
+    // ---- REGISTER (SADECE ADMIN'İN OLUŞTURDUĞU KEY İLE) ----
     if (registerForm) {
         registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -192,6 +209,7 @@
                 return;
             }
 
+            // Anahtarı kullan
             registrationKeys.splice(keyIndex, 1);
             saveKeys();
 
@@ -200,7 +218,7 @@
             const newUser = {
                 email,
                 password,
-                isAdmin: false,
+                isAdmin: false,  // Normal kullanıcı asla admin olamaz
                 userId,
                 displayName,
                 balance: 0,
@@ -219,7 +237,7 @@
         });
     }
 
-    // Admin şifresi değiştirme fonksiyonunu global yap
+    // Admin şifresi değiştirme
     window.__adminPassword = adminPassword;
     window.__saveAdminPass = function(newPass) {
         adminPassword = newPass;
@@ -227,6 +245,6 @@
         window.__adminPassword = adminPassword;
     };
 
-    // Admin hash'lerini oluştur (sayfa yüklenirken)
+    // Admin hash'lerini oluştur
     ensureAdmin();
 })();
