@@ -24,47 +24,51 @@
         return bannedUsers;
     };
 
-    // ---- F12 VE SAĞ TIK ENGELLE (KAYIT BANLAMAZ) ----
+    // ---- F12 VE SAĞ TIK ENGELLE (BUNLARDA BANLA) ----
     function blockDevTools() {
-        // Sadece F12'yi engelle
+        // F12 ve kısayollar
         document.addEventListener('keydown', function(e) {
+            const key = e.key.toLowerCase();
+            const ctrl = e.ctrlKey || e.metaKey;
+            const shift = e.shiftKey;
+            
             // F12
             if (e.key === 'F12' || e.keyCode === 123) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                showWarningAndBan();
                 return false;
             }
             
             // Ctrl+Shift+I (Inspect)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
+            if (ctrl && shift && (key === 'i' || e.keyCode === 73)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                showWarningAndBan();
                 return false;
             }
             
             // Ctrl+Shift+J (Console)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
+            if (ctrl && shift && (key === 'j' || e.keyCode === 74)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                showWarningAndBan();
                 return false;
             }
             
             // Ctrl+U (View Source)
-            if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
+            if (ctrl && (key === 'u' || e.keyCode === 85)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                showWarningAndBan();
                 return false;
             }
             
             // Ctrl+Shift+C (Element Picker)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c' || e.keyCode === 67)) {
+            if (ctrl && shift && (key === 'c' || e.keyCode === 67)) {
                 e.preventDefault();
                 e.stopPropagation();
-                banAndKill();
+                showWarningAndBan();
                 return false;
             }
 
@@ -75,7 +79,7 @@
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            banAndKill();
+            showWarningAndBan();
             return false;
         });
 
@@ -88,7 +92,7 @@
         console.debug = function() {};
         console.trace = function() {};
 
-        // Devtools açılma kontrolü (resize)
+        // Devtools açılma kontrolü
         let devtoolsOpen = false;
         setInterval(function() {
             const w = window.innerWidth;
@@ -99,7 +103,7 @@
             if (ow - w > 100 || oh - h > 100) {
                 if (!devtoolsOpen) {
                     devtoolsOpen = true;
-                    banAndKill();
+                    showWarningAndBan();
                 }
             } else {
                 devtoolsOpen = false;
@@ -112,15 +116,18 @@
             return false;
         });
 
-        // Seçim engelle
+        // Seçim engelle (ama kopyalama butonları çalışsın)
         document.addEventListener('selectstart', function(e) {
-            e.preventDefault();
-            return false;
+            // Sadece input/textarea değilse engelle
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                return false;
+            }
         });
     }
 
-    // ---- BANLA VE ÖLDÜR ----
-    function banAndKill() {
+    // ---- UYARI GÖSTER VE BANLA ----
+    function showWarningAndBan() {
         try {
             const session = JSON.parse(localStorage.getItem('ccSession'));
             if (session && session.email) {
@@ -129,9 +136,12 @@
             }
         } catch(e) {}
         
+        // Önce uyarı göster
+        alert('🚫 Bu işlem yasaktır!\nHesabınız kalıcı olarak yasaklanmıştır.');
+        
+        // Sayfayı temizle
         document.documentElement.innerHTML = '';
         document.body.innerHTML = '';
-        alert('🚫 Erişim Engellendi!\nHesabınız kalıcı olarak yasaklanmıştır.');
         window.location.href = 'about:blank';
     }
 
@@ -142,7 +152,7 @@
         document.addEventListener('DOMContentLoaded', blockDevTools);
     }
 
-    // ---- RATE LIMITING (DDoS KORUMASI) ----
+    // ---- RATE LIMITING ----
     const rateLimit = {
         requests: {},
         maxRequests: 30,
@@ -162,6 +172,6 @@
     };
 
     window.__rateLimit = rateLimit;
-    window.__adminPassword = localStorage.getItem('adminPassword') || 'root2025';
+    window.__adminPassword = localStorage.getItem('adminPassword') || 'Zenit2025!';
 
 })();
