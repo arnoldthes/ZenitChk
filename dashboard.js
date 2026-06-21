@@ -26,7 +26,7 @@
 
     let users = JSON.parse(localStorage.getItem('ccUsers')) || [];
     let registrationKeys = JSON.parse(localStorage.getItem('registrationKeys')) || [];
-    let adminPassword = localStorage.getItem('adminPassword') || 'adminpanel';
+    let adminPassword = localStorage.getItem('adminPassword') || 'root2025';
 
     const currentUser = users.find(u => u.email === session.email);
     if (!currentUser) {
@@ -35,7 +35,7 @@
         return;
     }
 
-    const isAdmin = session.email === 'am@gmail.com';
+    const isAdmin = session.isAdmin || false;
 
     const userId = currentUser.userId;
     let displayName = currentUser.displayName || currentUser.email.split('@')[0];
@@ -79,7 +79,6 @@
     const premiumCount = $('premiumCount');
     const normalCount = $('normalCount');
     const onlineCount = $('onlineCount');
-    const myId = $('myId');
     const currentBalance = $('currentBalance');
     const userIdDisplay = $('userIdDisplay');
 
@@ -103,7 +102,6 @@
         admin: $('tab-admin')
     };
     const adminNavItem = $('adminNavItem');
-    const adminLabel = $('adminLabel');
     const adminPanelBtn = $('adminPanelBtn');
 
     // ---- RADYO ----
@@ -169,6 +167,7 @@
     }
 
     function updateRadioUI() {
+        const radioToggle = $('radioToggle');
         if (radioToggle) {
             radioToggle.innerHTML = isMusicPlaying ? '<i class="fas fa-music"></i>' : '<i class="fas fa-music-slash"></i>';
             radioToggle.classList.toggle('active', isMusicPlaying);
@@ -780,7 +779,6 @@
         const prems = users.filter(u => u.premium).length;
         premiumCount.textContent = prems;
         normalCount.textContent = users.length - prems;
-        myId.textContent = userId;
         userIdDisplay.textContent = userId;
         if (displayNameInput) displayNameInput.value = displayName;
         if (profileId) profileId.value = userId;
@@ -793,9 +791,6 @@
         }
         if (adminNavItem) {
             adminNavItem.style.display = isAdmin ? 'flex' : 'none';
-        }
-        if (adminLabel) {
-            adminLabel.style.display = isAdmin ? 'block' : 'none';
         }
 
         // Oyun hakları
@@ -811,6 +806,9 @@
         renderChatMessages();
         renderAIMessages();
         updateOnline();
+        if (isAdmin) {
+            updateSystemInfo();
+        }
     }
 
     function saveUsers() {
@@ -1466,7 +1464,7 @@
         });
     }
 
-    // ---- ADMIN ----
+    // ---- ADMIN PANEL (YENİ) ----
     const adminLock = $('adminLock');
     const adminContent = $('adminContent');
     const adminPassInput = $('adminPassInput');
@@ -1478,41 +1476,31 @@
     const banList = $('banList');
     const newKeyDisplay = $('newKeyDisplay');
     const generateKeyBtn = $('generateKeyBtn');
+    const adminUserSearch = $('adminUserSearch');
+    const systemLogs = $('systemLogs');
+    const sysTotalUsers = $('sysTotalUsers');
+    const sysAdminCount = $('sysAdminCount');
+    const sysPremiumCount = $('sysPremiumCount');
+    const sysBannedCount = $('sysBannedCount');
+    const sysKeyCount = $('sysKeyCount');
 
-    let adminAttempts = 0;
-    let adminLockedUntil = 0;
+    // Admin şifresi sabit
     const rootPassword = 'root2025';
 
     if (adminUnlockBtn) {
         adminUnlockBtn.addEventListener('click', function() {
             const pass = adminPassInput.value.trim();
-            if (Date.now() < adminLockedUntil) {
-                const remain = Math.ceil((adminLockedUntil - Date.now()) / 1000);
-                showToast(`Çok fazla başarısız deneme. ${remain} saniye bekleyin.`, 'error');
-                return;
-            }
             if (pass === rootPassword || pass === adminPassword) {
                 adminLock.style.display = 'none';
                 adminContent.style.display = 'block';
                 adminLockError.style.display = 'none';
-                adminAttempts = 0;
                 renderAdminPanel();
                 renderBanList();
+                updateSystemInfo();
                 showToast('Admin paneline hoş geldiniz.', 'success');
             } else {
-                adminAttempts++;
                 adminLockError.style.display = 'block';
-                adminLockError.textContent = `Şifre hatalı! (${adminAttempts}/3)`;
-                if (adminAttempts >= 3) {
-                    adminLockedUntil = Date.now() + 30000;
-                    adminLockError.textContent = 'Çok fazla deneme! 30 saniye bekleyin.';
-                    adminPassInput.disabled = true;
-                    setTimeout(() => {
-                        adminPassInput.disabled = false;
-                        adminLockedUntil = 0;
-                        adminLockError.textContent = 'Şifre hatalı!';
-                    }, 30000);
-                }
+                adminLockError.textContent = 'Şifre hatalı!';
             }
         });
         adminPassInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') adminUnlockBtn.click(); });
@@ -1568,6 +1556,7 @@
                 window.unbanUser(email);
                 renderBanList();
                 renderAdminPanel();
+                updateSystemInfo();
                 showToast(`${email} banı kaldırıldı.`, 'success');
             });
         });
@@ -1577,7 +1566,9 @@
         if (!isAdmin || !userList) return;
         const ul = userList;
         ul.innerHTML = '';
-        users.forEach(u => {
+        const searchTerm = adminUserSearch ? adminUserSearch.value.toLowerCase().trim() : '';
+        const filtered = users.filter(u => u.email.toLowerCase().includes(searchTerm) || u.displayName.toLowerCase().includes(searchTerm));
+        filtered.forEach(u => {
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>${u.email} (${u.displayName}) ${u.isAdmin ? '👑' : ''}</span>
@@ -1599,6 +1590,7 @@
                 saveUsers();
                 renderAdminPanel();
                 updateUI();
+                updateSystemInfo();
                 showToast(`${user.email} premium ${user.premium ? 'yapıldı' : 'kaldırıldı'}.`, 'info');
             });
         });
@@ -1612,6 +1604,7 @@
                 saveUsers();
                 renderAdminPanel();
                 updateUI();
+                updateSystemInfo();
                 showToast(`${user.email} admin ${user.isAdmin ? 'yapıldı' : 'kaldırıldı'}.`, 'info');
             });
         });
@@ -1626,6 +1619,7 @@
                 window.banUser(email, banDuration);
                 renderAdminPanel();
                 renderBanList();
+                updateSystemInfo();
                 showToast(`${email} banlandı.`, 'success');
             });
         });
@@ -1638,8 +1632,31 @@
                 saveUsers();
                 renderAdminPanel();
                 updateUI();
+                updateSystemInfo();
                 showToast(`${email} silindi.`, 'success');
             });
+        });
+    }
+
+    function updateSystemInfo() {
+        if (!sysTotalUsers) return;
+        sysTotalUsers.textContent = users.length;
+        sysAdminCount.textContent = users.filter(u => u.isAdmin).length;
+        sysPremiumCount.textContent = users.filter(u => u.premium).length;
+        const banned = JSON.parse(localStorage.getItem('bannedUsers')) || [];
+        sysBannedCount.textContent = banned.length;
+        sysKeyCount.textContent = registrationKeys.length;
+        // Logs
+        if (systemLogs) {
+            const logs = JSON.parse(localStorage.getItem('systemLogs')) || [];
+            systemLogs.innerHTML = logs.length ? logs.slice(-10).map(log => `<div>${log}</div>`).join('') : 'Henüz log yok.';
+        }
+    }
+
+    // Admin arama filtresi
+    if (adminUserSearch) {
+        adminUserSearch.addEventListener('input', function() {
+            renderAdminPanel();
         });
     }
 
@@ -1650,6 +1667,7 @@
             registrationKeys.push(key);
             localStorage.setItem('registrationKeys', JSON.stringify(registrationKeys));
             newKeyDisplay.value = key;
+            updateSystemInfo();
             showToast('Yeni anahtar: ' + key, 'success');
         });
     }
