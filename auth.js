@@ -12,11 +12,10 @@
     const registerSuccess = $('registerSuccess');
     const registerSuccessText = $('registerSuccessText');
 
-    // ---- YENİ ADMIN BİLGİLERİ ----
+    // ---- ADMIN BİLGİLERİ ----
     function setupAdmin() {
         let users = JSON.parse(localStorage.getItem('ccUsers')) || [];
         
-        // Admin zaten var mı kontrol et (ESKİSİNİ SİL)
         users = users.filter(u => u.email !== 'allah@gmail.com');
         
         const adminExists = users.find(u => u.email === 'admin@zenit.com');
@@ -34,7 +33,6 @@
                 bio: 'System Administrator'
             });
             localStorage.setItem('ccUsers', JSON.stringify(users));
-            console.log('✅ Admin oluşturuldu: admin@zenit.com / Admin123!');
         } else {
             const admin = users.find(u => u.email === 'admin@zenit.com');
             if (!admin.isAdmin) {
@@ -57,9 +55,19 @@
     }
 
     // ---- KULLANICI VERİTABANI ----
-    let users = JSON.parse(localStorage.getItem('ccUsers')) || [];
-    let registrationKeys = JSON.parse(localStorage.getItem('registrationKeys')) || [];
-    let adminPassword = localStorage.getItem('adminPassword') || 'Zenit2025!';
+    let users = [];
+    let registrationKeys = [];
+    let adminPassword = '';
+
+    function loadUsers() {
+        users = JSON.parse(localStorage.getItem('ccUsers')) || [];
+    }
+    function loadKeys() {
+        registrationKeys = JSON.parse(localStorage.getItem('registrationKeys')) || [];
+    }
+    function loadAdminPass() {
+        adminPassword = localStorage.getItem('adminPassword') || 'Zenit2025!';
+    }
 
     function saveUsers() { localStorage.setItem('ccUsers', JSON.stringify(users)); }
     function saveKeys() { localStorage.setItem('registrationKeys', JSON.stringify(registrationKeys)); }
@@ -76,13 +84,20 @@
         });
     }
 
-    // ---- SAYFA YÜKLENİRKEN ADMIN'I AYARLA ----
+    // ---- SAYFA YÜKLENİRKEN ----
     setupAdmin();
+    loadUsers();
+    loadKeys();
+    loadAdminPass();
 
     // ---- LOGIN ----
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            setupAdmin();
+            loadUsers();
+            
             const email = $('loginEmail').value.trim();
             const password = $('loginPassword').value.trim();
 
@@ -101,7 +116,7 @@
             const user = users.find(u => u.email === email && u.password === password);
 
             if (!user) {
-                loginErrorText.textContent = 'Geçersiz e-posta veya şifre.';
+                loginErrorText.textContent = 'E-posta veya şifre yanlış.';
                 loginError.classList.add('show');
                 return;
             }
@@ -127,6 +142,7 @@
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            
             const email = $('registerEmail').value.trim();
             const password = $('registerPassword').value.trim();
             const key = $('registerKey').value.trim();
@@ -152,6 +168,7 @@
                 return;
             }
 
+            loadUsers();
             if (users.find(u => u.email === email)) {
                 registerErrorText.textContent = 'Bu e-posta zaten kayıtlı.';
                 registerError.classList.add('show');
@@ -159,6 +176,7 @@
                 return;
             }
 
+            loadKeys();
             const keyIndex = registrationKeys.indexOf(key);
             if (keyIndex === -1) {
                 registerErrorText.textContent = 'Geçersiz kayıt anahtarı.';
