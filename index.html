@@ -1,36 +1,52 @@
 <!DOCTYPE html>
-<html lang="tr" data-theme="light">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Giriş – ZenitChk</title>
-    <script src="security.js"></script>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dorksk Checker</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="auth-page">
-    <div class="auth-bg"></div>
-    <div class="auth-container">
-        <div class="auth-logo">
-            <i class="fas fa-crown" style="font-size:48px;color:#f0b90b;"></i>
+<body>
+    <div id="app">
+        <!-- LOGO -->
+        <div class="logo-container">
+            <img src="https://via.placeholder.com/120x120/000000/FFFFFF?text=D" alt="Logo" id="logo">
         </div>
-        <h1 class="auth-title">ZenitChk</h1>
-        <p class="auth-subtitle">Hesabına giriş yaparak devam et.</p>
-        <div id="loginError" class="auth-error"><i class="fas fa-exclamation-circle"></i><span id="loginErrorText">Hata</span></div>
-        <form id="loginForm">
-            <div class="form-group">
-                <label>E-posta</label>
-                <input type="email" id="loginEmail" placeholder="ornek@email.com" required />
+
+        <!-- ANA BUTONLAR -->
+        <div class="main-buttons">
+            <button class="btn-primary" onclick="joinChannel()">📢 Join Channel</button>
+            <button class="btn-primary" onclick="joinChat()">💬 Join Chat</button>
+        </div>
+
+        <!-- VERIFICATION -->
+        <div class="verify-section">
+            <button class="btn-verify" onclick="verify()">🔓 Verify</button>
+        </div>
+
+        <!-- HIDDEN AUTH (Verify sonrası görünür) -->
+        <div id="auth-section" style="display:none;">
+            <h2>Welcome!</h2>
+            <button class="btn-auth" onclick="register()">📝 Register</button>
+            <button class="btn-auth" onclick="login()">🔑 Login</button>
+        </div>
+
+        <!-- CARD CHECKER (Login sonrası) -->
+        <div id="card-section" style="display:none;">
+            <h3>💳 Card Checker</h3>
+            <input type="text" id="cc-input" placeholder="4111111111111111|12|26|123">
+            <button onclick="checkCard()">Check</button>
+            <div id="result"></div>
+
+            <!-- Kart Listesi -->
+            <div id="card-list">
+                <div class="card-item approved">✅ Approved - 4111****1111</div>
+                <div class="card-item declined">❌ Declined - 5111****2222</div>
+                <div class="card-item insufficient">⚠️ Insufficient Funds - 6111****3333</div>
             </div>
-            <div class="form-group">
-                <label>Şifre</label>
-                <input type="password" id="loginPassword" placeholder="••••••••" required />
-            </div>
-            <button type="submit" class="auth-btn">Giriş Yap</button>
-        </form>
-        <div class="auth-toggle">Hesabın yok mu? <a href="register.html">Kayıt Ol</a></div>
+        </div>
     </div>
-    <script src="auth.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
